@@ -283,7 +283,6 @@ Each one of these data types is best represented by its own standard schema defi
 
 ### Roadmap and milestones <img src="images/milestone2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-* **Kick-off**: June/17 (part-time)
 * **Phase I. Conception** : December/17
 * **Phase II. Prototype** : June/18
 * **Phase III. MVP first release**  : December/18
