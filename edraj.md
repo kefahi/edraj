@@ -8,7 +8,7 @@
 ---
 # The challenge
 
-<img src="images/quote.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+<img src="images/quote2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 ###	_One app/service to handle most of the user content management and communication needs (private/shared/public) as opposed to the scattered Social media outlets and user managed content options, and the key qualities for that Next-gen app to succeed._
 
 
@@ -199,7 +199,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 
 
 ---
-<img src="images/quote.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+<img src="images/quote2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 ##	_For every respective set of use-cases  edraj can be reduced to an existing known / popular platform: Blog, Email, Messaging, Social media, News services, Media management._
 
 ---
