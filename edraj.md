@@ -163,12 +163,13 @@ User/profile (single-user):
 
 +++
 ### Content <img src="images/contentMang.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
-- Admin (Meta/privileges)
-- Create/update/delete,
-- Manage comments
-
+* Owners can: 
+	- Admin (Meta/privileges)
+	- Create/update/delete
+	- Manage comments
 * Labels are used to qualify the content for better search and organization.
 * Content is also organized in arbitrary folder-structures, like regular file-systems and cloud-drives.
+* Future: Large content can be served in a torrent-like fashion.
 
 
 +++
