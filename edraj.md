@@ -59,7 +59,7 @@ Let alone offering it at competitive quality and speed.
 Significant advantages must be offered for the users to switch:
 
 1. **Unified data and meta-data**: All data/content is well-defined and managed using the same verbs. (e.g. REST, schema.org/JSON-LD)
-2. **Federated/self-hosted and Standard-API-based**: Inter-operable independently-hosted domains (DHT?) (sets of users). Also key-based idM (e.g. OpenId connect).
+2. **Federated/self-hosted and Standard-API-based**: Inter-operable independently-hosted domains (DHT) (sets of users). Also key-based idM (e.g. OpenId connect).
 	* True account/content ownership
 3. **Web-enabled/SEO-friendly availability of content**: Just think how quickly the user-contributed content gets buried and almost unreachable to others.
 4. **Smart**: Programmable time/trigger-based activities. e.g. IFTTT
@@ -95,12 +95,13 @@ Significant advantages must be offered for the users to switch:
 ### Content Management Basics  <img src="images/metaData.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * Every entity in the system has a life-long globally unique identifier (guid): Actor, Work-group, Content, ...etc.
-* Basic verbs:
+* Basic **Verbs**:
   * Create
   * Update content
   * Update meta-data (Access-control/permission included)
   * Delete
-* Every thing is persisted on the file-system including messages. (implementation recommendation).
+  * Query (with filtering)
+* Every thing is persisted on the file-system including messages. _implementation recommendation_.
 * The caching/index component should always be able to completely rebuild the cache/indexes as such it should only be considered for performance purposes.
 * Future: both in-motion and in-transit data should be encrypted
 
@@ -110,8 +111,7 @@ Significant advantages must be offered for the users to switch:
 - A Domain is a collection of users along with the various edraj components (see <a href="#/5">Components section</a>).
 - Federation enables users and groups / communities to self-host and inter-operate with everyone else.
 - Federation and Standard-API are key to free users from vendor-lock-in. It even allows multiple-technical implementations.
-- Federation is also a means to eliminate the concept of one single service-provider, helping distribute the processing load to a manageable level as opposed to requiring huge investment in infrastructure.
-- Federation additionally and specifically addresses one major aspect : The cost. As it eliminates the need / requirement for one central service provider; it will simply distribute the cost of hosting (computing/storage/data-transfer) over the federated domain.
+- Federation is also a means to eliminate the concept of one single service-provider, helping distribute the processing load to a manageable level as opposed to requiring huge investment in infrastructure. As it eliminates the need / requirement for one central service provider; it will simply distribute the cost of hosting (computing/storage/data-transfer) over the federated domains.
 
 +++
 ### Federated and Standard-API-based (continued) <img src="images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -135,7 +135,7 @@ Imagine how poorly would an app be received if it lacks either of those two qual
 * **Actor**: Individual agent / user.
 * **Work-group**: Collaboration of a group of actors on workgroup-owned content (like FB pages/groups)
 * **Content**: Media, Document, Text + self-describing Meta data.
-	* **Labels**: Tags (user-defined, free-form) and Categories (pre-defined, hierarchical)
+	* **Labels**: Tags (user-defined, free-form) and Categories (predefined, hierarchical)
 	* **Container**: Hierarchical aggregation of content: folder/tar-ball
 	* **Permission**: Privileges granted to owner and people
 * **Action**: Manage content, React to content, subscribe to notifications (filter-based actor/tag/category/type),
@@ -287,6 +287,16 @@ Each one of these data types is best represented by its own standard schema defi
 ### Client-apps <img src="images/app.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 - Mobile apps: Progressive Android/iOS ..etc.
 - Web/Desktop apps: Progressive Web/Desktop apps and/or Native apps.
+
++++
+### Distributed hashtables (DHT) 
+One official DHT exists and is configured per default, additional ones can be configured.
+- Domains (Not DNS-based) for two reasons:
+	- Enable more liberal naming (names in the formal repo are reviewed)
+  - Reduce the setup complexity which opens doors for behind-firewall peer-to-peer intr-domain communication.
+- Add-ons
+- Schema
+- Public miners (search-engine like)
 
 ---
 ### High-level Architecture diagram
