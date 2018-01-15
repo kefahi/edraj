@@ -12,7 +12,15 @@
 ###	_Is it really possible or even feasible for one app/service to handle most of the user content and communication management needs (private/shared/public) as opposed to the currently hugely scattered Social media outlets and user managed content options? and what are the key qualities for that Next-gen app to succeed?_
 
 
----
++++
+### Painpoints
+
+- Users don't really own their content. They use **free** services...
+- Users are locked into central proprietrary social media / content hosting options; none of them offer public api that would make it easy for users to move the information / data around or inter-servicing.
+- The user-contributed content gets quickly burried and is hard to retrieve, search is very poor.
+- Users could be reported and suspended and hence lose all the content they have contributed.
+
++++
 ### Current Status-quo  <img src="images/openlock.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 A wide range of use-cases served by independent and greatly over-lapping applications each attempting to lock-in the user's data.
@@ -23,14 +31,14 @@ A wide range of use-cases served by independent and greatly over-lapping applica
 - **_Future_**: Knowledge base (e.g. wiki), note-taking, todos and ticketing
 - **_Future_**: Sheets, Inventory: e.g. Excel, Access, Foxpro
 
----
++++
 ### Aspiration <img src="images/aspiration.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 One unified set of open-standards that enable all those use-cases (is able to handle various types of content) and run in a federated fashion. Offering superior content-management experience and eliminating vendor-lock-in that is overwhelming the users.
 
 Email (SMPT/IMAP4/POP3) comes as an example of open-standard used by the "Email" use-case.
 
----
++++
 ### Barriers  <img src="images/barrier.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * Technically speaking there is no reason why one application (with a proper ecosystem) cannot serve all those use-cases and more. At the end of the day it boils down to information/data entities that should be maintained, indexed and shared / published. 
@@ -199,7 +207,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 * **Notifications and Messaging**: Action-driven notification system and messaging capability.
 	* **_Future_: Peer-to-peer**: Audio/Video conferencing 
 * **Miner**: Index and attempt to improve meta-data. also remote-index (gopher-like)
-* **Add-ons**: local and remote repo of usable add-ons (mini-apps)
+* **Add-ons**: local and remote repo of usable add-ons (mini-apps): e.g. Interface with existing social media sites: import/export (sync).
 * **Public interface**: Public content including permissions, pages and blocks + notification subscription/distribution (syndication).
 * **Schema definitions**: structured data: standard + custom: Local + remote repos
 * **Client-apps**: Mobile, Desktop, Web-SPA
