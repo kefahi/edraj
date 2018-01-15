@@ -9,16 +9,20 @@
 # The challenge
 
 <img src="images/quote.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
-###	_Is it really possible or even feasible for one app/service to handle most of the user content and communication management needs (private/shared/public) as opposed to the currently hugely scattered Social media outlets and user managed content options? and what are the key qualities for that Next-gen app to succeed?_
+###	_One app/service to handle most of the user content management and communication needs (private/shared/public) as opposed to the scattered Social media outlets and user managed content options, and the key qualities for that Next-gen app to succeed._
 
 
 +++
-### Painpoints
-
-- Users don't really own their content. They use **free** services...
-- Users are locked into central proprietrary social media / content hosting options; none of them offer public api that would make it easy for users to move the information / data around or inter-servicing.
-- The user-contributed content gets quickly burried and is hard to retrieve, search is very poor.
-- Users could be reported and suspended and hence lose all the content they have contributed.
+### Pain-points
+- Users don't really own their content:
+	- The older content is quickly buried and hard to re-surface and search.
+  - The users can be pages / content / account can be banned and deleted hence losing all the content they contributed along with the community reactions.
+- Social Media / Content Management providers are proprietary and centrally owned/managed, they mainly strive to lock-in the users: 
+  - No API that enable the users to fully manage their content, let alone that federation options are not welcomed by the providers.
+  - Users can not automatically and fully **sync** content across various outlets
+- Users are overwhelmed 
+  - With the ever increasing debt of their own content that they may fail to manage and hence lose.
+  - With the sheer number of outlets (providers) that overlap and confuse the users
 
 +++
 ### Current Status-quo  <img src="images/openlock.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -44,7 +48,7 @@ Email (SMPT/IMAP4/POP3) comes as an example of open-standard used by the "Email"
 * Technically speaking there is no reason why one application (with a proper ecosystem) cannot serve all those use-cases and more. At the end of the day it boils down to information/data entities that should be maintained, indexed and shared / published. 
 * Unfortunately and despite the fact that there have been several attempts to address sub-sets of use-cases, none of them tries to address the problem in its fully generality. 
 Let alone offering it at competitive quality and speed.
-* The other major barrier is the user's affinity to the existing social network offerings.
+* The social affinity to the existing social network offering (existing social graph weight).
 
 ---
 ### Crossing the chasm <img src="images/cross.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -75,8 +79,8 @@ Significant advantages must be offered for the users to switch:
 * Content is well-defined and self-described (through meta-data) 
 * The Meta-data for each content include: 
   * Name
-  * Content guid
-  * Owner guid
+  * Content _guid_
+  * Owner _guid_
   * Access-control settings (permissions): for Actors, Groups and Work-groups.
   * Time-stamps: Created at, Last-updated
   * Change-history for revision-enabled content
@@ -100,7 +104,7 @@ Significant advantages must be offered for the users to switch:
 +++
 ### Federated and Standard-API-based <img src="images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-- A Domain is a collection of independently hosted set of users. With the various edraj components (see Components section). 
+- A Domain is a collection of users along with the various edraj components (see <a href="#/5">Components section</a>). 
 - Federation enables users and groups / communities to self-host and inter-operate with everyone else. 
 - Federation and Standard-API are key to free users from vendor-lock-in. It even allows multiple-technical implementations.
 - Federation is also a means to eliminate the concept of one single service-provider, helping distribute the processing load to a manageable level as opposed to requiring huge investment in infrastructure. 
@@ -133,7 +137,8 @@ Imagine how poorly would an app be received if it lacks either of those two qual
 	* **Permission**: Privileges granted to owner and people
 * **Action**: Manage content, React to content, subscribe to notifications (filter-based actor/tag/category/type),
 * **Notification**: Event notifications for subscribed users.
-* **Page**: A single page view made of **Blocks** (physical viewable manfistication of the content).
+	* **Message**: One-to-one or one-to-many messaging (think Email and Instant messaging) 
+* **Page**: A single page view made of **Blocks** (physical view-able manifestation of the content).
 
 +++
 ### Actor <img src="images/user.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -174,7 +179,7 @@ User/profile (single-user):
 +++
 ### Notification <img src="images/notifications3.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-Notification-streams (follow/unfollow person or workgroup or specific-content, tag)
+Notification-streams (follow/unfollow person or work-group or specific-content, tag)
 A user can follow notifications (get stream of notifications) based on filter-rules:
 
 - Actor Activities
@@ -193,11 +198,9 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 * Each block has a query-filter to determine the content to be surfaced and a template to determine how it is presented.
 
 
-
-
 ---
 <img src="images/quote.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
-##	_For every respective set of use-cases  edraj can be reduced to an existing known / popular platform: Blog, Email, Messaging, Social media, News services._
+##	_For every respective set of use-cases  edraj can be reduced to an existing known / popular platform: Blog, Email, Messaging, Social media, News services, Media management._
 
 ---
 ### Main components <img src="images/puzzle.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -262,7 +265,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 
 +++
 ### Schema definitions <img src="images/database.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
-Pre-defined schema definitions allow machine consumption of properly described structured data.
+Predefined schema definitions allow machine consumption of properly described structured data.
 The local + remote repos that contain the schema definitions for structured data.
 
 Think:
