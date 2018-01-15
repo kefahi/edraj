@@ -2,7 +2,7 @@
 
 ### The next-generation Information Management System
 <img src="images/edraj.png" alt="Websocket" width="50%" style="float: left; background:none; border:none; box-shadow:none;">
- 
+
 <p style="text-align: right; width: 100%;">Version 0.3<br/>Amman, January - 2018<br/>kefah.issa@gmail.com</p>
 
 ---
@@ -16,11 +16,14 @@
 ### Pain-points
 - Users don't really own their content:
 	- The older content is quickly buried and hard to re-surface and search.
-  - The users' pages / content / account can be banned and deleted hence losing all the content they contributed along with the community reactions and their social graph.
-- Social Media / Content Management providers are proprietary and centrally owned/managed, they mainly strive to lock-in the users: 
+  - Users can lose content, pages, account when banned / reported hence losing:
+    - The content they contributed
+    - The community reactions
+    - And above all their social graph (network). e.g. Pages with millions of followers can be banned.
+- Social Media / Content Management providers are proprietary and centrally owned/managed, they mainly strive to lock-in the users:
   - No API that enable the users to fully manage their content, let alone that federation options are not welcomed by the providers.
   - Users can not automatically and fully **sync** content across various outlets
-- Users are overwhelmed 
+- Users are overwhelmed
   - With the ever increasing debt of their own content that they may fail to manage and hence lose.
   - With the sheer number of outlets (providers) that overlap and confuse the users
 
@@ -45,8 +48,8 @@ Email (SMPT/IMAP4/POP3) comes as an example of open-standard used by the "Email"
 +++
 ### Barriers  <img src="images/barrier.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-* Technically speaking there is no reason why one application (with a proper ecosystem) cannot serve all those use-cases and more. At the end of the day it boils down to information/data entities that should be maintained, indexed and shared / published. 
-* Unfortunately and despite the fact that there have been several attempts to address sub-sets of use-cases, none of them tries to address the problem in its fully generality. 
+* Technically speaking there is no reason why one application (with a proper ecosystem) cannot serve all those use-cases and more. At the end of the day it boils down to information/data entities that should be maintained, indexed and shared / published.
+* Unfortunately and despite the fact that there have been several attempts to address sub-sets of use-cases, none of them tries to address the problem in its fully generality.
 Let alone offering it at competitive quality and speed.
 * The social affinity to the existing social network offering (existing social graph weight).
 
@@ -60,7 +63,7 @@ Significant advantages must be offered for the users to switch:
 	* True account/content ownership
 3. **Web-enabled/SEO-friendly availability of content**: Just think how quickly the user-contributed content gets buried and almost unreachable to others.
 4. **Smart**: Programmable time/trigger-based activities. e.g. IFTTT
-5. **Free/Open-source**: Grant users the right to use, modify and evolve the implementations. 
+5. **Free/Open-source**: Grant users the right to use, modify and evolve the implementations.
 
 
 +++
@@ -68,7 +71,7 @@ Significant advantages must be offered for the users to switch:
 
 6- **Performance and Quality**: The app **must** be very performing and not less stable than the current offerings.
 
-7- **Privacy and Security** 
+7- **Privacy and Security**
 
 8- **Easy service and data redundancy options**
 
@@ -76,15 +79,15 @@ Significant advantages must be offered for the users to switch:
 ### Unified data and meta-data <img src="images/metaData1.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * File-based content and meta-data persistence. The content and its meta-data file live in the file-system under certain relative path.
-* Content is well-defined and self-described (through meta-data) 
-* The Meta-data for each content include: 
+* Content is well-defined and self-described (through meta-data)
+* The Meta-data for each content include:
   * Name
   * Content _guid_
   * Owner _guid_
   * Access-control settings (permissions): for Actors, Groups and Work-groups.
   * Time-stamps: Created at, Last-updated
   * Change-history for revision-enabled content
-  * Labels: Tags, Categories 
+  * Labels: Tags, Categories
   * Path? (redundant from the file-system)
   * Schema reference definition (for structured data)
 
@@ -94,26 +97,26 @@ Significant advantages must be offered for the users to switch:
 * Every entity in the system has a life-long globally unique identifier (guid): Actor, Work-group, Content, ...etc.
 * Basic verbs:
   * Create
-  * Update content 
+  * Update content
   * Update meta-data (Access-control/permission included)
   * Delete
-* Every thing is persisted on the file-system including messages. (implementation recommendation). 
+* Every thing is persisted on the file-system including messages. (implementation recommendation).
 * The caching/index component should always be able to completely rebuild the cache/indexes as such it should only be considered for performance purposes.
 * Future: both in-motion and in-transit data should be encrypted
 
 +++
 ### Federated and Standard-API-based <img src="images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-- A Domain is a collection of users along with the various edraj components (see <a href="#/5">Components section</a>). 
-- Federation enables users and groups / communities to self-host and inter-operate with everyone else. 
+- A Domain is a collection of users along with the various edraj components (see <a href="#/5">Components section</a>).
+- Federation enables users and groups / communities to self-host and inter-operate with everyone else.
 - Federation and Standard-API are key to free users from vendor-lock-in. It even allows multiple-technical implementations.
-- Federation is also a means to eliminate the concept of one single service-provider, helping distribute the processing load to a manageable level as opposed to requiring huge investment in infrastructure. 
-- Federation additionally and specifically addresses one major aspect : The cost. As it eliminates the need / requirement for one central service provider; it will simply distribute the cost of hosting (computing/storage/data-transfer) over the federated domain. 
+- Federation is also a means to eliminate the concept of one single service-provider, helping distribute the processing load to a manageable level as opposed to requiring huge investment in infrastructure.
+- Federation additionally and specifically addresses one major aspect : The cost. As it eliminates the need / requirement for one central service provider; it will simply distribute the cost of hosting (computing/storage/data-transfer) over the federated domain.
 
 +++
 ### Federated and Standard-API-based (continued) <img src="images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-Federation and the option of self-hosted inter-operable information management system empowered the users and communities to **finally** and **truly** own their content. 
+Federation and the option of self-hosted inter-operable information management system empowered the users and communities to **finally** and **truly** own their content.
   - No Tracking
   - No Advertisement
   - No one can delete their files (posts/videos ...)
@@ -124,7 +127,7 @@ Federation and the option of self-hosted inter-operable information management s
 +++
 ### Performance and Quality <img src="images/quality.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-Imagine how poorly would an app be received if it lacks either of those two qualities. No matter how great its idea is, how nice-looking, how easy, ...etc. As such those two qualities are very key and are actually make-or-break. 
+Imagine how poorly would an app be received if it lacks either of those two qualities. No matter how great its idea is, how nice-looking, how easy, ...etc. As such those two qualities are very key and are actually make-or-break.
 ---
 
 ### Key concepts and definitions  <img src="images/definitions.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -137,17 +140,17 @@ Imagine how poorly would an app be received if it lacks either of those two qual
 	* **Permission**: Privileges granted to owner and people
 * **Action**: Manage content, React to content, subscribe to notifications (filter-based actor/tag/category/type),
 * **Notification**: Event notifications for subscribed users.
-	* **Message**: One-to-one or one-to-many messaging (think Email and Instant messaging) 
+	* **Message**: One-to-one or one-to-many messaging (think Email and Instant messaging)
 * **Page**: A single page view made of **Blocks** (physical view-able manifestation of the content).
 
 +++
 ### Actor <img src="images/user.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-User/profile (single-user): 
+User/profile (single-user):
 - Information about the user that includes:
   - Bio
-  - Key pair(s) 
-  - Email(s) 
+  - Key pair(s)
+  - Email(s)
   - Phone (contact)
   - Groups of Actors (like access-groups in Facebook) to help simply access-control management
   - Guids/Public-keys/API-url-pointers of other associated users (contacts, followed, friends, ...etc)
@@ -155,8 +158,8 @@ User/profile (single-user):
 +++
 ### Work-group  <img src="images/workgroup.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-- Team-centeric collaborative content. 
-- Members are from any domain
+- Team-centeric (communities/interest groups) collaborative content management and communication medium.
+- Members from any domain can join/be invited per the privacy settings.
 
 +++
 ### Content <img src="images/contentMang.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -165,7 +168,7 @@ User/profile (single-user):
 - Manage comments
 
 * Labels are used to qualify the content for better search and organization.
-* Content is also organized in arbitrary folder-structures, like regular file-systems and cloud-drives. 
+* Content is also organized in arbitrary folder-structures, like regular file-systems and cloud-drives.
 
 
 +++
@@ -174,7 +177,7 @@ User/profile (single-user):
 * Manage content: Create/Update/Delete, Set meta-data options (including permissions)
 * React: comment, share, like/dislike ...etc.
 * Message / Communicate
-* Subscribe to notification based on a filter. 
+* Subscribe to notification based on a filter.
 
 +++
 ### Notification <img src="images/notifications3.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
@@ -184,7 +187,7 @@ A user can follow notifications (get stream of notifications) based on filter-ru
 
 - Actor Activities
 - Work-group Activities
-- Tags / Categories (Horizontally trending general public content) twitter-hashtag like (What's trending) 
+- Tags / Categories (Horizontally trending general public content) twitter-hashtag like (What's trending)
 - Specific types of notifications
 - The ranking formula is also affected by positive reactions (likes + rating), shares, comments and people who reacted.
 
@@ -192,7 +195,7 @@ A user can follow notifications (get stream of notifications) based on filter-ru
 ### Page / Block <img src="images/pages.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 A page is a public presentation of selected content / streams. (blog-sphere like)
- 
+
 * Users can choose layout/template and how content is presented by setting queries. with pagination support.
 * The layout groups a number of blocks
 * Each block has a query-filter to determine the content to be surfaced and a template to determine how it is presented.
@@ -208,7 +211,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 * **Identity Manager (idM)**: Manage Actors/users and people groups.
 * **Content Manager**: Create/Manage, React, and publish (permission / access control)
 * **Notifications and Messaging**: Action-driven notification system and messaging capability.
-	* **_Future_: Peer-to-peer**: Audio/Video conferencing 
+	* **_Future_: Peer-to-peer**: Audio/Video conferencing
 * **Miner**: Index and attempt to improve meta-data. also remote-index (gopher-like)
 * **Add-ons**: local and remote repo of usable add-ons (mini-apps): e.g. Interface with existing social media sites: import/export (sync).
 * **Public interface**: Public content including permissions, pages and blocks + notification subscription/distribution (syndication).
@@ -220,13 +223,13 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 
 * Setup per domain, hosting an arbitrary number of users as determined by the admin
 * The identity manager also stores the public keys (and links to them) of users on other domains (followed / friends).
-* Think OpenID connect (OAuth2) compliant. 
+* Think OpenID connect (OAuth2) compliant.
 
 
 +++
 ### Content Manager <img src="images/content.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-- Persistence of data / content with the proper Meta-data 
+- Persistence of data / content with the proper Meta-data
 - Types of content:
   - Plain text
   - Rich text
@@ -256,7 +259,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 ### Public interface <img src="images/interface.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 - Serves public web-enabled content: Pages + blocks, including generating proper robots.txt+sitemaps: for SEO
-- Serves public API for 
+- Serves public API for
 	* Notification-polling and subscription
   * Content Query and retrieval
   * Surface Content management component public api's
