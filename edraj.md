@@ -16,7 +16,7 @@
 ### Pain-points
 - Users don't really own their content:
 	- The older content is quickly buried and hard to re-surface and search.
-  - The users can be pages / content / account can be banned and deleted hence losing all the content they contributed along with the community reactions.
+  - The users' pages / content / account can be banned and deleted hence losing all the content they contributed along with the community reactions and their social graph.
 - Social Media / Content Management providers are proprietary and centrally owned/managed, they mainly strive to lock-in the users: 
   - No API that enable the users to fully manage their content, let alone that federation options are not welcomed by the providers.
   - Users can not automatically and fully **sync** content across various outlets
