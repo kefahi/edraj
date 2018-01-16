@@ -9,7 +9,7 @@
 # The challenge
 
 <img src="images/quote2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
-###	_One app/service to handle most of the user content management and communication needs (private/shared/public) as opposed to the scattered Social media outlets and user managed content options, and the key qualities for that Next-gen app to succeed._
+###	_One app/service to handle most of the user content management and communication needs (private/shared/public) as opposed to the scattered Social media outlets and user managed content options in addition to figuring the key qualities for that Next-gen app to succeed._
 
 
 +++
@@ -97,10 +97,10 @@ Significant advantages must be offered for the users to switch:
 * Every entity in the system has a life-long globally unique identifier (guid): Actor, Work-group, Content, ...etc.
 * Basic **Verbs**:
   * Create
-  * Update content
-  * Update meta-data (Access-control/permission included)
+  * Update content / meta-data (Access-control/permission included)
   * Delete
   * Query (with filtering)
+  * Subscribe/Poll for notifications
 * Every thing is persisted on the file-system including messages. _implementation recommendation_.
 * The caching/index component should always be able to completely rebuild the cache/indexes as such it should only be considered for performance purposes.
 * Future: both in-motion and in-transit data should be encrypted
@@ -259,7 +259,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 +++
 ### Public interface <img src="images/interface.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
-- Serves public web-enabled content: Pages + blocks, including generating proper robots.txt+sitemaps: for SEO
+- Serves public web-enabled/SEO-friendly content: Pages + blocks, including generating proper robots.txt+sitemaps.
 - Serves public API for
 	* Notification-polling and subscription
   * Content Query and retrieval
@@ -290,11 +290,11 @@ Each one of these data types is best represented by its own standard schema defi
 - Web/Desktop apps: Progressive Web/Desktop apps and/or Native apps.
 
 +++
-### Distributed hashtables (DHT) 
+### Distributed hashtables (DHT) <img src="images/consul.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 One official DHT exists and is configured per default, additional ones can be configured.
-- Domains (Not DNS-based) for two reasons:
+- Domains: which are not DNS-based for two reasons:
 	- Enable more liberal naming (names in the formal repo are reviewed)
-  - Reduce the setup complexity which opens doors for behind-firewall peer-to-peer intr-domain communication.
+	- Reduce the setup complexity which opens doors for behind-firewall peer-to-peer intr-domain communication.
 - Add-ons
 - Schema
 - Public miners (search-engine like)
@@ -302,7 +302,7 @@ One official DHT exists and is configured per default, additional ones can be co
 ---
 ### High-level Architecture diagram
 
-<img src="images/design.png" style="background:none; border:none; box-shadow:none;">
+<img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="80%" >
 
 ---
 
