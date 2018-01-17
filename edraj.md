@@ -301,7 +301,7 @@ One official DHT exists and is configured per default, additional ones can be co
 
 ---
 ### High-level Architecture diagram 
-<img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="90%" >
+<img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="100%" >
 
 ---
 
