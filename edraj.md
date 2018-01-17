@@ -272,7 +272,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 Predefined schema definitions allow machine consumption of properly described structured data.
 The local + remote repos that contain the schema definitions for structured data.
 
-Think:
+Examples of data that require structured schema definitions:
 - Task/Todo-entry
 - Contact details: Person or Organization
 - Scheduled Event: Public/private event, meeting, reminder ...
@@ -300,9 +300,8 @@ One official DHT exists and is configured per default, additional ones can be co
 - Public miners (search-engine like)
 
 ---
-### High-level Architecture diagram
-
-<img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="80%" >
+### High-level Architecture diagram 
+<img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="90%" >
 
 ---
 
