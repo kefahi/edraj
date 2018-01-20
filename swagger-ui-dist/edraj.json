@@ -343,22 +343,46 @@
 								}
 							}
 						},
-						"Actor":{
-							"type":"object",
-							"properties":{
-								"pretty_name":{"type":"string"},
-								"unique_name":{"type":"string"},
-								"domain":{"type":"string"},
-								"uuid":{"type":"string", "format":"uuid"}
-							}
-						},
 						"ActorId":{
 							"type":"object",
 							"properties":{
+								"id":{"type":"string", "format":"uuid"},
+								"pretty_name":{"type":"string"},
+								"unique_name":{"type":"string"},
+								"domain":{"type":"string"}
+							}
+						},
+						"ActorGroup":{
+							"type":"object",
+							"properties":{
+								"uuid":{"type":"string", "format":"uuid"},
+								"name":{"type":"string"},
+								"members":{"type":"array", "items":{"$ref":"#/components/schemas/ActorId"}}
+							}
+						},
+						"Actor":{
+							"type":"object",
+							"properties":{
+								"uuid":{"type":"string", "format":"uuid"},
 								"pretty_name":{"type":"string"},
 								"unique_name":{"type":"string"},
 								"domain":{"type":"string"},
-								"uuid":{"type":"string", "format":"uuid"}
+								"emails":{"type":"array", "items":{"type":"string", "format":"email"}},
+								"related-actors":{"type":"array", "items":{"$ref":"#/components/schemas/ActorId"}},
+								"actor-groups":{"type":"array", "items":{"$ref":"#/components/schemas/ActorGroup"}},
+								"organizations": {"type":"array", "items":{"type":"string"}},
+								"phones": {"type":"array", "items":{"type":"string"}},
+								"urls": {"type":"array", "items":{"type":"string"}}
+							}
+						},
+						"Workgroup":{
+							"type": "object",
+							"properties": {
+								"id": { "type":"string", "format":"uuid" },
+								"pretty_name":{"type":"string"},
+								"unique_name":{"type":"string"},
+								"members":{"type":"array", "items":{"type":"string", "format":"uuid"}},
+								"permissions": { "type":"array", "items":{"$ref":"#/components/schemas/Permission"}}
 							}
 						},
 						"Message": {
@@ -398,6 +422,7 @@
 								"timestamp": { "type":"string", "format":"date-time"},
 								"geo_point": { "$ref": "#/components/schemas/GeoPoint" },
 								"subject": { "type":"string" },
+								"unique_name": { "type":"string" },
 								"body": { "type":"string" },
 								"tags": { "type":"array", "items":{"type":"string"}},
 								"categories": { "type":"array", "items":{"type":"string"}},
@@ -428,6 +453,55 @@
 								"geo_point": { "$ref": "#/components/schemas/GeoPoint" },
 								"type":{"type":"string", "enum":["like", "dislike", "love","sad", "angry", "laugh", "disgusted"]}
 							}	
+						},
+						"Container":{
+							"type": "object",
+							"properties": {
+								"owner_id":{"type":"string", "format":"uuid"},
+								"id": { "type":"string", "format":"uuid" },
+								"timestamp": { "type":"string", "format":"date-time"},
+								"name": { "type":"string" },
+								"unique_name": { "type":"string" },
+								"tags": { "type":"array", "items":{"type":"string"}},
+								"categories": { "type":"array", "items":{"type":"string"}},
+								"permissions": { "type":"array", "items":{"$ref":"#/components/schemas/Permission"}}
+							}
+						},
+						"Notification": { 
+							"type":"object", 
+							"properties":{
+								"id":{"type":"string", "format":"uuid"},
+								"when":{"type":"string", "format":"date-time"},
+								"who": {"type":"string", "format":"uuid"},
+								"what": {"type":"string", "format":"binary"}	
+							}
+						},
+						"Layout": { 
+							"type":"object", 
+							"properties":{
+								"id":{"type":"string", "format":"uuid"},
+								"name": {"type":"string"},
+								"menu": {"type":"string"},
+								"tempate":{"type":"string"}
+							}
+						},
+						"Page": { 
+							"type":"object", 
+							"properties":{
+								"id":{"type":"string", "format":"uuid"},
+								"name": {"type":"string"},
+								"tempate":{"type":"string"},
+								"blocks":{"item":"array", "items":{"type":"string", "format":"uuid"}}
+							}
+						},
+						"Block": { 
+							"type":"object", 
+							"properties":{
+								"id":{"type":"string", "format":"uuid"},
+								"name": {"type":"string"},
+								"filter":{"type":"object"},
+								"tempate":{"type":"string"}
+							}
 						},
             "ApiResponse": {
                 "type": "object",

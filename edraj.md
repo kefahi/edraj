@@ -304,7 +304,7 @@ One official DHT exists and is configured per default, additional ones can be co
 <img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="100%" >
 
 ---
-### Standards definition (OpenApi 3) _INITIAL DRAFT_ <img src="images/openapi-icon.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Standards definition (OpenApi 3) _Work-in-progress_ <img src="images/openapi-icon.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 <a href="swagger-ui-dist/index.html" target="_blank">click here for edraj api specifications</a>
 
