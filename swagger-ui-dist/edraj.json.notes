@@ -1,0 +1,48 @@
+  
+Services:
+  Identity-manager
+    Register
+    Update
+    Query
+  Domains-registry
+    Register
+    Update
+    Query
+  Schema-registry
+    Create
+    Update
+    Delete
+    Query
+  Addons-registry
+    Create
+    Update
+    Delete
+    Query
+    Download  
+  Public-miners-registry
+    Add
+    Remove
+    Query
+  Public-miners-query
+    Index
+    Query
+  Miner-query
+    Index
+    Query
+  Content-manager
+    Create
+    Update: Payload/meta-data
+    Delete
+    Query
+    React
+  Notification
+    Subscribe
+    Poll
+  Messaging
+    Send
+    Query
+  Pages
+    Manage Layouts: Create/Update/Delete/Get
+    Manage Pages: Create/Update/Delete/Get
+    Manage Blocks: Create/Update/Delete/Get
+  
