@@ -176,7 +176,7 @@ User/profile (single-user):
 ### Action <img src="images/action.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * Manage content: Create/Update/Delete, Set meta-data options (including permissions)
-* React: comment, share, like/dislike ...etc.
+* React: comment, share, like/dislike/interesting ...etc.
 * Message / Communicate
 * Subscribe to notification based on a filter.
 
@@ -303,11 +303,40 @@ One official DHT exists and is configured per default, additional ones can be co
 ### High-level Architecture diagram 
 <img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="100%" >
 
----
++++
 ### Standards definition (OpenApi 3) _Work-in-progress_ <img src="images/openapi-icon.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 <a href="swagger-ui-dist/index.html" target="_blank">click here for edraj api specifications</a>
 
++++
+### Storage abstraction notes
+
+* json/meta-data enabled, path-aware file-store : basic backend is filesystem-based.
+* Multiple isolated roots: domains, addons, schema, messages, notifications, content, local-miner, public-miners, public-serving: pages/blocks/layouts/templates/js/images/css/links to public content-payload, trash, content-cache (for all externally accessed content), curated: external content that the user reacted to.
+* file-name, .file-name.meta.json (can be stored in XFS file-attributes?), folder:.file-name.changes
+* Future: Reference checking capability? 
+	- when a schema definition is removed, no file-meta should be pointing to it.
+	- When a file is attached to a message?
+* Future: Main-feature: automatic deduping: used hart/soft? links
+
+
+
++++
+### Storage abstraction api
+
+1. **PutMeta**:  Full or Delta (only mentioned fields are updated). Data integrity is checked before and after the put-operations. creates the folder-path if it doesn't exist.
+2. **GetMeta**: json formatted meta (full or sub-set)
+3. **List**: folder-only, Returns 1st-level child file and folder meta data.
+4. **PutPayload**: file-only. Full / patch?(binary/text) + checksum
+5. **GetPayload**: file-only
+6. **Delete**: recurse-option (i.e. delete belongings/childern -> deletes both meta-data and otherwise; must be reversable (use some trash concept))
+7. **Move**: Aka rename. within the same parent folder or to another one.
+
++++
+### Misc. notes
+
+* When content is shared (or interacted-with) its also copied locally and served in a torrent-like fashion. (i.e. each interaction is registered as a service point) a DHT is needed to serve this: Curated content DHT. ( an asynchronus connection with edraj should always be openned. /Websocket/QUIC/Http2(gRPC) based? (two-way-stream)
+* A content has multiple-views: isolated json/binary, isolated embeddable, isolated web, future: parent web?
 
 ---
 
