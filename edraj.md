@@ -319,7 +319,60 @@ One official DHT exists and is configured per default, additional ones can be co
 	- When a file is attached to a message?
 * Future: Main-feature: automatic deduping: used hart/soft? links
 
++++
+### Main storage roots
 
+* **content**:
+	*	Media files (video, audio, images)
+	* Documents / ebooks (readable material)
+	* Text (plain / rich)
+  * Links (urls bookmarks / reddit like)
+	* Structured data
+* **people**: subscribed-to people (followed/friends) + their groupings
+* **messages**: Message store (instant and email)
+* **notifications**: Events on interesting activities
+* **public-serving**: Pages, Blocks, Layouts, Templates, Static files: JS/CSS/Images
+* **local-miner**: Index area of the local and cached data. Rebuildable from scratch.
+* **domains**: cached domain-details
+* **schema**: schema used by other parts of the local setup
+* **addons**: installed modules/addons
+* **trash**: Where deleted data is moved until permenantly deleted.
+
+
++++
+### Main Folder structure
+	├── content
+	├── messages
+	├── notifications (events)
+	├── public-facing (serving public pages)
+	├── people
+	├── indexes (local-miner)
+	├── modules (addons)
+	├── domains
+	├── schema
+	└── trash
+
++++
+### Suggested "content" structure
+
+This is user-managed
+
+	content
+		├── personal (private)
+		├── family
+		├── frients
+		├── interests
+		│	└── links
+		├── messages
+		├── files
+		│	├── books and documents
+		│	├── media
+		│	└── apps
+		└── structured-data
+			├── tickets (and todos)
+			├── inventory
+			├── study
+			└── financial
 
 +++
 ### Storage abstraction api
@@ -335,7 +388,7 @@ One official DHT exists and is configured per default, additional ones can be co
 +++
 ### Misc. notes
 
-* When content is shared (or interacted-with) its also copied locally and served in a torrent-like fashion. (i.e. each interaction is registered as a service point) a DHT is needed to serve this: Curated content DHT. ( an asynchronus connection with edraj should always be openned. /Websocket/QUIC/Http2(gRPC) based? (two-way-stream)
+* When content is shared (video played) (or interacted-with) its also copied locally and served in a torrent-like fashion. (i.e. each interaction is registered as a service point) a DHT is needed to serve this: Curated content DHT. ( an asynchronus connection with edraj should always be openned. /Websocket/QUIC/Http2(gRPC) based? (two-way-stream)
 * A content has multiple-views: isolated json/binary, isolated embeddable, isolated web, future: parent web?
 
 ---

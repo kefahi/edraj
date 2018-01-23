@@ -46,3 +46,30 @@ Services:
     Manage Pages: Create/Update/Delete/Get
     Manage Blocks: Create/Update/Delete/Get
   
+
+* When content is shared (or interacted-with) its also copied locally and served in a torrent-like fashion. (i.e. each interaction is registered as a service point) a DHT is needed to serve this: Curated content DHT. ( an asynchronus connection with edraj should always be openned. /Websocket/QUIC/Http2(gRPC) based? (two-way-stream)
+* A content has multiple-views: isolated json/binary, isolated embeddable, isolated web, future: parent web?
+
+
+---------------
+
+
+Storage abstraction api
+
+* json/meta-data enabled, path-aware file-store : basic backend is filesystem-based.
+* Multiple isolated roots: domains, addons, schema, messages, notifications, content, local-miner, public-miners, public-serving, content-cache (for all externally accessed content), curated: external content that the user reacted to.
+* file-name, .file-name.meta.json (can be stored in XFS file-attributes?), folder:.file-name.changes
+* Future: Reference checking capability? 
+	- when a schema definition is removed, no file-meta should be pointing to it.
+	- When a file is attached to a message?
+* Future: Main-feature: automatic deduping: used hart/soft? links
+
+PutMeta:  Full or Delta (only mentioned fields are updated). Data integrity is checked before and after the put-operations. creates the folder-path if it doesn't exist.
+GetMeta: json formatted meta (full or sub-set)
+ListFolder: Returns 1st-level file meta and folder meta
+PutPayload: file-only. Full / patch?(binary/text) + checksum
+GetPayload: file-only
+Delete: recurse-option (i.e. delete belongings/childern -> deletes both meta-data and otherwise; must be reversable (use some trash concept))
+Move: Aka rename. within the same parent folder or to another one.
+
+
