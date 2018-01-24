@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -9,7 +10,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"encoding/json"
 )
 
 // Storage : An adapter to access meta-data enabled storage pools.
@@ -22,26 +22,26 @@ type Storage struct {
 
 // FileMeta : the structure for File meta details
 type FileMeta struct {
-	Id string `json:"id"`
-	OwnerId string `json:"owner"`
+	ID          string   `json:"id"`
+	OwnerID     string   `json:"owner"`
 	Permissions []string `json:"permissions"`
-	Tags []string `json:"tags"`
-	Categories []string `json:"categories"`
-  ContentType string `json:"content-type"`
-	AutherId string `json:"author"`
-	Signature string `json:"signature"`
-	Payload string `json:"payload"`
-	Checksum string `json:"checksum"`
-	Schema string `json:"schema,omitempty"`
+	Tags        []string `json:"tags"`
+	Categories  []string `json:"categories"`
+	ContentType string   `json:"content-type"`
+	AuthorID    string   `json:"author"`
+	Signature   string   `json:"signature"`
+	Payload     string   `json:"payload"`
+	Checksum    string   `json:"checksum"`
+	Schema      string   `json:"schema,omitempty"`
 }
 
 // DirMeta : the structure for Directory meta details
 type DirMeta struct {
-	Id string `json:"id"`
-	OwnerId string `json:"owner"`
+	ID          string   `json:"id"`
+	OwnerID     string   `json:"owner"`
 	Permissions []string `json:"permissions"`
-	Tags []string `json:"tags"`
-	Categories []string `json:"categories"`
+	Tags        []string `json:"tags"`
+	Categories  []string `json:"categories"`
 }
 
 // CanonicalPath : Make sure path is confined to its root directory
@@ -54,11 +54,21 @@ func (s *Storage) CanonicalPath(entryPath string) (string, error) {
 	return canonicalPath, err
 }
 
+func fileExists(filePath string) bool {
+	info, err := os.Stat(filePath)
+	return (err == nil && info.Mode().IsRegular() && (info.Mode().Perm()&0600 == 0600))
+}
+
+func dirExists(dirPath string) bool {
+	info, err := os.Stat(dirPath)
+	return (err == nil && info.IsDir() && (info.Mode().Perm()&0700 == 0700))
+}
+
 // ValidDir : Make sure the provided path meets the ValidDir requirements; creates Directories if needed
 func (s *Storage) ValidDir(dirPath string, createIfMissing bool) (string, error) {
 	canonicalPath, err := s.CanonicalPath(dirPath)
 	if err != nil {
-		return canonicalPath, err// errors.New("Invalid path:" + canonicalPath)
+		return canonicalPath, err // errors.New("Invalid path:" + canonicalPath)
 	}
 	info, err := os.Stat(canonicalPath)
 	if err != nil {
@@ -122,7 +132,7 @@ func (s *Storage) GetFileMeta(filePath string) (FileMeta, error) {
 
 	fileMeta := FileMeta{}
 	info, err := os.Stat(canonicalFilePath)
-	if err != nil || info.IsDir()/*|| ( !info.IsDir() && (info.Mode()&0600 == 0600))*/ {
+	if err != nil || info.IsDir() /*|| ( !info.IsDir() && (info.Mode()&0600 == 0600))*/ {
 		return fileMeta, err
 	}
 	data, err := ioutil.ReadFile(canonicalFilePath)
@@ -144,7 +154,7 @@ func (s *Storage) GetDirMeta(dirPath string) (DirMeta, error) {
 
 	dirMeta := DirMeta{}
 	info, err := os.Stat(canonicalFilePath)
-	if err != nil || info.IsDir()/*&& !info.IsDir() && (info.Mode()&0600 == 0600)*/ {
+	if err != nil || info.IsDir() /*&& !info.IsDir() && (info.Mode()&0600 == 0600)*/ {
 		return dirMeta, err
 	}
 	data, err := ioutil.ReadFile(canonicalFilePath)

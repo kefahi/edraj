@@ -14,21 +14,27 @@ var (
 	TrashPath = "/tmp/edraj/trash"
 	storage   = Storage{RootPath, TrashPath}
 
-	dirId       = "1"
-	OwnerID     = "1000"
-	Permissions = []string{"read", "write", "execute"}
-	Tags        = []string{"home", "test"}
-	Categories  = []string{"Private", "Family"}
-	dirmeta     = DirMeta{dirId, OwnerID, Permissions, Tags, Categories}
+	dirMeta     = DirMeta {
+		ID: "1",
+		OwnerID: "1000",
+		Permissions: []string{"read", "write", "execute"},
+		Tags: []string{"home", "test"},
+		Categories: []string{"Private", "Family"},
+	}
 
-	fileId      = "2"
-	contentType = "TODOs"
-	AutherId    = "1"
-	Signature   = "signiture" // Replace with appropriate test value
-	payload     = "Hello World"
-	checksum    = "93623ac7d9badb95b01f74ceb2d17702f142e692"
-	schema      = "TODO"
-	filemeta    = FileMeta{fileId, OwnerID, Permissions, Tags, Categories, contentType, AutherId, Signature, payload, checksum, schema}
+	fileMeta    = FileMeta {
+		ID: "2",
+		OwnerID: "1000",
+		Permissions: []string{"read", "write", "execute"},
+		Tags: []string{"home", "test"},
+		Categories: []string{"Private", "Family"},
+		ContentType: "Text",
+		AuthorID: "1",
+		Signature: "signiture", // Replace with appropriate test value
+		Payload: "Hello World",
+		Checksum: "93623ac7d9badb95b01f74ceb2d17702f142e692",
+		Schema: "MySchema",
+	}
 )
 
 func exists(path string) (bool, error) {
@@ -60,7 +66,7 @@ func TestValidDir(t *testing.T) {
 
 func TestPutDirMeta(t *testing.T) {
 	fmt.Printf("Testing method PutDirMeta...\n")
-	storage.PutDirMeta("/content/Dir", dirmeta)
+	storage.PutDirMeta("/content/Dir", dirMeta)
 
 	state, _ := exists("/tmp/edraj/content/Dir/.meta.json") // Json verification will be added soon
 	if state == false {
@@ -72,7 +78,7 @@ func TestPutDirMeta(t *testing.T) {
 // The function creates the metafile even when the target file isnt in the path given
 func TestPutFileMeta(t *testing.T) {
 	fmt.Printf("Testing method PutFileMeta...\n")
-	storage.PutFileMeta("/content/Dir/test.todo", filemeta)
+	storage.PutFileMeta("/content/Dir/test.todo", fileMeta)
 
 	state, _ := exists("/tmp/edraj/content/Dir/.test.todo.meta.json") // Json verification will be added soon
 	if state == false {
@@ -85,10 +91,10 @@ func TestGetFileMeta(t *testing.T) {
 	fmt.Printf("Testing method GetFileMeta...\n")
 	object, _ := storage.GetFileMeta("/content/Dir/test.todo")
 
-	if object.Id != filemeta.Id || object.OwnerId != filemeta.OwnerId || object.ContentType != filemeta.ContentType || object.AutherId != filemeta.AutherId || object.Signature != filemeta.Signature || object.Payload != filemeta.Payload || object.Checksum != filemeta.Checksum || object.Schema != filemeta.Schema {
-		log.Fatal("GetFileMeta returned corrupt filemeta")
+	if object.ID != fileMeta.ID || object.OwnerID != fileMeta.OwnerID || object.ContentType != fileMeta.ContentType || object.AuthorID != fileMeta.AuthorID || object.Signature != fileMeta.Signature || object.Payload != fileMeta.Payload || object.Checksum != fileMeta.Checksum || object.Schema != fileMeta.Schema {
+		log.Fatal("GetFileMeta returned corrupt fileMeta")
 	} // Comparing the two objects did'nt work
-	//  invalid operation: object != filemeta (struct containing []string cannot be compared)
+	//  invalid operation: object != fileMeta (struct containing []string cannot be compared)
 	// so I used the long method. Maybe there is an easier way to do it
 	// It will get longer if i worked on checking []string like "Permissions". so i execluded them for the moment.
 }
@@ -102,10 +108,10 @@ func TestGetDirMeta(t *testing.T) {
 		log.Fatal("Doesn't Exist!")
 	}
 
-	if object.Id != dirmeta.Id || object.OwnerId != filemeta.OwnerId {
-		log.Fatal("GetDirMeta returned corrupt dirmeta")
+	if object.ID != dirMeta.ID || object.OwnerID != fileMeta.OwnerID {
+		log.Fatal("GetDirMeta returned corrupt dirMeta")
 	} // Comparing the two objects did'nt work
-	//  invalid operation: object != dirmeta (struct containing []string cannot be compared)
+	//  invalid operation: object != dirMeta (struct containing []string cannot be compared)
 	// so I used the long method. Maybe there is an easier way to do it
 	// It will get longer if i worked on checking []string like "Permissions". so i execluded them for the moment.
 }
