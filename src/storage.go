@@ -34,14 +34,14 @@ func (s *Storage) CanonicalPath(entryPath string) (string, error) {
 	canonicalPath := path.Clean(s.RootPath + "/" + entryPath)
 	var err error
 	if !path.IsAbs(canonicalPath) || !strings.HasPrefix(canonicalPath, s.RootPath+entryPath) {
-		err := errors.New("Invalid input string" + canonicalPath)
+		err = errors.New("Invalid input string" + canonicalPath)
 	}
 	return canonicalPath, err
 }
 
 // ValidDir : Make sure the provided path meets the ValidDir requirements; creates Directories if needed
 func (s *Storage) ValidDir(dirPath string, createIfMissing bool) (string, error) {
-	canonicalPath, err = s.CanonicalPath(dirPath)
+	canonicalPath, err := s.CanonicalPath(dirPath)
 	if err != nil {
 		return canonicalPath, errors.New("Invalid path:" + canonicalPath)
 	}
