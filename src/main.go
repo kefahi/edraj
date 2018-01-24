@@ -5,7 +5,7 @@ import (
 	"fmt"
 	//"io/ioutil"
 	"log"
-	"os"
+	//"os"
 	//"path/filepath"
 )
 
@@ -21,18 +21,21 @@ func ListDir(path string) {
 	}
 }*/
 
+/*
 func Fatal(err *error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
+}*/
 
 func main() {
-	root_path := "/tmp/edraj/"
-	storage := Storage{root_path}
-	folder_path := "this/is/a/test/"
-	file_name := "myfile1"
-	full_path := root_path + folder_path
+	rootPath := "/tmp/edraj/content"
+	trashPath := "/tmp/edraj/trash"
+	storage := Storage{rootPath, trashPath}
+	folderPath := "this/is/a/test/"
+	//fileName := "myfile1"
+	var err error
+	//full_path := root_path + folderPath
 	/*err := syscall.Chroot(root_path)
 	if err != nil {
 		log.Fatal(err)
@@ -43,22 +46,23 @@ func main() {
 		fmt.Printf("folder previously existed\n")
 	}
 	os.MkdirAll(full_path, os.ModeDir|0755)*/
-	err := storage.PutMeta(folder_path, file_name, `{"key":"some random text"}`)
+	//err := storage.PutMeta(folderPath, file_name, `{"key":"some random text"}`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	os.Link(full_path+file_name, full_path+"myfile2")
+	//os.Link(full_path+file_name, full_path+"myfile2")
 	//ListDir(full_path)
-	fmt.Println(storage.ListDir(folder_path))
-	os.RemoveAll(full_path + file_name)
-	ListDir(full_path)
+	fmt.Println(storage.ListDir(folderPath))
+	//os.RemoveAll(full_path + file_name)
+	//ListDir(full_path)
 	//os.Rename(full_path+"myfile2", full_path+"myfile3")
-	err = storage.Move(folder_path+"myfile2", folder_path+"myfile3")
+	err = storage.MoveFile(folderPath+"myfile1", folderPath+"myfile3")
 	if err != nil {
 		log.Fatal(err)
 	}
-	ListDir(full_path)
-	files, err := storage.List(folder_path) //filepath.Glob(full_path+"*")
+	//ListDir(full_path)
+	fmt.Println(storage.ListDir(folderPath))
+	files, err := storage.ListDir(folderPath) //filepath.Glob(full_path+"*")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -34,7 +34,7 @@ func (s *Storage) CanonicalPath(entryPath string) (string, error) {
 	canonicalPath := path.Clean(s.RootPath + "/" + entryPath)
 	var err error
 	if !path.IsAbs(canonicalPath) || !strings.HasPrefix(canonicalPath, s.RootPath+entryPath) {
-		err := errors.New("Invalid input string" + canonicalPath)
+		err = errors.New("Invalid input string" + canonicalPath)
 	}
 	return canonicalPath, err
 }
@@ -131,7 +131,7 @@ func (s *Storage) DeleteFile(filePath string) error {
 	canonicalFilePath := canonicalDirPath + "/" + fileName
 
 	trashDirPath := s.TrashPath + "/" + dirPath
-	info, err := os.Stat(trashDirPath)
+	_, err = os.Stat(trashDirPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			err = os.MkdirAll(s.TrashPath+dirPath, os.ModeDir|0755)
@@ -161,7 +161,7 @@ func (s *Storage) DeleteDir(dirPath string) error {
 	}
 
 	trashDirPath := s.TrashPath + "/" + path.Dir(dirPath)
-	info, err := os.Stat(trashDirPath)
+	_, err = os.Stat(trashDirPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			err = os.MkdirAll(s.TrashPath+dirPath, os.ModeDir|0755)
@@ -180,13 +180,38 @@ func (s *Storage) DeleteDir(dirPath string) error {
 	return nil
 }
 
+// MoveFile : Move a directory within the RootPath
+func (s *Storage) MoveFile(fromPath string, toPath string) error {
+	canonicalFromPath, err := s.ValidDir(path.Dir(fromPath), false)
+	if err != nil {
+		return err
+	}
+	canonicalToPath, err := s.ValidDir(path.Dir(toPath), true)
+	if err != nil {
+		return err
+	}
+
+	fromFileName := path.Base(fromPath)
+	toFileName := path.Base(toPath)
+	err = os.Rename(canonicalFromPath+"/"+fromFileName, canonicalToPath+"/"+toFileName)
+	if err != nil {
+		return err
+	}
+	err = os.Rename(canonicalFromPath+"/."+fromFileName+".meta.json", canonicalToPath+"/."+toFileName+".meta.json")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // MoveDir : Move a directory within the RootPath
 func (s *Storage) MoveDir(fromPath string, toPath string) error {
 	canonicalFromPath, err := s.ValidDir(fromPath, false)
 	if err != nil {
 		return err
 	}
-	canonicalToPath, err := s.ValidDir(fromPath, true)
+	canonicalToPath, err := s.ValidDir(toPath, true)
 	if err != nil {
 		return err
 	}
