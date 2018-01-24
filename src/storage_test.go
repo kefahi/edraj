@@ -1,9 +1,16 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
+var (
+	RootPath = "/tmp/edraj/content"
+	TrashPath = "/tmp/edraj/trash"
+)
 
-func TestCanonicalPath() {
-	CanonicalPath("/home/mk")
+func TestCanonicalPath(t *testing.T) {
+	storage := Storage{RootPath, TrashPath}
+	storage.CanonicalPath("/tmp/edraj")
 }
 

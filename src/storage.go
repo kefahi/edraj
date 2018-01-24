@@ -33,8 +33,8 @@ type DirMeta struct {
 func (s *Storage) CanonicalPath(entryPath string) (string, error) {
 	canonicalPath := path.Clean(s.RootPath + "/" + entryPath)
 	var err error
-	if !path.IsAbs(canonicalPath) || !strings.HasPrefix(canonicalPath, s.RootPath+entryPath) {
-		err = errors.New("Invalid input string" + canonicalPath)
+	if !path.IsAbs(canonicalPath) || !strings.HasPrefix(canonicalPath, s.RootPath) {
+		err = errors.New("Invalid input string: " + canonicalPath)
 	}
 	return canonicalPath, err
 }
@@ -43,16 +43,16 @@ func (s *Storage) CanonicalPath(entryPath string) (string, error) {
 func (s *Storage) ValidDir(dirPath string, createIfMissing bool) (string, error) {
 	canonicalPath, err := s.CanonicalPath(dirPath)
 	if err != nil {
-		return canonicalPath, errors.New("Invalid path:" + canonicalPath)
+		return canonicalPath, err// errors.New("Invalid path:" + canonicalPath)
 	}
 	info, err := os.Stat(canonicalPath)
 	if err != nil {
 		if createIfMissing && os.IsNotExist(err) {
-			return canonicalPath, os.MkdirAll(s.RootPath+dirPath, os.ModeDir|0755)
+			return canonicalPath, os.MkdirAll(s.RootPath+"/"+dirPath, os.ModeDir|0755)
 		}
 		return canonicalPath, err
 	} else if !info.IsDir() || (info.Mode()&0700 != 0700) {
-		return canonicalPath, errors.New("Invalid path:" + canonicalPath)
+		return canonicalPath, errors.New("Invalid path: " + canonicalPath)
 	}
 	return canonicalPath, nil
 }
@@ -83,7 +83,7 @@ func (s *Storage) PutFileMeta(filePath string, meta string) error {
 	}
 
 	fileName := path.Base(filePath)
-	return ioutil.WriteFile(canonicalPath+"/."+fileName+"/.meta.json", []byte(meta), 0644)
+	return ioutil.WriteFile(canonicalPath+"/."+fileName+".meta.json", []byte(meta), 0644)
 }
 
 // GetFileMeta : return the File's meta data
@@ -219,8 +219,8 @@ func (s *Storage) MoveDir(fromPath string, toPath string) error {
 	return os.Rename(canonicalFromPath, canonicalToPath)
 }
 
-// PutPayload : takes the io.Reader to retrieve the data that would be persisted to the payload file
-func (s *Storage) PutPayload(filePath string, reader io.Reader) error {
+// PutFilePayload : takes the io.Reader to retrieve the data that would be persisted to the payload file
+func (s *Storage) PutFilePayload(filePath string, reader io.Reader) error {
 	canonicalDirPath, err := s.ValidDir(path.Dir(filePath), false)
 	if err != nil {
 		return err
@@ -252,8 +252,8 @@ func (s *Storage) PutPayload(filePath string, reader io.Reader) error {
 	return nil
 }
 
-// GetPayload : return the io.Reader that would serve the file payload
-func (s *Storage) GetPayload(filePath string) (io.Reader, error) {
+// GetFilePayload : return the io.Reader that would serve the file payload
+func (s *Storage) GetFilePayload(filePath string) (io.Reader, error) {
 	canonicalDirPath, err := s.ValidDir(path.Dir(filePath), false)
 	if err != nil {
 		return nil, err
