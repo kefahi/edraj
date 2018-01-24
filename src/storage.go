@@ -9,6 +9,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"encoding/json"
 )
 
 // Storage : An adapter to access meta-data enabled storage pools.
@@ -19,14 +20,28 @@ type Storage struct {
 	TrashPath string
 }
 
-// TODO define the meta data structurs and return/accept them in the meta functions
-
-// FileMeta : the structure that defines the fields of a file meta data
+// FileMeta : the structure for File meta details
 type FileMeta struct {
+	Id string `json:"id"`
+	OwnerId string `json:"owner"`
+	Permissions []string `json:"permissions"`
+	Tags []string `json:"tags"`
+	Categories []string `json:"categories"`
+  ContentType string `json:"content-type"`
+	AutherId string `json:"author"`
+	Signature string `json:"signature"`
+	Payload string `json:"payload"`
+	Checksum string `json:"checksum"`
+	Schema string `json:"schema,omitempty"`
 }
 
-// DirMeta : the structure that defines the fields of a directory meta data
+// DirMeta : the structure for Directory meta details
 type DirMeta struct {
+	Id string `json:"id"`
+	OwnerId string `json:"owner"`
+	Permissions []string `json:"permissions"`
+	Tags []string `json:"tags"`
+	Categories []string `json:"categories"`
 }
 
 // CanonicalPath : Make sure path is confined to its root directory
@@ -58,18 +73,22 @@ func (s *Storage) ValidDir(dirPath string, createIfMissing bool) (string, error)
 }
 
 // PutDirMeta : Assigns meta details to a directory (the meta file name is .meta.json)
-func (s *Storage) PutDirMeta(dirPath string, meta string) error {
+func (s *Storage) PutDirMeta(dirPath string, dirMeta DirMeta) error {
 	canonicalPath, err := s.ValidDir(dirPath, true)
 	if err != nil {
 		return err
 	}
 
 	// TODO check json L3
-	return ioutil.WriteFile(canonicalPath+"/.meta.json", []byte(meta), 0644)
+	data, err := json.Marshal(dirMeta)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(canonicalPath+"/.meta.json", data, 0644)
 }
 
 // PutFileMeta : Assigns meta details to a file (adds "."+fileName+".meta.json")
-func (s *Storage) PutFileMeta(filePath string, meta string) error {
+func (s *Storage) PutFileMeta(filePath string, fileMeta FileMeta) error {
 	// TODO check L4 json.
 	// L1: the file is valid json
 	// L2: the file is valid json schema
@@ -83,29 +102,57 @@ func (s *Storage) PutFileMeta(filePath string, meta string) error {
 	}
 
 	fileName := path.Base(filePath)
-	return ioutil.WriteFile(canonicalPath+"/."+fileName+".meta.json", []byte(meta), 0644)
+	data, err := json.Marshal(fileMeta)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(canonicalPath+"/."+fileName+".meta.json", data, 0644)
 }
 
 // GetFileMeta : return the File's meta data
-func (s *Storage) GetFileMeta(filePath string) (string, error) {
+func (s *Storage) GetFileMeta(filePath string) (FileMeta, error) {
 	dirPath := path.Dir(filePath)
 	canonicalDirPath, err := s.ValidDir(dirPath, false)
 	if err != nil {
-		return "", err
+		return FileMeta{}, err
 	}
 
 	fileName := path.Base(filePath)
-	canonicalFilePath := canonicalDirPath + "/." + fileName + "/.meta.json"
+	canonicalFilePath := canonicalDirPath + "/." + fileName + ".meta.json"
 
+	fileMeta := FileMeta{}
 	info, err := os.Stat(canonicalFilePath)
-	if err != nil && !info.IsDir() && (info.Mode()&0600 == 0600) {
-		content, err := ioutil.ReadFile(canonicalFilePath)
-		// TODO Do json L4 level checking
-		if err == nil {
-			return string(content), nil
-		}
+	if err != nil || info.IsDir()/*|| ( !info.IsDir() && (info.Mode()&0600 == 0600))*/ {
+		return fileMeta, err
 	}
-	return "", err
+	data, err := ioutil.ReadFile(canonicalFilePath)
+	if err == nil {
+		// TODO Do json L4 level checking
+		json.Unmarshal(data, &fileMeta)
+	}
+	return fileMeta, err
+}
+
+// GetDirMeta : return the Directory's meta data
+func (s *Storage) GetDirMeta(dirPath string) (DirMeta, error) {
+	canonicalDirPath, err := s.ValidDir(dirPath, false)
+	if err != nil {
+		return DirMeta{}, err
+	}
+
+	canonicalFilePath := canonicalDirPath + "/.meta.json"
+
+	dirMeta := DirMeta{}
+	info, err := os.Stat(canonicalFilePath)
+	if err != nil || info.IsDir()/*&& !info.IsDir() && (info.Mode()&0600 == 0600)*/ {
+		return dirMeta, err
+	}
+	data, err := ioutil.ReadFile(canonicalFilePath)
+	if err == nil {
+		// TODO Do json L4 level checking
+		json.Unmarshal(data, &dirMeta)
+	}
+	return dirMeta, err
 }
 
 // ListDir : Return list of childern (files and folders) under the dirPath. .meta.json (meta files) should be excluded
