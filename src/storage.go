@@ -227,7 +227,6 @@ func (s *Storage) DeleteDir(dirPath string) error {
       log.Println("Created missing trashdir", trashDirPath)
 	} // TODO add an else if the full target path exists to determine what to do (I thin we should simply delete the old conflicting)
 
-	log.Println("moving from/to", canonicalDirPath, trashDirPath)
 	return os.Rename(canonicalDirPath, trashDirPath +"/"+ path.Base(dirPath))
 }
 
@@ -264,7 +263,6 @@ func (s *Storage) MoveDir(fromPath string, toPath string) error {
 		return err
 	}
 
-	log.Println("moving dir from/to", canonicalFromPath, canonicalToPath+ "/" + folderName)
 	return os.Rename(canonicalFromPath, canonicalToPath + "/" + folderName)
 }
 
@@ -285,11 +283,11 @@ func (s *Storage) PutFilePayload(filePath string, reader io.Reader) error {
 	defer newFile.Close()
 
 	// Copy the bytes to destination from source
-	bytesWritten, err := io.Copy(newFile, reader)
+	/*bytesWritten*/ _, err = io.Copy(newFile, reader)
 	if err != nil {
 		return err
 	}
-	log.Printf("Copied %d bytes.", bytesWritten)
+	// log.Printf("Copied %d bytes.", bytesWritten)
 
 	// Commit the file contents
 	// Flushes memory to disk
