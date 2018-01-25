@@ -217,24 +217,18 @@ func (s *Storage) DeleteDir(dirPath string) error {
 		return err
 	}
 
-	trashDirPath := s.TrashPath + "/" + path.Dir(dirPath)
-	_, err = os.Stat(trashDirPath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			err = os.MkdirAll(s.TrashPath+dirPath, os.ModeDir|0755)
+	parentPath := path.Dir(dirPath)
+	trashDirPath := s.TrashPath + parentPath
+  if !dirExists(trashDirPath) {
+			err = os.MkdirAll(trashDirPath, os.ModeDir|0755)
 			if err != nil {
 				return err
 			}
-		} else {
-			return err
-		}
-	}
+      log.Println("Created missing trashdir", trashDirPath)
+	} // TODO add an else if the full target path exists to determine what to do (I thin we should simply delete the old conflicting)
 
-	err = os.Rename(canonicalDirPath, trashDirPath)
-	if err != nil {
-		return err
-	}
-	return nil
+	log.Println("moving from/to", canonicalDirPath, trashDirPath)
+	return os.Rename(canonicalDirPath, trashDirPath +"/"+ path.Base(dirPath))
 }
 
 // MoveFile : Move a directory within the RootPath
@@ -254,12 +248,7 @@ func (s *Storage) MoveFile(fromPath string, toPath string) error {
 	if err != nil {
 		return err
 	}
-	err = os.Rename(canonicalFromPath+"/."+fromFileName+".meta.json", canonicalToPath+"/."+toFileName+".meta.json")
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return os.Rename(canonicalFromPath+"/."+fromFileName+".meta.json", canonicalToPath+"/."+toFileName+".meta.json")
 }
 
 // MoveDir : Move a directory within the RootPath
@@ -268,12 +257,15 @@ func (s *Storage) MoveDir(fromPath string, toPath string) error {
 	if err != nil {
 		return err
 	}
-	canonicalToPath, err := s.ValidDir(toPath, true)
+	parentToPath := path.Dir(toPath)
+	folderName := path.Base(toPath)
+	canonicalToPath, err := s.ValidDir(parentToPath, true)
 	if err != nil {
 		return err
 	}
 
-	return os.Rename(canonicalFromPath, canonicalToPath)
+	log.Println("moving dir from/to", canonicalFromPath, canonicalToPath+ "/" + folderName)
+	return os.Rename(canonicalFromPath, canonicalToPath + "/" + folderName)
 }
 
 // PutFilePayload : takes the io.Reader to retrieve the data that would be persisted to the payload file

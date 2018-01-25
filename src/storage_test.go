@@ -10,9 +10,7 @@ import (
 )
 
 var (
-	RootPath  = "/tmp/edraj"
-	TrashPath = "/tmp/edraj/trash"
-	storage   = Storage{RootPath, TrashPath}
+	storage   = Storage{RootPath: "/tmp/edraj/content", TrashPath: "/tmp/edraj/trash"}
 
 	dirMeta     = DirMeta {
 		ID: "1",
