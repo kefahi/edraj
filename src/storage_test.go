@@ -58,7 +58,8 @@ func TestValidDir(t *testing.T) {
 	fmt.Printf("Testing method ValidDir...\n")
 	storage.ValidDir("/content/Dir", true)
 
-	exists("/tmp/edraj/content/Dir")
+  exists("/tmp/edraj/content/Dir") // Json verification will be added soon
+
 
 }
 
@@ -151,23 +152,23 @@ func TestDeleteFile(t *testing.T) {
 }
 
 // Deleting Dirs Doesnt work for some reason
-//func TestDeleteDir(t *testing.T) {
-//	fmt.Printf("Testing method DeletDir...\n")
+func TestDeleteDir(t *testing.T) {
+	fmt.Printf("Testing method DeletDir...\n")
 
-//	exec.Command("sh", "-c", "mkdir  /tmp/edraj/content/Dir/TEST").Output()
-//	time.Sleep(100 * time.Millisecond)
-//
-//	state, _ := exists("/tmp/edraj/content/Dir/TEST")
-//	if state == false {
-//		log.Fatal("Doesn't Exist!")
-//	}
-//
-//	storage.DeleteDir("/content/Dir/TEST/")
-//	state, _ = exists("/tmp/edraj/content/Dir/TEST")
-//	if state == true {
-//		log.Fatal("Dir Still Exists!")
-//	}
-//}
+	exec.Command("sh", "-c", "mkdir  /tmp/edraj/content/Dir/TEST").Output()
+	time.Sleep(100 * time.Millisecond)
+
+	state, _ := exists("/tmp/edraj/content/Dir/TEST")
+	if state == false {
+		log.Fatal("Doesn't Exist!")
+	}
+
+	storage.DeleteDir("/content/Dir/TEST/")
+	state, _ = exists("/tmp/edraj/content/Dir/TEST")
+	if state == true {
+		log.Fatal("Dir Still Exists!")
+	}
+}
 
 func TestMoveFile(t *testing.T) {
 	fmt.Printf("Testing method MoveFile...\n")
@@ -194,23 +195,23 @@ func TestMoveFile(t *testing.T) {
 }
 
 // Moving Dirs Doesnt work for some reason
-//func TestMoveDir(t *testing.T) {
-//	fmt.Printf("Testing method MoveDir...\n")
-//
-//	exec.Command("sh", "-c", "mkdir /tmp/edraj/content/Dir/TEST").Output()
-//	time.Sleep(100 * time.Millisecond)
-//	state, _ := exists("/tmp/edraj/content/Dir/TEST")
-//	if state == false {
-//		log.Fatal("Doesn't Exist!")
-//	}
-//
-//	storage.MoveDir("/content/Dir/TEST", "/content/TEST")
-//	state, _ = exists("/tmp/edraj/content/Dir/TEST")
-//	if state == true {
-//		log.Fatal("Dir Still Exists!")
-//	}
-//	state, _ = exists("/tmp/edraj/content/TEST")
-//	if state == false {
-//		log.Fatal("Dir Doesn't Exists!")
-//	}
-//}
+func TestMoveDir(t *testing.T) {
+	fmt.Printf("Testing method MoveDir...\n")
+
+	exec.Command("sh", "-c", "mkdir /tmp/edraj/content/Dir/TEST").Output()
+	time.Sleep(100 * time.Millisecond)
+	state, _ := exists("/tmp/edraj/content/Dir/TEST")
+	if state == false {
+		log.Fatal("Doesn't Exist!")
+	}
+
+	storage.MoveDir("/content/Dir/TEST", "/content/TEST")
+	state, _ = exists("/tmp/edraj/content/Dir/TEST")
+	if state == true {
+		log.Fatal("Dir Still Exists!")
+	}
+	state, _ = exists("/tmp/edraj/content/TEST")
+	if state == false {
+		log.Fatal("Dir Doesn't Exists!")
+	}
+}
