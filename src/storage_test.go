@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"testing"
@@ -60,7 +59,7 @@ func TestValidDir(t *testing.T) {
 
 	state, _ := exists("/tmp/edraj/content/Dir/") // Json verification will be added soon
 	if state == false {
-		log.Fatal("Doesn't Exist!")
+		t.Error("Doesn't Exist!")
 	}
 
 }
@@ -71,7 +70,7 @@ func TestPutDirMeta(t *testing.T) {
 
 	state, _ := exists("/tmp/edraj/content/Dir/.meta.json") // Json verification will be added soon
 	if state == false {
-		log.Fatal("Doesn't Exist!")
+		t.Error("Doesn't Exist!")
 	}
 }
 
@@ -83,7 +82,7 @@ func TestPutFileMeta(t *testing.T) {
 
 	state, _ := exists("/tmp/edraj/content/Dir/.test.todo.meta.json") // Json verification will be added soon
 	if state == false {
-		log.Fatal("Doesn't Exist!")
+		t.Error("Doesn't Exist!")
 	}
 	// exists("/tmp/edraj/content/Dir/test.todo")
 }
@@ -93,7 +92,7 @@ func TestGetFileMeta(t *testing.T) {
 	object, _ := storage.GetFileMeta("/Dir/test.todo")
 
 	if object.ID != fileMeta.ID || object.OwnerID != fileMeta.OwnerID || object.ContentType != fileMeta.ContentType || object.AuthorID != fileMeta.AuthorID || object.Signature != fileMeta.Signature || object.Payload != fileMeta.Payload || object.Checksum != fileMeta.Checksum || object.Schema != fileMeta.Schema {
-		log.Fatal("GetFileMeta returned corrupt fileMeta")
+		t.Error("GetFileMeta returned corrupt fileMeta")
 	} // Comparing the two objects did'nt work
 	//  invalid operation: object != fileMeta (struct containing []string cannot be compared)
 	// so I used the long method. Maybe there is an easier way to do it
@@ -106,11 +105,11 @@ func TestGetDirMeta(t *testing.T) {
 
 	state, _ := exists("/tmp/edraj/content/Dir")
 	if state == false {
-		log.Fatal("Doesn't Exist!")
+		t.Error("Doesn't Exist!")
 	}
 
 	if object.ID != dirMeta.ID || object.OwnerID != fileMeta.OwnerID {
-		log.Fatal("GetDirMeta returned corrupt dirMeta")
+		t.Error("GetDirMeta returned corrupt dirMeta")
 	} // Comparing the two objects did'nt work
 	//  invalid operation: object != dirMeta (struct containing []string cannot be compared)
 	// so I used the long method. Maybe there is an easier way to do it
@@ -138,18 +137,18 @@ func TestDeleteFile(t *testing.T) {
 
 	state, _ := exists("/tmp/edraj/content/Dir/DelFileTEST")
 	if state == false {
-		log.Fatal("Doesn't Exist!")
+		t.Error("Doesn't Exist!")
 	}
 
 	storage.DeleteFile("/Dir/DelFileTEST")
 	state, _ = exists("/tmp/edraj/content/Dir/DelFileTEST")
 	if state == true {
-		log.Fatal("File Still Exists!")
+		t.Error("File Still Exists!")
 	}
 
 	state, _ = exists("/tmp/edraj/trash/Dir/DelFileTEST")
 	if state == false {
-		log.Fatal("File Doesn't Exists!")
+		t.Error("File Doesn't Exist in Trash!")
 	}
 }
 
@@ -160,15 +159,15 @@ func TestDeleteDir(t *testing.T) {
 	exec.Command("sh", "-c", "mkdir  /tmp/edraj/content/Dir/DelDirTEST").Output()
 	time.Sleep(100 * time.Millisecond)
 
+	storage.DeleteDir("/Dir/DelDirTEST/")
 	state, _ := exists("/tmp/edraj/content/Dir/DelDirTEST")
-	if state == false {
-		log.Fatal("Doesn't Exist!")
+	if state == true {
+		t.Error("Dir Still Exists!")
 	}
 
-	storage.DeleteDir("/Dir/DelDirTEST/")
-	state, _ = exists("/tmp/edraj/content/Dir/DelDirTEST")
-	if state == true {
-		log.Fatal("Dir Still Exists!")
+	state, _ = exists("/tmp/edraj/trash/Dir/DelFileTEST")
+	if state == false {
+		t.Error("File Doesn't Exist in Trash!")
 	}
 }
 
@@ -177,19 +176,15 @@ func TestMoveFile(t *testing.T) {
 
 	exec.Command("sh", "-c", "touch /tmp/edraj/content/Dir/MvFileTEST").Output()
 	time.Sleep(100 * time.Millisecond)
-	state, _ := exists("/tmp/edraj/content/Dir/MvFileTEST")
-	if state == false {
-		log.Fatal("Doesn't Exist!")
-	}
 
 	storage.MoveFile("/Dir/MvFileTEST", "/MvFileTEST")
-	state, _ = exists("/tmp/edraj/content/Dir/MvFileTEST")
+	state, _ := exists("/tmp/edraj/content/Dir/MvFileTEST")
 	if state == true {
-		log.Fatal("File Still Exists!")
+		t.Error("File Still Exists!")
 	}
 	state, _ = exists("/tmp/edraj/content/MvFileTEST")
 	if state == false {
-		log.Fatal("File Doesn't Exists!")
+		t.Error("File Doesn't Exists!")
 	}
 }
 
@@ -199,18 +194,14 @@ func TestMoveDir(t *testing.T) {
 
 	exec.Command("sh", "-c", "mkdir /tmp/edraj/content/Dir/MvDirTEST").Output()
 	time.Sleep(100 * time.Millisecond)
-	state, _ := exists("/tmp/edraj/content/Dir/MvDirTEST")
-	if state == false {
-		log.Fatal("Doesn't Exist!")
-	}
 
 	storage.MoveDir("/Dir/MvDirTEST", "/MvDirTEST")
-	state, _ = exists("/tmp/edraj/content/Dir/MvDirTEST")
+	state, _ := exists("/tmp/edraj/content/Dir/MvDirTEST")
 	if state == true {
-		log.Fatal("Dir Still Exists!")
+		t.Error("Dir Still Exists!")
 	}
 	state, _ = exists("/tmp/edraj/content/MvDirTEST")
 	if state == false {
-		log.Fatal("Dir Doesn't Exists!")
+		t.Error("Dir Doesn't Exists!")
 	}
 }
