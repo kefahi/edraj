@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"strings"
 	"path/filepath"
+	"strings"
 )
 
-func main() {
+func examplesMain() {
 	rootPath := "/tmp/edraj/content"
 	trashPath := "/tmp/edraj/trash"
 	storage := Storage{rootPath, trashPath}
