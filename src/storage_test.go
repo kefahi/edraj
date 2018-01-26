@@ -91,7 +91,10 @@ func TestGetFileMeta(t *testing.T) {
 	fmt.Printf("Testing method GetFileMeta...\n")
 	object, _ := storage.GetFileMeta("/Dir/test.todo")
 
-	if object.ID != fileMeta.ID || object.OwnerID != fileMeta.OwnerID || object.ContentType != fileMeta.ContentType || object.AuthorID != fileMeta.AuthorID || object.Signature != fileMeta.Signature || object.Payload != fileMeta.Payload || object.Checksum != fileMeta.Checksum || object.Schema != fileMeta.Schema {
+	if object.ID != fileMeta.ID || object.OwnerID != fileMeta.OwnerID ||
+		object.ContentType != fileMeta.ContentType || object.AuthorID != fileMeta.AuthorID ||
+		object.Signature != fileMeta.Signature || object.Payload != fileMeta.Payload ||
+		object.Checksum != fileMeta.Checksum || object.Schema != fileMeta.Schema {
 		t.Error("GetFileMeta returned corrupt fileMeta")
 	} // Comparing the two objects did'nt work
 	//  invalid operation: object != fileMeta (struct containing []string cannot be compared)

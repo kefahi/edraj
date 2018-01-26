@@ -219,15 +219,15 @@ func (s *Storage) DeleteDir(dirPath string) error {
 
 	parentPath := path.Dir(dirPath)
 	trashDirPath := s.TrashPath + parentPath
-  if !dirExists(trashDirPath) {
-			err = os.MkdirAll(trashDirPath, os.ModeDir|0755)
-			if err != nil {
-				return err
-			}
-      log.Println("Created missing trashdir", trashDirPath)
+	if !dirExists(trashDirPath) {
+		err = os.MkdirAll(trashDirPath, os.ModeDir|0755)
+		if err != nil {
+			return err
+		}
+		log.Println("Created missing trashdir", trashDirPath)
 	} // TODO add an else if the full target path exists to determine what to do (I thin we should simply delete the old conflicting)
 
-	return os.Rename(canonicalDirPath, trashDirPath +"/"+ path.Base(dirPath))
+	return os.Rename(canonicalDirPath, trashDirPath+"/"+path.Base(dirPath))
 }
 
 // MoveFile : Move a directory within the RootPath
@@ -263,7 +263,7 @@ func (s *Storage) MoveDir(fromPath string, toPath string) error {
 		return err
 	}
 
-	return os.Rename(canonicalFromPath, canonicalToPath + "/" + folderName)
+	return os.Rename(canonicalFromPath, canonicalToPath+"/"+folderName)
 }
 
 // PutFilePayload : takes the io.Reader to retrieve the data that would be persisted to the payload file
@@ -283,7 +283,8 @@ func (s *Storage) PutFilePayload(filePath string, reader io.Reader) error {
 	defer newFile.Close()
 
 	// Copy the bytes to destination from source
-	/*bytesWritten*/ _, err = io.Copy(newFile, reader)
+	/*bytesWritten*/
+	_, err = io.Copy(newFile, reader)
 	if err != nil {
 		return err
 	}
