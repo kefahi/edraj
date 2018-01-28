@@ -81,17 +81,18 @@ type Address struct {
 
 // Actor aka User/Agent
 type Actor struct {
-	ID               bson.ObjectId `bson:"_id" json:"id"`
-	Displayname      string
-	Shortname        string // unique
-	Domain           string
-	Keys             []Keypair
-	Address          Address
-	Organizations    []string  // that the user relates to, like work, ngo ...
-	Comms            []Contact // The user's communication channels
-	Biography        string    // The user's biography
-	ActorConnections []Actor   // Firends / Contacts and followed actors
-	ActorGroups      []ActorGroup
+	ID             bson.ObjectId `bson:"_id" json:"id"`
+	Displayname    string
+	Shortname      string // unique
+	Domain         string
+	Keys           []Keypair
+	Address        Address
+	Organizations  []string     // that the user relates to, like work, ngo ...
+	Comms          []Contact    // The user's communication channels
+	Biography      string       // The user's biography
+	Contacts       []Actor      // Firends / Contacts and followed actors
+	BannedContacts []Actor      // Withwhome the user doesn't want to accept or interact
+	ActorGroups    []ActorGroup // Grouping of contacts from the Contacts array
 }
 
 // Keypair : PKI keypair
@@ -100,7 +101,7 @@ type Keypair struct {
 	Private string
 }
 
-// Domain a logical pool of users
+// Domain a logical pool of users. Future: A domain could have multiple legs on more than one server. more of a replica setup.
 type Domain struct {
 	ID          bson.ObjectId `bson:"_id" json:"id"`
 	Displayname string

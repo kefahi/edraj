@@ -9,8 +9,13 @@ func (cm *ContentMan) NewContainer(container Content) {}
 // Move : Moves Content/Containers around
 func (cm *ContentMan) Move(id string, to string) {}
 
+// GetRootContainer returns the the root container
+func (cm *ContentMan) GetRootContainer() Container {
+	return Container{}
+}
+
 // List child-ids by parent
-func (cm *ContentMan) List(parentID string) ([]string, error) { return []string{}, nil }
+func (cr *Container) List(parentID string) ([]string, error) { return []string{}, nil }
 
 // Delete : deletes a content/container by their uuid (moves to trash)
 func (cm *ContentMan) Delete(id string) {}

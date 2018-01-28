@@ -5,7 +5,61 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+
+	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
+
+// Mongo server
+type Mongo struct {
+	ServerAddress  string
+	DatabaseName   string
+	CollectionName string
+	session        *mgo.Session
+	database       *mgo.Database
+	collection     *mgo.Collection
+}
+
+// Connect to mongodb
+func (m *Mongo) Connect() {
+	var err error
+	m.session, err = mgo.Dial(m.ServerAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
+	m.database = m.session.DB(m.DatabaseName)
+	m.collection = m.database.C(m.CollectionName)
+}
+
+// FindAll matches
+func (m *Mongo) FindAll() (interface{}, error) {
+	var result interface{}
+	err := m.collection.Find(bson.M{}).All(&result)
+	return result, err
+}
+
+// FindByID for a single document
+func (m *Mongo) FindByID(id string) (interface{}, error) {
+	var result interface{}
+	err := m.collection.FindId(bson.ObjectIdHex(id)).One(&result)
+	return result, err
+
+}
+
+// Insert object
+func (m *Mongo) Insert(docs ...interface{}) error {
+	return m.collection.Insert(docs)
+}
+
+// Delete object
+func (m *Mongo) Delete(selector interface{}) error {
+	return m.collection.Remove(selector)
+}
+
+// Update object
+func (m *Mongo) Update(id string, selector interface{}) error {
+	return m.collection.Update(id, selector)
+}
 
 func examplesMain() {
 	rootPath := "/tmp/edraj/content"
