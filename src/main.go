@@ -14,7 +14,7 @@ type Config struct {
 	assetsPath     string
 	templatesPath  string
 	servingAddress string
-	mongoPort      string
+	mongoAddress   string
 	dataPath       string
 	shutdownWait   time.Duration
 }
@@ -25,14 +25,23 @@ var (
 		assetsPath:     "./assets/",
 		templatesPath:  "./templates/",
 		dataPath:       "./data", // Mongo, files, indexes ...
-		servingAddress: "127.0.0.1:8080",
+		servingAddress: "127.0.0.1:5533",
 		shutdownWait:   15 * time.Second,
+		mongoAddress:   "127.0.0.1:xyz",
 	}
 )
 
 func init() {
 	// TODO use flag to initialize Config
 
+}
+
+// Log wrapper for all http calls
+func Log(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		handler.ServeHTTP(w, r)
+	})
 }
 
 func main() {
@@ -52,6 +61,7 @@ func main() {
 	http.HandleFunc("/api/entry/", EntryAPI)
 	http.HandleFunc("/hello", HelloAPI)
 	http.Handle("/assets", http.FileServer(http.Dir(config.assetsPath)))
+	r := Log(http.DefaultServeMux)
 
 	server := &http.Server{
 		Addr: config.servingAddress,
@@ -59,7 +69,7 @@ func main() {
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		//Handler:      r, // Pass our instance of gorilla/mux in.
+		Handler:      r, // Pass our instance of gorilla/mux in.
 	}
 
 	// Run our server in a goroutine so that it doesn't block.

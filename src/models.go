@@ -19,9 +19,10 @@ type Identity struct {
 
 // Signature a digital signature of data
 type Signature struct {
-	Identity  Identity // The actor who signed
-	Signature string
-	Keyname   string
+	Identity     Identity // The actor who signed
+	Signature    string
+	Keyname      string // The public key used
+	FieldsSigned []string
 }
 
 // GeoPoint long/lat
@@ -84,7 +85,7 @@ type Actor struct {
 	ID             bson.ObjectId `bson:"_id" json:"id"`
 	Displayname    string
 	Shortname      string // unique
-	Domain         string
+	Domain         string //
 	Keys           []Keypair
 	Address        Address
 	Organizations  []string     // that the user relates to, like work, ngo ...
