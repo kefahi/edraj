@@ -14,7 +14,18 @@ import (
 	"log"
 )
 
-func pki_examples() {
+/*
+
+	RsaKeypair struct with:
+		generate,
+		encrypt/decrypt,
+		sign/verify,
+		privatePEM/publicPEM (for exporting the keys as text)
+		loadPrivatePEM/loadPublicPEM to parse and load the respective keys.
+		Note: loadPublicPEM nullifies RsaKeypair.Private so only encrypt and verify are possible
+*/
+
+func pkiExamples() {
 
 	keypair1 := RsaKeypair{}
 	var err error
@@ -34,7 +45,8 @@ func pki_examples() {
 
 	fmt.Println("public: \n"+public, "private: \n"+private)
 	keypair := RsaKeypair{}
-	err = keypair.load([]byte(private), []byte(public))
+	//err = keypair.loadPrivatePEM([]byte(private))
+	err = keypair.loadPublicPem([]byte(public))
 	if err != nil {
 		log.Fatal("Load:", err.Error())
 	}
@@ -42,7 +54,7 @@ func pki_examples() {
 	fmt.Println(keypair)
 
 	data := "Hello World"
-	signature, err := keypair.sign([]byte(data))
+	signature, err := keypair1.sign([]byte(data))
 	if err != nil {
 		log.Fatal("Sign:", err.Error())
 	}
@@ -61,7 +73,7 @@ func pki_examples() {
 	}
 
 	// Decrypt the data
-	dec, err := keypair.decrypt(enc, []byte("some label"))
+	dec, err := keypair1.decrypt(enc, []byte("some label"))
 	if err != nil {
 		log.Fatalf("decrypt: %s", err)
 	}
@@ -71,60 +83,60 @@ func pki_examples() {
 
 // RsaKeypair the pub/private
 type RsaKeypair struct {
-	Public  *rsa.PublicKey // This is essentially Private.PublicKey
-	Private *rsa.PrivateKey
+	public  *rsa.PublicKey // This is essentially Private.PublicKey
+	private *rsa.PrivateKey
 }
 
 func (keypair *RsaKeypair) generate() (err error) {
-	keypair.Private, err = rsa.GenerateKey(rand.Reader, 2048)
+	keypair.private, err = rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return
 	}
-	keypair.Public = &keypair.Private.PublicKey
+	keypair.public = &keypair.private.PublicKey
 	return
 }
 
 func (keypair *RsaKeypair) encrypt(clear []byte, label []byte) ([]byte, error) {
-	return rsa.EncryptOAEP(sha256.New(), rand.Reader, keypair.Public, clear, label)
+	return rsa.EncryptOAEP(sha256.New(), rand.Reader, keypair.public, clear, label)
 }
 
 func (keypair *RsaKeypair) decrypt(encrypted []byte, label []byte) ([]byte, error) {
-	return rsa.DecryptOAEP(sha256.New(), rand.Reader, keypair.Private, encrypted, label)
+	return rsa.DecryptOAEP(sha256.New(), rand.Reader, keypair.private, encrypted, label)
 }
 
 func (keypair *RsaKeypair) privatePEM() (string, error) {
 	var err error
-	var private bytes.Buffer
-	key := &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(keypair.Private)}
-	err = pem.Encode(&private, key)
+	var buffer bytes.Buffer
+	key := &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(keypair.private)}
+	err = pem.Encode(&buffer, key)
 	if err != nil {
 		return "", errors.New("Print privateKey:" + err.Error())
 	}
-	return private.String(), nil
+	return buffer.String(), nil
 }
 func (keypair *RsaKeypair) publicPEM() (string, error) {
 	var err error
 
-	data, err := x509.MarshalPKIXPublicKey(keypair.Public)
+	data, err := x509.MarshalPKIXPublicKey(keypair.public)
 	if err != nil {
 		return "", errors.New("public key marshal:" + err.Error())
 	}
 
-	var public bytes.Buffer
+	var buffer bytes.Buffer
 	key := &pem.Block{Type: "PUBLIC KEY", Bytes: data}
-	err = pem.Encode(&public, key)
+	err = pem.Encode(&buffer, key)
 	if err != nil {
 		return "", err
 	}
 
-	return public.String(), nil
+	return buffer.String(), nil
 }
 
 func (keypair *RsaKeypair) sign(data []byte) ([]byte, error) {
 	hash := sha256.New()
 	hash.Write(data)
 	dataHash := hash.Sum(nil)
-	signature, err := rsa.SignPKCS1v15(rand.Reader, keypair.Private, crypto.SHA256, dataHash)
+	signature, err := rsa.SignPKCS1v15(rand.Reader, keypair.private, crypto.SHA256, dataHash)
 	return signature, err
 }
 
@@ -132,26 +144,18 @@ func (keypair *RsaKeypair) verify(data []byte, signature []byte) error {
 	hash := sha256.New()
 	hash.Write(data)
 	dataHash := hash.Sum(nil)
-	err := rsa.VerifyPKCS1v15(keypair.Public, crypto.SHA256, dataHash, signature)
+	err := rsa.VerifyPKCS1v15(keypair.public, crypto.SHA256, dataHash, signature)
 	return err
 }
 
-func (keypair *RsaKeypair) load(privateKey []byte, publicKey []byte) error {
+func (keypair *RsaKeypair) loadPublicPem(publicPEM []byte) error {
+	// From now this is public-key only
+	// Hence only encrypt and verify can be used
+	keypair.private = nil
 	var block *pem.Block
 	var err error
 
-	block, _ = pem.Decode(privateKey)
-	if block == nil {
-		return errors.New("private key not found")
-	} else if block.Type != "RSA PRIVATE KEY" {
-		return fmt.Errorf("Unsupported private key type %q", block.Type)
-	}
-	keypair.Private, err = x509.ParsePKCS1PrivateKey(block.Bytes)
-	if err != nil {
-		return errors.New("While parsing private key: " + err.Error())
-	}
-
-	block, _ = pem.Decode(publicKey)
+	block, _ = pem.Decode(publicPEM)
 	if block == nil {
 		return errors.New("public key not found")
 	} else if block.Type != "PUBLIC KEY" {
@@ -168,11 +172,31 @@ func (keypair *RsaKeypair) load(privateKey []byte, publicKey []byte) error {
 
 	switch t := key.(type) {
 	case *rsa.PublicKey:
-		keypair.Public = t
+		keypair.public = t
 	default:
 		fmt.Println("pub is of type:", t)
 		return fmt.Errorf("Unsupported public key type %T", key)
 	}
+
+	return nil
+}
+
+func (keypair *RsaKeypair) loadPrivatePEM(privatePEM []byte /*, public []byte*/) error {
+	var block *pem.Block
+	var err error
+
+	block, _ = pem.Decode(privatePEM)
+	if block == nil {
+		return errors.New("private key not found")
+	} else if block.Type != "RSA PRIVATE KEY" {
+		return fmt.Errorf("Unsupported private key type %q", block.Type)
+	}
+	keypair.private, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		return errors.New("While parsing private key: " + err.Error())
+	}
+
+	keypair.public = &keypair.private.PublicKey
 
 	return nil
 }
