@@ -29,10 +29,13 @@ var (
 		shutdownWait:   15 * time.Second,
 		mongoAddress:   "127.0.0.1:xyz",
 	}
+
+	entryService EntryService
 )
 
 func init() {
 	// TODO use flag to initialize Config
+	entryService.init(config.mongoAddress, config.dataPath)
 
 }
 

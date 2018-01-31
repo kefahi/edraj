@@ -3,68 +3,74 @@ package main
 // This is a mongo-based hyper store backed by storage.go file backend.
 
 import (
+	"fmt"
 	"log"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Server : Edraj server setup, can host multiple domain-legs
-type Server struct {
-	publicIPs  []string
-	privateIPs []string
+// MongoStore : Mongo + filesystem
+type MongoStore struct {
+	session  *mgo.Session
+	database *mgo.Database
 }
 
-// Hyperstore : Mongo + filesystem
-type Hyperstore struct {
-	MongoAddress   string
-	DatabaseName   string
-	CollectionName string
-
-	session    *mgo.Session
-	database   *mgo.Database
+// MongoCollection handles one collection in a mongodatabase
+type MongoCollection struct {
+	mongoStore *MongoStore
 	collection *mgo.Collection
 }
 
 // Connect to mongodb
-func (m *Hyperstore) Connect() {
+func (m *MongoStore) init(mongoAddress string, dbname string) {
 	var err error
-	m.session, err = mgo.Dial(m.MongoAddress)
+	m.session, err = mgo.Dial(mongoAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
-	m.database = m.session.DB(m.DatabaseName)
-	m.collection = m.database.C(m.CollectionName)
+	m.database = m.session.DB(dbname)
+}
+
+func (c *MongoCollection) init(name string, mongoStore *MongoStore) {
+	c.collection = c.mongoStore.database.C(name)
 }
 
 // Query matches
-func (m *Hyperstore) Query() (interface{}, error) {
+func (c *MongoCollection) Query() (interface{}, error) {
 	var result interface{}
-	err := m.collection.Find(bson.M{}).All(&result)
+	err := c.collection.Find(bson.M{}).All(&result)
 	return result, err
 }
 
 // GetByID for a single document
-func (m *Hyperstore) GetByID(id string) (interface{}, error) {
+func (c *MongoCollection) GetByID(id string) (interface{}, error) {
 	var result interface{}
-	err := m.collection.FindId(bson.ObjectIdHex(id)).One(&result)
+	err := c.collection.FindId(bson.ObjectIdHex(id)).One(&result)
 	return result, err
 
 }
 
 // Create object
-func (m *Hyperstore) Create(docs ...interface{}) error {
-	return m.collection.Insert(docs)
+func (c *MongoCollection) Create(doc interface{}) error {
+	switch t := doc.(type) {
+	case *Domain:
+
+	default:
+		fmt.Println("pub is of type:", t)
+		return fmt.Errorf("Unsupported public key type %T", doc)
+	}
+	return c.collection.Insert(doc)
 }
 
 // Delete object
-func (m *Hyperstore) Delete(selector interface{}) error {
-	return m.collection.Remove(selector)
+func (c *MongoCollection) Delete(selector interface{}) error {
+	return c.collection.Remove(selector)
 }
 
 // Update object
-func (m *Hyperstore) Update(id string, selector interface{}) error {
-	return m.collection.Update(id, selector)
+func (c *MongoCollection) Update(id string, selector interface{}) error {
+	return c.collection.Update(id, selector)
 }
 
 /*

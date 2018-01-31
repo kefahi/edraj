@@ -22,29 +22,31 @@ var (
 		"miner":      true,
 		"crawler":    true,
 	}
-
-	entryService = EntryService{}
 )
 
 // EntryService serving
 type EntryService struct {
-	domains       Hyperstore
-	identities    Hyperstore
-	container     Hyperstore
-	content       Hyperstore
-	attachments   Hyperstore
-	comments      Hyperstore
-	message       Hyperstore
-	schema        Hyperstore
-	addons        Hyperstore
-	miners        Hyperstore
-	crawlers      Hyperstore // aka public miners
-	notifications Hyperstore
+	domainsMan       DomainsMan // This includes the list of other domains and the local domain's identities?
+	contentMan       ContentMan // This is for content, container,attachments, comments
+	messagesMan      MessagesMan
+	schemaMan        SchemaMan
+	addonsMan        AddonsMan
+	minerMan         MinerMan
+	crawlersMan      CrawlersMan // aka public miners
+	notificationsMan NotificationsMan
 }
 
-func init() {
-	//entryService.store.Connect()
-	// initialize entry
+func (es *EntryService) init(mongoAddress string, rootDataPath string) {
+	es.addonsMan.init(mongoAddress, rootDataPath)
+	es.domainsMan.init(mongoAddress)
+	es.contentMan.init(mongoAddress, rootDataPath)
+	es.messagesMan.init(mongoAddress, rootDataPath)
+	es.schemaMan.init(mongoAddress)
+	es.addonsMan.init(mongoAddress, rootDataPath)
+	es.minerMan.init(mongoAddress)
+	es.crawlersMan.init(mongoAddress)
+	es.crawlersMan.init(mongoAddress)
+	es.notificationsMan.init(mongoAddress)
 }
 
 // EntryQuery the query object.
@@ -75,22 +77,30 @@ type EntryQuery struct {
 
 // Entry general entry data
 type Entry struct {
-	ID        string
+	ID string
+
+	// Author/owner's identity and proof: signatory
 	Signature Signature
 	Timestamp string
-	Further   []struct{} `json:"further,omitempty"` // Further entries to explore. Children/related
+	Further   []struct{} `json:"further,omitempty"` // Further entries to explore. Children/related/trending/top/popular
 
-	EntryType    string // EntryTypes
+	EntryType    string // from EntryTypes
 	EntryPayload string // json with type-specific fields
 	// ...
 }
 
 // Request object
 type Request struct {
-	Signature   Signature
-	Timestamp   string
+	// The Envelope (Requestor details)
+	// The subject
+	Signature Signature
+	Timestamp string
+
+	// Action/verb/affordance
 	RequestType string // query, get,update, create, delete
 
+	// Object
+	// The Body
 	// Based on the requestType one of the following will be provided
 	EntryID    string     // for get, update, delete
 	Entry      Entry      // for create
@@ -114,11 +124,14 @@ type QueryResponse struct {
 	Entries      []Entry `json:"entries,omitempty"`
 }
 
-func (a *EntryService) query(q *EntryQuery) QueryResponse  { return QueryResponse{} } // Query : when empty it returns the root container
-func (a *EntryService) get(id string) QueryResponse        { return QueryResponse{} } // Get : Returns one specific entry object
-func (a *EntryService) create(e Entry) Response            { return Response{} }
-func (a *EntryService) update(id string, e Entry) Response { return Response{} }
-func (a *EntryService) delete(id string) Response          { return Response{} }
+// Query : when empty it returns the root container
+func (es *EntryService) query(r *Request) *QueryResponse { return &QueryResponse{} }
+
+// Get : Returns one specific entry object based on the provided id/shortname
+func (es *EntryService) get(r *Request) *QueryResponse { return &QueryResponse{} }
+func (es *EntryService) create(r *Request) Response    { return Response{} }
+func (es *EntryService) update(r *Request) Response    { return Response{} }
+func (es *EntryService) delete(r *Request) Response    { return Response{} }
 
 func respond(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
@@ -147,19 +160,19 @@ func EntryAPI(w http.ResponseWriter, r *http.Request) {
 
 	switch strings.ToUpper(request.RequestType) {
 	case "QUERY":
-		response := entryService.query(&request.EntryQuery)
+		response := entryService.query(&request)
 		respond(w, response.Code, response)
 	case "GET":
-		response := entryService.get(request.EntryID)
+		response := entryService.get(&request)
 		respond(w, response.Code, response)
 	case "CREATE":
-		response := entryService.create(request.Entry)
+		response := entryService.create(&request)
 		respond(w, response.Code, response)
 	case "UPDATE":
-		response := entryService.update(request.EntryID, request.Entry)
+		response := entryService.update(&request)
 		respond(w, response.Code, response)
 	case "DELETE":
-		response := entryService.get(request.EntryID)
+		response := entryService.get(&request)
 		respond(w, response.Code, response)
 	}
 	/*
