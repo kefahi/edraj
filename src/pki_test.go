@@ -45,6 +45,12 @@ func TestPrivatePEM(t *testing.T) {
 		t.Error("PrivatePEM method returned error!\n\n\t", err.Error())
 	}
 	fmt.Println(textPem)
+
+	fmt.Println("Testing method LoadPrivatePEM...")
+	err = Tkeypair.LoadPrivatePEM([]byte(textPem))
+	if err != nil {
+		t.Error("LoadPrivatePEM method returned error!\n\n\t", err.Error())
+	}
 }
 
 func TestPublicPEM(t *testing.T) {
@@ -82,20 +88,21 @@ func TestLoadPublicPEM(t *testing.T) {
 	}
 }
 
+// Test keeps failing. The fail is related to the use of the method PrivatePEM
+// Uncomment the first part to see yourself
+// in another function. It preduces a fatal error, priventing the rest of the tests of running
+// if you got it to work.
+// Uncomment the second part.
 func TestLoadPrivatePEM(t *testing.T) {
 
-	fmt.Println("Testing method LoadPrivatePEM...\n\n\t")
-	_, err := Tkeypair.PrivatePEM()
-	if err != nil {
-		t.Error("Error creating Private Key string!\n", err.Error())
-	}
-
+	// FIRST PART
 	// fmt.Println("Testing method LoadPrivatePEM...")
-	// priPem, err := Tkeypair.PrivatePEM()
+	// _, err := Tkeypair.PrivatePEM() // If worked, replace _ with priPem
 	// if err != nil {
 	// 	t.Fatal("PrivatePEM method returned error!\n\n\t", err.Error())
 	// }
 
+	// SECOND PART
 	// err = Tkeypair.LoadPrivatePEM([]byte(priPem))
 	// if err != nil {
 	// 	t.Error("LoadPrivatePEM method returned error!\n\n\t", err.Error())
