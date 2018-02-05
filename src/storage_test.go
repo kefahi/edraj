@@ -173,3 +173,97 @@ func TestDeleteDir(t *testing.T)  {
         }
 }
 
+func TestMoveFile(t *testing.T)  {
+	fmt.Println("Testing method MoveFile...\n")
+
+	exec.Command("sh", "-c", "touch /tmp/edraj/content/Dir/mvFileTEST3").Output()
+	time.Sleep(100 * time.Millisecond)
+
+	state, _ := exists("/tmp/edraj/content/Dir/mvFileTEST3")
+	if state == false {
+		t.Error("Test File failed to be created!\n")
+	}
+	TStorage.MoveFile("/Dir/DelFileTEST3","/")
+
+	state, _ = exists("/tmp/edraj/content/Dir/mvFileTEST3")
+	if state == true {
+		t.Error("Test File Was not moved!\n")
+	}
+	state, _ = exists("/tmp/edraj/mvFileTEST3")
+	if state == false {
+		t.Error("Moved File is not in moved location!\n")
+	}
+}
+
+func TestMoveDir(t *testing.T)  {
+	fmt.Println("Testing method MoveDir...\n")
+
+	exec.Command("sh", "-c", "mkdir /tmp/edraj/content/Dir/mvDirTEST3").Output()
+	time.Sleep(100 * time.Millisecond)
+
+	state, _ := exists("/tmp/edraj/content/Dir/mvDirTEST3")
+	if state == false {
+		t.Error("Test Dir failed to be created!\n")
+	}
+	TStorage.MoveDir("/Dir/mvDirTEST3","/")
+
+	state, _ = exists("/tmp/edraj/content/Dir/mvDirTEST3")
+	if state == true {
+		t.Error("Test Dir Was not moved!\n")
+	}
+	state, _ = exists("/tmp/edraj/mvDirTEST3")
+	if state == false {
+		t.Error("Moved Dir is not in moved location!\n")
+	}
+}
+// func TestDeletingWithoutForwardSlash (t *testing.T) {
+// 
+//         fmt.Println("Testing method DeleteFile without Forward Slash at the beggining ...\n")
+// 
+//         exec.Command("sh", "-c", "touch /tmp/edraj/content/Dir/DelFileTEST2").Output()
+//         time.Sleep(100 * time.Millisecond)
+// 
+//         state, _ := exists("/tmp/edraj/content/Dir/DelFileTEST2")
+//         if state == false {
+//                 t.Error("Test File failed to be created!\n")
+//         }
+//         TStorage.DeleteFile("Dir/DelFileTEST2")
+// 
+// 	state, _ = exists("/tmp/edraj/trash")
+//         if state == false {
+//                 t.Error(TrashPath + "doesnt Exist!\n")
+//         }
+// 
+//         state, _ = exists("/tmp/edraj/content/Dir/DelFileTEST2")
+//         if state == true {
+//                 t.Error("Test File Was not removed!\n")
+//         }
+//         state, _ = exists("/tmp/edraj/trash/DelFileTEST2")
+//         if state == false {
+//                 t.Error("Deleted File is not in trash!\n")
+//         }
+// }
+// 
+// func TestDeleteDirWithoutForwardSlash(t *testing.T)  {
+//         fmt.Println("Testing method DeleteDir...\n")
+// 
+//         exec.Command("sh", "-c", "mkdir /tmp/edraj/content/Dir/DelDirTEST2").Output()
+//         time.Sleep(100 * time.Millisecond)
+// 
+//         state, _ := exists("/tmp/edraj/content/Dir/DelDirTEST2")
+//         if state == false {
+//                 t.Error("Test Dir failed to be created!\n")
+//         }
+//         TStorage.DeleteFile("Dir/DelDirTEST2")
+// 
+//         state, _ = exists("/tmp/edraj/content/Dir/DelDirTEST2")
+//         if state == true {
+//                 t.Error("Test Dir Was not removed!\n")
+//         }
+//         state, _ = exists("/tmp/edraj/trash/DelDirTEST2")
+//         if state == false {
+//                 t.Error("Deleted Dir is not in trash!\n")
+//         }
+// }
+
+
