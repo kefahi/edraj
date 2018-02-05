@@ -14,6 +14,8 @@ type AddonsMan struct {
 
 func (am *AddonsMan) init(mongoAddress string, rootPath string) {
 	am.mongoStore.init(mongoAddress, "addons")
+
+	am.addonsCollection = MongoCollection{}
 	am.addonsCollection.init("crawlers", &am.mongoStore)
 
 	am.fileStore.RootPath = path.Join(rootPath, "addons")

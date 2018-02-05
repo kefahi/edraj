@@ -18,7 +18,6 @@ type MongoStore struct {
 
 // MongoCollection handles one collection in a mongodatabase
 type MongoCollection struct {
-	mongoStore *MongoStore
 	collection *mgo.Collection
 }
 
@@ -33,7 +32,7 @@ func (m *MongoStore) init(mongoAddress string, dbname string) {
 }
 
 func (c *MongoCollection) init(name string, mongoStore *MongoStore) {
-	c.collection = c.mongoStore.database.C(name)
+	c.collection = mongoStore.database.C(name)
 }
 
 // Query matches

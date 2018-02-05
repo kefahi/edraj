@@ -42,9 +42,7 @@ func (es *EntryService) init(mongoAddress string, rootDataPath string) {
 	es.contentMan.init(mongoAddress, rootDataPath)
 	es.messagesMan.init(mongoAddress, rootDataPath)
 	es.schemaMan.init(mongoAddress)
-	es.addonsMan.init(mongoAddress, rootDataPath)
 	es.minerMan.init(mongoAddress)
-	es.crawlersMan.init(mongoAddress)
 	es.crawlersMan.init(mongoAddress)
 	es.notificationsMan.init(mongoAddress)
 }
@@ -240,7 +238,7 @@ func HelloAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 // Hello (EHLO message)
-func (server *Server) Hello(iIn Identity, sIn Signature, messageIn string) (iOut Identity,
+func (server *DomainsMan) Hello(iIn Identity, sIn Signature, messageIn string) (iOut Identity,
 	sOut Signature, messageOut string, token string) {
 	// ? Is there a need to establish some form of a basic session here, after verification of the signature?
 	return Identity{}, Signature{}, "Hello back how can I help you?",

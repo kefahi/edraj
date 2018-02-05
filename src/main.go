@@ -27,14 +27,14 @@ var (
 		dataPath:       "./data", // Mongo, files, indexes ...
 		servingAddress: "127.0.0.1:5533",
 		shutdownWait:   15 * time.Second,
-		mongoAddress:   "127.0.0.1:xyz",
+		mongoAddress:   "127.0.0.1:27017",
 	}
 
 	entryService EntryService
 )
 
 func init() {
-	// TODO use flag to initialize Config
+	// TODO use flag to initialize Config from command-line params and later to initialize from json/toml/other file-based config format.
 	entryService.init(config.mongoAddress, config.dataPath)
 
 }

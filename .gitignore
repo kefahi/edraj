@@ -1,2 +1,4 @@
 *.swp
 *~
+src/edraj
+src/debug
