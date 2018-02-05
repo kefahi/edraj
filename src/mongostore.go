@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -23,16 +22,18 @@ type MongoCollection struct {
 
 // Connect to mongodb
 func (m *MongoStore) init(mongoAddress string, dbname string) {
-	var err error
+	/*var err error
 	m.session, err = mgo.Dial(mongoAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
-	m.database = m.session.DB(dbname)
+	m.database = m.session.DB(dbname)*/
 }
 
-func (c *MongoCollection) init(name string, mongoStore *MongoStore) {
-	c.collection = mongoStore.database.C(name)
+func (m *MongoStore) collection(name string) (collection MongoCollection) {
+	collection.collection = m.database.C(name)
+
+	return
 }
 
 // Query matches

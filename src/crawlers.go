@@ -2,17 +2,13 @@ package main
 
 // CrawlersMan manage primary crawler and maintain the list of remote crawlers used
 type CrawlersMan struct {
-	mongoStore         MongoStore
-	crawlersCollection MongoCollection
+	mongoStore MongoStore
 }
 
-/*
-func (cm *CrawlersMan) init(mongoAddress string) {
-	cm.mongoStore.init(mongoAddress, "crawlers")
-	cm.crawlersCollection.init("crawlers", &cm.mongoStore)
-}*/
-
-func (cm *CrawlersMan) init(config *Config) (err error)                  { return }
+func (cm *CrawlersMan) init(config *Config) (err error) {
+	cm.mongoStore.init(config.mongoAddress, crawler)
+	return
+}
 func (cm *CrawlersMan) query(request *Request) (response *QueryResponse) { return }
 func (cm *CrawlersMan) get(request *Request) (response *QueryResponse)   { return }
 func (cm *CrawlersMan) create(request *Request) (response Response)      { return }

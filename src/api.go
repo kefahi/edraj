@@ -21,6 +21,7 @@ const (
 	crawler      = "crawler"
 	notification = "notification"
 	workgroup    = "workgroup"
+	trash        = "trash"
 
 	// Types of exposed verbs
 	query  = "QUERY"
