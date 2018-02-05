@@ -145,7 +145,7 @@ func TestDeleteFile(t *testing.T)  {
 	if state == true {
 		t.Error("Test File Was not removed!\n")
 	}
-	state, _ = exists("/tmp/edraj/trash/DelFileTEST")
+	state, _ = exists("/tmp/edraj/trash/Dir/DelFileTEST")
 	if state == false {
 		t.Error("Deleted File is not in trash!\n")
 	}
@@ -167,7 +167,7 @@ func TestDeleteDir(t *testing.T)  {
         if state == true {
                 t.Error("Test Dir Was not removed!\n")
         }
-        state, _ = exists("/tmp/edraj/trash/DelDirTEST")
+        state, _ = exists("/tmp/edraj/trash/Dir/DelDirTEST")
         if state == false {
                 t.Error("Deleted Dir is not in trash!\n")
         }
