@@ -35,7 +35,7 @@ var (
 
 func init() {
 	// TODO use flag to initialize Config from command-line params and later to initialize from json/toml/other file-based config format.
-	entryService.init(config.mongoAddress, config.dataPath)
+	entryService.init(config)
 
 }
 

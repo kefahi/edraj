@@ -7,132 +7,97 @@ import (
 	"strings"
 )
 
+const (
+	domain       = "domain"
+	actor        = "actor"
+	message      = "message"
+	container    = "container"
+	content      = "content"
+	attachment   = "attachment"
+	comment      = "comment"
+	schema       = "schema"
+	addon        = "addon"
+	miner        = "miner"
+	crawler      = "crawler"
+	notification = "notification"
+	workgroup    = "workgroup"
+
+	// Types of exposed verbs
+	query  = "QUERY"
+	get    = "GET"
+	create = "CREATE"
+	update = "UPDATE"
+	delete = "DELETE"
+)
+
 var (
 	// EntryTypes the "enum" of accepted entrytypes
 	EntryTypes = map[string]bool{
-		"domain":     true,
-		"actor":      true,
-		"message":    true,
-		"container":  true,
-		"content":    true,
-		"attachment": true,
-		"comment":    true,
-		"schema":     true,
-		"addon":      true,
-		"miner":      true,
-		"crawler":    true,
+		workgroup:  true,
+		domain:     true,
+		actor:      true,
+		message:    true,
+		container:  true,
+		content:    true,
+		attachment: true,
+		comment:    true,
+		schema:     true,
+		addon:      true,
+		miner:      true,
+		crawler:    true,
 	}
 )
 
 // EntryService serving
 type EntryService struct {
-	domainsMan       DomainsMan // This includes the list of other domains and the local domain's identities?
-	contentMan       ContentMan // This is for content, container,attachments, comments
-	messagesMan      MessagesMan
-	schemaMan        SchemaMan
-	addonsMan        AddonsMan
-	minerMan         MinerMan
-	crawlersMan      CrawlersMan // aka public miners
-	notificationsMan NotificationsMan
+	managers map[string]Manager
 }
 
-func (es *EntryService) init(mongoAddress string, rootDataPath string) {
-	es.addonsMan.init(mongoAddress, rootDataPath)
-	es.domainsMan.init(mongoAddress)
-	es.contentMan.init(mongoAddress, rootDataPath)
-	es.messagesMan.init(mongoAddress, rootDataPath)
-	es.schemaMan.init(mongoAddress)
-	es.minerMan.init(mongoAddress)
-	es.crawlersMan.init(mongoAddress)
-	es.notificationsMan.init(mongoAddress)
+// Manager interface
+type Manager interface {
+	init(config *Config) (err error)
+	query(request *Request) (response *QueryResponse)
+	get(request *Request) (response *QueryResponse)
+	create(request *Request) (response Response)
+	update(request *Request) (response Response)
+	delete(request *Request) (response Response)
 }
 
-// EntryQuery the query object.
-type EntryQuery struct {
-	EntryType  string // Of EntryTypes
-	Text       string // free text search
-	Date       string // from-, -to, from-to
-	Sort       string // Sort by fields
-	Owner      string // by ownerid
-	Tags       string // T1,+T2,-T3
-	Categories string // C1,+C2,-C3
-	Fields     string // A,+B,-C
-	Offset     int    //
-	Limit      int    // aka page-size
+func (es *EntryService) init(config Config) (err error) {
+	es.managers = map[string]Manager{}
+	es.managers[workgroup] = &WorkgroupMan{}
+	err = es.managers[workgroup].init(&config)
+	es.managers[actor] = &ActorMan{}
+	err = es.managers[actor].init(&config)
+	es.managers[addon] = &AddonsMan{}
+	err = es.managers[addon].init(&config)
+	es.managers[domain] = &DomainsMan{}
+	err = es.managers[domain].init(&config)
+	es.managers[content] = &ContentMan{}
+	err = es.managers[content].init(&config)
+	es.managers[message] = &MessagesMan{}
+	err = es.managers[message].init(&config)
+	es.managers[schema] = &SchemaMan{}
+	err = es.managers[schema].init(&config)
+	es.managers[miner] = &MinerMan{}
+	err = es.managers[miner].init(&config)
+	es.managers[crawler] = &CrawlersMan{}
+	err = es.managers[crawler].init(&config)
+	es.managers[notification] = &NotificationsMan{}
+	err = es.managers[notification].init(&config)
+
+	return
 }
 
-// Signature of data
-/*type Signature struct {
-	ActorID          string
-	ActorDisplayname string
-	ActorShortname   string
-	ActorType        string // Actor, Workgroup, Domain
-	ActorDomain      string
-	Signature        string
-	PublickeyUsed    string
-	FieldsSigned     []string
-}*/
-
-// Entry general entry data
-type Entry struct {
-	ID string
-
-	// Author/owner's identity and proof: signatory
-	Signature Signature
-	Timestamp string
-	Further   []struct{} `json:"further,omitempty"` // Further entries to explore. Children/related/trending/top/popular
-
-	EntryType    string // from EntryTypes
-	EntryPayload string // json with type-specific fields
-	// ...
-}
-
-// Request object
-type Request struct {
-	// The Envelope (Requestor details)
-	// The subject
-	Signature Signature
-	Timestamp string
-
-	// Action/verb/affordance
-	RequestType string // query, get,update, create, delete
-
-	// Object
-	// The Body
-	// Based on the requestType one of the following will be provided
-	EntryID    string     // for get, update, delete
-	Entry      Entry      // for create
-	EntryQuery EntryQuery // For query
-}
-
-// Response of an api call
-type Response struct {
-	Status       string // succeeded / failed
-	Code         int    // Http: 200 OK, 202 Created, 404 Not found, 500 internal server error
-	ErrorMessage string // in case failed the error message is provided
-}
-
-// QueryResponse of the Entry api
-type QueryResponse struct {
-	Status       string // succeeded / failed
-	Code         int    // Http: 200 OK, 202 Created, 404 Not found, 500 internal server error
-	ErrorMessage string // in case failed the error message is provided
-	Total        int64
-	Returned     int64
-	Entries      []Entry `json:"entries,omitempty"`
-}
-
-// Query : when empty it returns the root container
-func (es *EntryService) query(r *Request) *QueryResponse { return &QueryResponse{} }
-
-// Get : Returns one specific entry object based on the provided id/shortname
-func (es *EntryService) get(r *Request) *QueryResponse { return &QueryResponse{} }
-func (es *EntryService) create(r *Request) Response    { return Response{} }
-func (es *EntryService) update(r *Request) Response    { return Response{} }
-func (es *EntryService) delete(r *Request) Response    { return Response{} }
-
-func respond(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
+func respond(w http.ResponseWriter, data interface{}) {
+	var code int
+	switch cast := data.(type) {
+	case *Response:
+		code = cast.Code
+	case *QueryResponse:
+		code = cast.Code
+	}
+	response, _ := json.Marshal(data)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
@@ -150,48 +115,33 @@ func EntryAPI(w http.ResponseWriter, r *http.Request) {
 			Code:         http.StatusBadRequest,
 			ErrorMessage: "Invalid request: " + err.Error(),
 		}
-		respond(w, http.StatusBadRequest, response)
+		respond(w, response)
 		return
 	}
 
 	// TODO validate request
+	manager, ok := entryService.managers[request.Entry.EntryType]
+	if !ok {
+		respond(w, Response{
+			Status:       "failed",
+			Code:         http.StatusBadRequest,
+			ErrorMessage: "Invalid entry type requested: " + request.EntryType,
+		})
+		return
+	}
 
 	switch strings.ToUpper(request.RequestType) {
-	case "QUERY":
-		response := entryService.query(&request)
-		respond(w, response.Code, response)
-	case "GET":
-		response := entryService.get(&request)
-		respond(w, response.Code, response)
-	case "CREATE":
-		response := entryService.create(&request)
-		respond(w, response.Code, response)
-	case "UPDATE":
-		response := entryService.update(&request)
-		respond(w, response.Code, response)
-	case "DELETE":
-		response := entryService.get(&request)
-		respond(w, response.Code, response)
+	case query:
+		respond(w, manager.query(&request))
+	case get:
+		respond(w, manager.get(&request))
+	case create:
+		respond(w, manager.create(&request))
+	case update:
+		respond(w, manager.update(&request))
+	case delete:
+		respond(w, manager.delete(&request))
 	}
-	/*
-		switch r.Method {
-		case "POST":
-			UpdateEntryAPI(w, r)
-		case "PUT":
-			CreateEntryAPI(w, r)
-		case "GET":
-			re, _ := regexp.Compile("/api/entry/(.*)")
-			values := re.FindStringSubmatch(r.URL.Path)
-			if len(values) > 1 && values[1] != "" {
-				GetEntryAPI(w, r) //values[1]
-			} else {
-				QueryAPI(w, r)
-			}
-		case "DELETE":
-			DeleteEntryAPI(w, r)
-		default:
-			// TODO handle this case
-		}*/
 }
 
 /*  QueryAPI Returns links to a sub-set of subentries (with pagination)

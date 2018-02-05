@@ -225,3 +225,80 @@ type Reaction struct {
 	Geo       GeoPoint
 	Type      string // like/dislike/...
 }
+
+// Signature of data
+/*type Signature struct {
+	ActorID          string
+	ActorDisplayname string
+	ActorShortname   string
+	ActorType        string // Actor, Workgroup, Domain
+	ActorDomain      string
+	Signature        string
+	PublickeyUsed    string
+	FieldsSigned     []string
+}*/
+
+// EntryQuery the query object.
+type EntryQuery struct {
+	EntryType  string // Of EntryTypes
+	Text       string // free text search
+	Date       string // from-, -to, from-to
+	Sort       string // Sort by fields
+	Owner      string // by ownerid
+	Tags       string // T1,+T2,-T3
+	Categories string // C1,+C2,-C3
+	Fields     string // A,+B,-C
+	Offset     int    //
+	Limit      int    // aka page-size
+}
+
+// Entry general entry data
+type Entry struct {
+	ID string
+
+	// Author/owner's identity and proof: signatory
+	Signature Signature
+	Timestamp string
+	Further   []struct{} `json:"further,omitempty"` // Further entries to explore. Children/related/trending/top/popular
+
+	EntryType    string // from EntryTypes
+	EntryPayload string // json with type-specific fields
+	// ...
+}
+
+// Request object
+type Request struct {
+	// The Envelope (Requestor details)
+	// The subject
+	Signature Signature
+	Timestamp string
+
+	// Action/verb/affordance
+	RequestType string // query, get,update, create, delete
+
+	EntryType string // from EntryTypes
+
+	// Object
+	// The Body
+	// Based on the requestType one of the following will be provided
+	EntryID    string     // for get, update, delete
+	Entry      Entry      // for create
+	EntryQuery EntryQuery // For query
+}
+
+// Response of an api call
+type Response struct {
+	Status       string // succeeded / failed
+	Code         int    // Http: 200 OK, 202 Created, 404 Not found, 500 internal server error
+	ErrorMessage string // in case failed the error message is provided
+}
+
+// QueryResponse of the Entry api
+type QueryResponse struct {
+	Status       string // succeeded / failed
+	Code         int    // Http: 200 OK, 202 Created, 404 Not found, 500 internal server error
+	ErrorMessage string // in case failed the error message is provided
+	Total        int64
+	Returned     int64
+	Entries      []Entry `json:"entries,omitempty"`
+}
