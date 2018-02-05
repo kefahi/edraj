@@ -1,22 +1,23 @@
 package main
 
+import "path"
+
 // ContentMan : Content Manager
 type ContentMan struct {
-	mongoStore            MongoStore
-	contentCollection     MongoCollection
-	containersCollection  MongoCollection
-	attachmentsCollection MongoCollection
-	fileStore             Storage
+	mongoStore MongoStore
+	//contentCollection     MongoCollection
+	//containersCollection  MongoCollection
+	//attachmentsCollection MongoCollection
+	fileStore Storage
 }
 
-/*
-func (cm *ContentMan) init(mongoAddress string, rootPath string) {
-	cm.mongoStore.init(mongoAddress, "content")
-	cm.fileStore.RootPath = path.Join(rootPath, "content")
-	cm.fileStore.TrashPath = path.Join(rootPath, "trash", "content")
-	cm.contentCollection.init("content", &cm.mongoStore)
-}*/
-func (cm *ContentMan) init(config *Config) (err error)                  { return }
+func (cm *ContentMan) init(config *Config) (err error) {
+	cm.mongoStore.init(config.mongoAddress, content)
+	cm.fileStore.RootPath = path.Join(config.dataPath, content)
+	cm.fileStore.TrashPath = path.Join(config.dataPath, trash, content)
+	return
+}
+
 func (cm *ContentMan) query(request *Request) (response *QueryResponse) { return }
 func (cm *ContentMan) get(request *Request) (response *QueryResponse)   { return }
 func (cm *ContentMan) create(request *Request) (response Response)      { return }
