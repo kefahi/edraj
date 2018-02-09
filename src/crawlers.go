@@ -1,12 +1,14 @@
 package main
 
+import mgo "gopkg.in/mgo.v2"
+
 // CrawlersMan manage primary crawler and maintain the list of remote crawlers used
 type CrawlersMan struct {
-	mongoStore MongoStore
+	mongoDb *mgo.Database
 }
 
 func (cm *CrawlersMan) init(config *Config) (err error) {
-	cm.mongoStore.init(config.mongoAddress, crawler)
+	cm.mongoDb = mongoSession.DB(crawler)
 	return
 }
 func (cm *CrawlersMan) query(request *Request) (response *QueryResponse) { return }

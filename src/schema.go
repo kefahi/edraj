@@ -1,9 +1,10 @@
 package main
 
+import mgo "gopkg.in/mgo.v2"
+
 // SchemaMan to manage the various schemas in the system
 type SchemaMan struct {
-	mongoStore       MongoStore
-	schemaCollection MongoCollection
+	mongoDb *mgo.Database
 }
 
 /*
@@ -12,7 +13,10 @@ func (sm *SchemaMan) init(mongoAddress string) {
 	sm.schemaCollection.init("schema", &sm.mongoStore)
 }*/
 
-func (sm *SchemaMan) init(config *Config) (err error) { return }
+func (sm *SchemaMan) init(config *Config) (err error) {
+	sm.mongoDb = mongoSession.DB(schema)
+	return
+}
 
 func (sm *SchemaMan) query(request *Request) (response *QueryResponse) { return }
 func (sm *SchemaMan) get(request *Request) (response *QueryResponse)   { return }

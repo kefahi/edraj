@@ -1,12 +1,14 @@
 package main
 
+import mgo "gopkg.in/mgo.v2"
+
 // NotificationsMan notifications
 type NotificationsMan struct {
-	mongoStore MongoStore
+	mongoDb *mgo.Database
 }
 
 func (nm *NotificationsMan) init(config *Config) (err error) {
-	nm.mongoStore.init(config.mongoAddress, notification)
+	nm.mongoDb = mongoSession.DB(domain)
 	return
 }
 func (nm *NotificationsMan) query(request *Request) (response *QueryResponse) { return }

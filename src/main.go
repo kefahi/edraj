@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	mgo "gopkg.in/mgo.v2"
 )
 
 // Config options
@@ -30,13 +32,19 @@ var (
 		mongoAddress:   "127.0.0.1:27017",
 	}
 
+	mongoSession *mgo.Session
 	entryService EntryService
 )
 
 func init() {
 	// TODO use flag to initialize Config from command-line params and later to initialize from json/toml/other file-based config format.
-	entryService.init(config)
+	var err error
+	mongoSession, err = mgo.Dial(config.mongoAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	entryService.init(config)
 }
 
 // Log wrapper for all http calls

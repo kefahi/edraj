@@ -1,18 +1,22 @@
 package main
 
-import "path"
+import (
+	"path"
+
+	mgo "gopkg.in/mgo.v2"
+)
 
 // WorkgroupMan to manage the workgroups
 type WorkgroupMan struct {
-	mongoStore MongoStore
+	mongoDb *mgo.Database
 
 	fileStore Storage
 }
 
 func (wgm *WorkgroupMan) init(config *Config) (err error) {
-	wgm.mongoStore.init(config.mongoAddress, addon)
-	wgm.fileStore.RootPath = path.Join(config.dataPath, addon)
-	wgm.fileStore.TrashPath = path.Join(config.dataPath, trash, addon)
+	wgm.mongoDb = mongoSession.DB(workgroup)
+	wgm.fileStore.RootPath = path.Join(config.dataPath, workgroup)
+	wgm.fileStore.TrashPath = path.Join(config.dataPath, trash, workgroup)
 	return
 }
 func (wgm *WorkgroupMan) query(request *Request) (response *QueryResponse) { return }

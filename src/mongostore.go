@@ -1,9 +1,10 @@
 package main
 
 // This is a mongo-based hyper store backed by storage.go file backend.
-
+/*
 import (
 	"fmt"
+	"log"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -22,12 +23,7 @@ type MongoCollection struct {
 
 // Connect to mongodb
 func (m *MongoStore) init(mongoAddress string, dbname string) {
-	/*var err error
-	m.session, err = mgo.Dial(mongoAddress)
-	if err != nil {
-		log.Fatal(err)
-	}
-	m.database = m.session.DB(dbname)*/
+
 }
 
 func (m *MongoStore) collection(name string) (collection MongoCollection) {
@@ -72,7 +68,7 @@ func (c *MongoCollection) Delete(selector interface{}) error {
 func (c *MongoCollection) Update(id string, selector interface{}) error {
 	return c.collection.Update(id, selector)
 }
-
+*/
 /*
 // IdentityMan Actor identity manager
 type IdentityMan struct{}

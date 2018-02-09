@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -15,6 +17,7 @@ const (
 	content      = "content"
 	attachment   = "attachment"
 	comment      = "comment"
+	reaction     = "reaction"
 	schema       = "schema"
 	addon        = "addon"
 	miner        = "miner"
@@ -22,6 +25,12 @@ const (
 	notification = "notification"
 	workgroup    = "workgroup"
 	trash        = "trash"
+	page         = "page"
+	site         = "site"
+	block        = "block"
+
+	succeeded = "succeeded"
+	failed    = "failed"
 
 	// Types of exposed verbs
 	query  = "QUERY"
@@ -65,28 +74,43 @@ type Manager interface {
 }
 
 func (es *EntryService) init(config Config) (err error) {
-	es.managers = map[string]Manager{}
-	es.managers[workgroup] = &WorkgroupMan{}
-	err = es.managers[workgroup].init(&config)
-	es.managers[actor] = &ActorMan{}
-	err = es.managers[actor].init(&config)
-	es.managers[addon] = &AddonsMan{}
-	err = es.managers[addon].init(&config)
-	es.managers[domain] = &DomainsMan{}
-	err = es.managers[domain].init(&config)
-	es.managers[content] = &ContentMan{}
-	err = es.managers[content].init(&config)
-	es.managers[message] = &MessagesMan{}
-	err = es.managers[message].init(&config)
-	es.managers[schema] = &SchemaMan{}
-	err = es.managers[schema].init(&config)
-	es.managers[miner] = &MinerMan{}
-	err = es.managers[miner].init(&config)
-	es.managers[crawler] = &CrawlersMan{}
-	err = es.managers[crawler].init(&config)
-	es.managers[notification] = &NotificationsMan{}
-	err = es.managers[notification].init(&config)
 
+	defaultMan := DefaultMan{}
+	defaultMan.init(&config)
+
+	es.managers = map[string]Manager{}
+	es.managers[actor] = &defaultMan
+	es.managers[workgroup] = &defaultMan
+	es.managers[domain] = &defaultMan
+	es.managers[addon] = &defaultMan
+	es.managers[content] = &defaultMan
+	es.managers[message] = &defaultMan
+	es.managers[schema] = &defaultMan
+	es.managers[crawler] = &defaultMan
+	es.managers[notification] = &defaultMan
+
+	/*
+		es.managers[workgroup] = &WorkgroupMan{}
+		err = es.managers[workgroup].init(&config)
+		es.managers[actor] = &ActorMan{}
+		err = es.managers[actor].init(&config)
+		es.managers[addon] = &DefaultMan{}
+		err = es.managers[addon].init(&config)
+		es.managers[domain] = &DomainsMan{}
+		err = es.managers[domain].init(&config)
+		es.managers[content] = &ContentMan{}
+		err = es.managers[content].init(&config)
+		es.managers[message] = &MessagesMan{}
+		err = es.managers[message].init(&config)
+		es.managers[schema] = &SchemaMan{}
+		err = es.managers[schema].init(&config)
+		es.managers[miner] = &MinerMan{}
+		err = es.managers[miner].init(&config)
+		es.managers[crawler] = &CrawlersMan{}
+		err = es.managers[crawler].init(&config)
+		es.managers[notification] = &NotificationsMan{}
+		err = es.managers[notification].init(&config)
+	*/
 	return
 }
 
@@ -110,28 +134,38 @@ func respond(w http.ResponseWriter, data interface{}) {
 func EntryAPI(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var request Request
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	body, _ := ioutil.ReadAll(r.Body)
+	//if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	if err := json.Unmarshal(body, &request); err != nil {
 		response := Response{
-			Status:       "failed",
-			Code:         http.StatusBadRequest,
-			ErrorMessage: "Invalid request: " + err.Error(),
+			Status:  "failed",
+			Code:    http.StatusBadRequest,
+			Message: "Invalid request: " + err.Error(),
 		}
 		respond(w, response)
 		return
 	}
 
+	var data bytes.Buffer
+	var me map[string]interface{}
+	body2, _ := json.Marshal(request)
+	json.Unmarshal(body2, &me)
+	printme(me, "", &data)
+
+	fmt.Println(data.String())
+
 	// TODO validate request
-	manager, ok := entryService.managers[request.Entry.EntryType]
+	manager, ok := entryService.managers[request.ObjectType]
 	if !ok {
 		respond(w, Response{
-			Status:       "failed",
-			Code:         http.StatusBadRequest,
-			ErrorMessage: "Invalid entry type requested: " + request.EntryType,
+			Status:  "failed",
+			Code:    http.StatusBadRequest,
+			Message: "Invalid entry type requested: " + request.ObjectType,
 		})
 		return
 	}
 
-	switch strings.ToUpper(request.RequestType) {
+	switch strings.ToUpper(request.Verb) {
 	case query:
 		respond(w, manager.query(&request))
 	case get:
@@ -144,39 +178,6 @@ func EntryAPI(w http.ResponseWriter, r *http.Request) {
 		respond(w, manager.delete(&request))
 	}
 }
-
-/*  QueryAPI Returns links to a sub-set of subentries (with pagination)
-In-memory or ondisk collection of ids vs type/location so entries can be easily retrieved.
-Query: q=type:[domain,actor,message,content,container,attachment,comment],
-         text:,date:,owner:,id:,tags:,categories: (Url param or get-in-body-request)
-Fields: f=a,+b,-c
-Offset: o=10
-Limit: l=5
-Sort: s=type,date,owner
-
-response:
-entries:[{type:, id:, further:{}, actor:, sginature:, timestamp:}]
-total: nn
-returned: kk
-*/
-/*
-func QueryAPI(w http.ResponseWriter, r *http.Request) {
-	// TODO contstruct a query object
-	log.Println("In queryapi")
-}
-
-// GetEntryAPI retrievs one entry object
-func GetEntryAPI(w http.ResponseWriter, r *http.Request) { log.Println("in getentryapi") }
-
-// CreateEntryAPI create
-func CreateEntryAPI(w http.ResponseWriter, r *http.Request) { log.Println("in createentryapi") }
-
-// UpdateEntryAPI update
-func UpdateEntryAPI(w http.ResponseWriter, r *http.Request) { log.Println("in updateentryapi") }
-
-// DeleteEntryAPI delete
-func DeleteEntryAPI(w http.ResponseWriter, r *http.Request) { log.Println("in deleteentryapi") }
-*/
 
 // NotImplementedAPI ...
 func NotImplementedAPI(w http.ResponseWriter, r *http.Request) {
@@ -198,11 +199,13 @@ func (server *DomainsMan) Hello(iIn Identity, sIn Signature, messageIn string) (
 
 /*
 	Verbs: : PUT (Create), GET (Query ?query=&fields=), POST (Update), DELETE (Delete)
-
 	All ids / shortnames are unique across the domain: content, container, identity,
-
-
 	Information System: Content/Container self-described
+
+	  QueryAPI Returns links to a sub-set of subentries (with pagination)
+In-memory or ondisk collection of ids vs type/location so entries can be easily retrieved.
+Query: q=type:[domain,actor,message,content,container,attachment,comment],
+         text:,date:,owner:,id:,tags:,categories: (Url param or get-in-body-request)
 
 	/api/entry/{ID/shortname} <= actor, message, content, container, attachment, history, comment, react
 	// Returns links to a sub-set of subentries (with pagination)
@@ -218,7 +221,6 @@ func (server *DomainsMan) Hello(iIn Identity, sIn Signature, messageIn string) (
 	entries:[{type:, id:, further:{}, actor:, sginature:, timestamp:}]
 	total: nn
 	returned: kk
-
 
 	/api/content/{contentID}
 	/api/content/{contentID}

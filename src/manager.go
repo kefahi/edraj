@@ -9,25 +9,29 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// AddonsMan to manage the addons installed on the system
-type AddonsMan struct {
+const (
+	edraj = "edraj"
+)
+
+// DefaultMan to manage the edraj installed on the system
+type DefaultMan struct {
 	mongoDb   *mgo.Database
 	fileStore Storage
 }
 
-func (man *AddonsMan) init(config *Config) (err error) {
-	man.mongoDb = mongoSession.DB(addon)
-	man.fileStore.RootPath = path.Join(config.dataPath, addon)
-	man.fileStore.TrashPath = path.Join(config.dataPath, trash, addon)
+func (man *DefaultMan) init(config *Config) (err error) {
+	man.mongoDb = mongoSession.DB(edraj)
+	man.fileStore.RootPath = path.Join(config.dataPath, edraj)
+	man.fileStore.TrashPath = path.Join(config.dataPath, trash, edraj)
 	return
 }
 
-func (man *AddonsMan) query(request *Request) (response *QueryResponse) {
+func (man *DefaultMan) query(request *Request) (response *QueryResponse) {
 	response = &QueryResponse{}
 
 	// TODO
 	// Use request.EntryQuery
-	err := man.mongoDb.C(addon).Find(bson.M{}).All(&response.Entries)
+	err := man.mongoDb.C(edraj).Find(bson.M{}).All(&response.Entries)
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
@@ -41,7 +45,7 @@ func (man *AddonsMan) query(request *Request) (response *QueryResponse) {
 	return
 }
 
-func (man *AddonsMan) get(request *Request) (response *QueryResponse) {
+func (man *DefaultMan) get(request *Request) (response *QueryResponse) {
 	response = &QueryResponse{}
 
 	if request.EntryID == "" {
@@ -51,7 +55,7 @@ func (man *AddonsMan) get(request *Request) (response *QueryResponse) {
 		return
 	}
 	var entry Entry
-	err := man.mongoDb.C(addon).FindId(bson.ObjectIdHex(request.EntryID)).One(&entry)
+	err := man.mongoDb.C(edraj).FindId(bson.ObjectIdHex(request.EntryID)).One(&entry)
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
@@ -67,41 +71,58 @@ func (man *AddonsMan) get(request *Request) (response *QueryResponse) {
 	return
 }
 
-func (man *AddonsMan) create(request *Request) (response Response) {
-	if request.ObjectType == "" {
+func (man *DefaultMan) create(request *Request) (response Response) {
+	if !EntryTypes[request.ObjectType] {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("request.entry  must have valid value  (%v)", request.Entry)
 		return
 	}
-	entry := Entry{} // request.Entry
-	//entry.ID = bson.NewObjectId()
-	err := man.mongoDb.C(addon).Insert(&entry)
+
+	var doc interface{}
+	switch request.ObjectType {
+	case content:
+		doc = request.Entry.Content
+	case container:
+		doc = request.Entry.Container
+	case comment:
+		doc = request.Entry.Comment
+	case reaction:
+		doc = request.Entry.Reaction
+	case message:
+		doc = request.Entry.Message
+	case actor:
+		doc = request.Entry.Actor
+	case workgroup:
+		doc = request.Entry.Workgroup
+	case schema:
+		doc = request.Entry.Scheme
+	}
+	err := man.mongoDb.C(request.ObjectType).Insert(doc)
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("Failed to create entry (%v). err: %s", request.Entry, err.Error())
+		return
 	}
 
 	response.Status = succeeded
 	response.Code = http.StatusCreated
-	// TODO return the id of the created object
-
 	return
 }
 
-func (man *AddonsMan) update(request *Request) (response Response) {
+func (man *DefaultMan) update(request *Request) (response Response) {
 	if request.ObjectType == "" {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("request.Entry must have valid value  (%v)", request.Entry)
 		return
 	}
-	err := man.mongoDb.C(addon).Update(request.Entry.ID, &request.Entry)
+	err := man.mongoDb.C(edraj).Update(request.Entry.ID, &request.Entry)
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
-		response.Message = fmt.Sprintf("Failed to create entry (%v). err: %s", request.Entry, err.Error())
+		response.Message = fmt.Sprintf("Failed to update entry (%v). err: %s", request.Entry, err.Error())
 	}
 
 	response.Status = succeeded
@@ -111,7 +132,7 @@ func (man *AddonsMan) update(request *Request) (response Response) {
 	return
 }
 
-func (man *AddonsMan) delete(request *Request) (response Response) {
+func (man *DefaultMan) delete(request *Request) (response Response) {
 
 	if request.EntryID == "" {
 		response.Status = failed
@@ -120,7 +141,7 @@ func (man *AddonsMan) delete(request *Request) (response Response) {
 		return
 	}
 	var entry Entry
-	err := man.mongoDb.C(addon).Remove(&entry)
+	err := man.mongoDb.C(edraj).Remove(&entry)
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest

@@ -1,18 +1,22 @@
 package main
 
-import "path"
+import (
+	"path"
+
+	mgo "gopkg.in/mgo.v2"
+)
 
 // MessagesMan all messaging goes here
 type MessagesMan struct {
-	mongoStore MongoStore
+	mongoDb *mgo.Database
 	//messagesCollection    MongoCollection
 	//attachmentsCollection MongoCollection
 	fileStore Storage
 }
 
 func (mm *MessagesMan) init(config *Config) (err error) {
-	mm.mongoStore.init(config.mongoAddress, message)
 
+	mm.mongoDb = mongoSession.DB(message)
 	mm.fileStore.RootPath = path.Join(config.dataPath, message)
 	mm.fileStore.TrashPath = path.Join(config.dataPath, trash, message)
 	return

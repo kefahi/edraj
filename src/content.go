@@ -1,10 +1,14 @@
 package main
 
-import "path"
+import (
+	"path"
+
+	mgo "gopkg.in/mgo.v2"
+)
 
 // ContentMan : Content Manager
 type ContentMan struct {
-	mongoStore MongoStore
+	mongoDb *mgo.Database
 	//contentCollection     MongoCollection
 	//containersCollection  MongoCollection
 	//attachmentsCollection MongoCollection
@@ -12,7 +16,7 @@ type ContentMan struct {
 }
 
 func (cm *ContentMan) init(config *Config) (err error) {
-	cm.mongoStore.init(config.mongoAddress, content)
+	cm.mongoDb = mongoSession.DB(content)
 	cm.fileStore.RootPath = path.Join(config.dataPath, content)
 	cm.fileStore.TrashPath = path.Join(config.dataPath, trash, content)
 	return
