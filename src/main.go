@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	"html/template"
 
 	mgo "gopkg.in/mgo.v2"
 )
@@ -55,11 +56,16 @@ func Log(handler http.Handler) http.Handler {
 	})
 }
 
+func index(w http.ResponseWriter, r *http.Request){
+	template.Must(template.ParseFiles("index.html")).Execute(w, "Hello World!")
+}
+
 func main() {
 
 	http.HandleFunc("/api/entry/", EntryAPI)
 	http.HandleFunc("/hello", HelloAPI)
 	http.Handle("/assets", http.FileServer(http.Dir(config.assetsPath)))
+	http.HandleFunc("/", index)
 	r := Log(http.DefaultServeMux)
 
 	server := &http.Server{

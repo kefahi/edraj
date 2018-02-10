@@ -34,7 +34,7 @@ type Attachment struct {
 	Name       string
 	Checksum   string
 	Size       int64
-	Signature  *Signature // The Author's signature.
+	Signature  *Signature `bson:",omitempty" json:",omitempty"` // The Author's signature.
 	MediaType  string     // MediaTypes
 	References []string   `bson:",omitempty" json:",omitempty"` // TODO fixme list of id's of Contents/Messages
 	// that point to this attachment. auto-garbage collection?
@@ -258,7 +258,7 @@ type Entry struct {
 	ID string `bson:"_id" json:"id"`
 
 	// Author/owner's identity and proof: signatory
-	Signature *Signature // Author / owener/creator signature
+	Signature *Signature `bson:",omitempty" json:",omitempty"` // Author / owener/creator signature
 	Timestamp string
 	Further   []struct{} `bson:",omitempty" json:",omitempty"` // Further entries to explore.
 	// Children/related/trending/top/popular
