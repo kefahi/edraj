@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
-	"html/template"
 
 	mgo "gopkg.in/mgo.v2"
 )
@@ -56,7 +56,7 @@ func Log(handler http.Handler) http.Handler {
 	})
 }
 
-func index(w http.ResponseWriter, r *http.Request){
+func index(w http.ResponseWriter, r *http.Request) {
 	template.Must(template.ParseFiles("index.html")).Execute(w, "Hello World!")
 }
 

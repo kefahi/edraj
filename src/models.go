@@ -240,10 +240,11 @@ type Reaction struct {
 
 // EntryQuery the query object.
 type EntryQuery struct {
-	EntryType  string `bson:",omitempty" json:",omitempty"` // Of EntryTypes
+	// EntryType  string `bson:",omitempty" json:",omitempty"` // Of EntryTypes
 	Text       string `bson:",omitempty" json:",omitempty"` // free text search
 	Date       string `bson:",omitempty" json:",omitempty"` // from-, -to, from-to
 	Sort       string `bson:",omitempty" json:",omitempty"` // Sort by fields
+	Path       string `bson:",omitempty" json:",omitempty"`
 	Owner      string `bson:",omitempty" json:",omitempty"` // by ownerid
 	Tags       string `bson:",omitempty" json:",omitempty"` // T1,+T2,-T3
 	Categories string `bson:",omitempty" json:",omitempty"` // C1,+C2,-C3

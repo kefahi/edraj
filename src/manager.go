@@ -28,14 +28,38 @@ func (man *DefaultMan) init(config *Config) (err error) {
 
 func (man *DefaultMan) query(request *Request) (response *QueryResponse) {
 	response = &QueryResponse{}
+	if !EntryTypes[request.ObjectType] {
+		response.Status = failed
+		response.Code = http.StatusBadRequest
+		response.Message = fmt.Sprintf("request objecttype must have valid values  (%s) (%s)", request.EntryID, request.ObjectType)
+		return
+	}
 
-	// TODO
-	// Use request.EntryQuery
-	err := man.mongoDb.C(edraj).Find(bson.M{}).All(&response.Entries)
+	response.Entries = []Entry{}
+
+	var err error
+	switch request.ObjectType {
+	case content:
+		objects := []Content{}
+		err = man.mongoDb.C(request.ObjectType).Find(bson.M{}).All(&objects)
+		for _, object := range objects {
+			value := object
+			response.Entries = append(response.Entries, Entry{Content: &value})
+		}
+	case container:
+		objects := []Container{}
+		err = man.mongoDb.C(request.ObjectType).Find(bson.M{}).All(&objects)
+		for _, object := range objects {
+			response.Entries = append(response.Entries, Entry{Container: &object})
+		}
+
+	}
+
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("Failed to run query (%v). err: %s", request, err.Error())
+		return
 	}
 
 	response.Returned = int64(len(response.Entries))
@@ -70,6 +94,7 @@ func (man *DefaultMan) get(request *Request) (response *QueryResponse) {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("Failed to retrive entry (%s). err: %s", request.EntryID, err.Error())
+		return
 	}
 
 	response.Status = succeeded
@@ -122,7 +147,7 @@ func (man *DefaultMan) create(request *Request) (response Response) {
 }
 
 func (man *DefaultMan) update(request *Request) (response Response) {
-	if request.EntryID == "" || !EntryTypes[request.ObjectType]{
+	if request.EntryID == "" || !EntryTypes[request.ObjectType] {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("request.Entry must have valid value  (%v)", request.Entry)
@@ -141,7 +166,7 @@ func (man *DefaultMan) update(request *Request) (response Response) {
 }
 
 func (man *DefaultMan) delete(request *Request) (response Response) {
-	if request.EntryID == "" || !EntryTypes[request.ObjectType]{
+	if request.EntryID == "" || !EntryTypes[request.ObjectType] {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("request.entryid must have valid value  (%s)", request.EntryID)
@@ -153,6 +178,7 @@ func (man *DefaultMan) delete(request *Request) (response Response) {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("Failed to retrive entry (%s). err: %s", request.EntryID, err.Error())
+		return
 	}
 
 	response.Status = succeeded
