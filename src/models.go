@@ -34,9 +34,9 @@ type Attachment struct {
 	Name       string
 	Checksum   string
 	Size       int64
-	Signature  Signature // The Author's signature.
-	MediaType  string    // MediaTypes
-	References []string  `bson:",omitempty" json:",omitempty"` // TODO fixme list of id's of Contents/Messages
+	Signature  *Signature // The Author's signature.
+	MediaType  string     // MediaTypes
+	References []string   `bson:",omitempty" json:",omitempty"` // TODO fixme list of id's of Contents/Messages
 	// that point to this attachment. auto-garbage collection?
 
 	// Ome of the following.
@@ -85,7 +85,7 @@ type Actor struct {
 	Shortname      string // unique
 	Domain         string //
 	Keys           []Keypair
-	Address        Address      `bson:",omitempty" json:",omitempty"`
+	Address        *Address     `bson:",omitempty" json:",omitempty"`
 	Organizations  []string     `bson:",omitempty" json:",omitempty"` // that the user relates to, like work, ngo ...
 	Comms          []Contact    `bson:",omitempty" json:",omitempty"` // The user's communication channels
 	Biography      string       `bson:",omitempty" json:",omitempty"` // The user's biography
@@ -182,7 +182,7 @@ type Content struct {
 	Displayname string
 	Timestamp   string
 	Signature   Signature
-	Geo         GeoPoint `bson:",omitempty" json:",omitempty"`
+	Geo         *GeoPoint `bson:",omitempty" json:",omitempty"`
 	Title       string
 	Tags        []string     `bson:",omitempty" json:",omitempty"`
 	Categories  []string     `bson:",omitempty" json:",omitempty"`
@@ -258,25 +258,25 @@ type Entry struct {
 	ID string `bson:"_id" json:"id"`
 
 	// Author/owner's identity and proof: signatory
-	Signature Signature // Author / owener/creator signature
+	Signature *Signature // Author / owener/creator signature
 	Timestamp string
 	Further   []struct{} `bson:",omitempty" json:",omitempty"` // Further entries to explore.
 	// Children/related/trending/top/popular
 
 	Type string // from EntryTypes
 	// json with type-specific fields
-	Reaction  Reaction  `bson:",omitempty" json:",omitempty"`
-	Comment   Comment   `bson:",omitempty" json:",omitempty"`
-	Content   Content   `bson:",omitempty" json:",omitempty"`
-	Container Container `bson:",omitempty" json:",omitempty"`
-	Message   Message   `bson:",omitempty" json:",omitempty"`
-	Scheme    Scheme    `bson:",omitempty" json:",omitempty"`
-	Workgroup Workgroup `bson:",omitempty" json:",omitempty"`
-	Page      Page      `bson:",omitempty" json:",omitempty"`
-	Block     Block     `bson:",omitempty" json:",omitempty"`
-	Addon     Addon     `bson:",omitempty" json:",omitempty"`
-	Actor     Actor     `bson:",omitempty" json:",omitempty"`
-	Domain    Domain    `bson:",omitempty" json:",omitempty"`
+	Reaction  *Reaction  `bson:",omitempty" json:",omitempty"`
+	Comment   *Comment   `bson:",omitempty" json:",omitempty"`
+	Content   *Content   `bson:",omitempty" json:",omitempty"`
+	Container *Container `bson:",omitempty" json:",omitempty"`
+	Message   *Message   `bson:",omitempty" json:",omitempty"`
+	Scheme    *Scheme    `bson:",omitempty" json:",omitempty"`
+	Workgroup *Workgroup `bson:",omitempty" json:",omitempty"`
+	Page      *Page      `bson:",omitempty" json:",omitempty"`
+	Block     *Block     `bson:",omitempty" json:",omitempty"`
+	Addon     *Addon     `bson:",omitempty" json:",omitempty"`
+	Actor     *Actor     `bson:",omitempty" json:",omitempty"`
+	Domain    *Domain    `bson:",omitempty" json:",omitempty"`
 	// ...
 }
 
@@ -293,9 +293,9 @@ type Request struct {
 	//Type       string //Payload type: id string, Entry, EntryQuery
 	ObjectType string // EntryTypes
 
-	Entry      Entry      `bson:",omitempty" json:",omitempty"` // for create
-	EntryID    string     `bson:",omitempty" json:",omitempty"` // for get, update, delete
-	EntryQuery EntryQuery `bson:",omitempty" json:",omitempty"` // For query
+	Entry      *Entry      `bson:",omitempty" json:",omitempty"` // for create
+	EntryID    string      `bson:",omitempty" json:",omitempty"` // for get, update, delete
+	EntryQuery *EntryQuery `bson:",omitempty" json:",omitempty"` // For query
 }
 
 // Response of an api call

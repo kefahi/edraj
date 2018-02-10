@@ -48,14 +48,24 @@ func (man *DefaultMan) query(request *Request) (response *QueryResponse) {
 func (man *DefaultMan) get(request *Request) (response *QueryResponse) {
 	response = &QueryResponse{}
 
-	if request.EntryID == "" {
+	if request.EntryID == "" || !EntryTypes[request.ObjectType] {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
-		response.Message = fmt.Sprintf("request.entryid must have valid value  (%s)", request.EntryID)
+		response.Message = fmt.Sprintf("request entryid and/or objecttype must have valid values  (%s) (%s)", request.EntryID, request.ObjectType)
 		return
 	}
-	var entry Entry
-	err := man.mongoDb.C(edraj).FindId(bson.ObjectIdHex(request.EntryID)).One(&entry)
+	var err error
+	entry := Entry{}
+	var object interface{}
+	switch request.ObjectType {
+	case content:
+		object = &entry.Content
+	case container:
+		object = &entry.Container
+
+	}
+	err = man.mongoDb.C(request.ObjectType).FindId(request.EntryID /*bson.ObjectIdHex(request.EntryID)*/).One(object)
+	response.Entries = []Entry{entry}
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
@@ -64,7 +74,7 @@ func (man *DefaultMan) get(request *Request) (response *QueryResponse) {
 
 	response.Status = succeeded
 	response.Code = http.StatusFound
-	response.Entries = append(response.Entries, entry)
+	//response.Entries = append(response.Entries, entry)
 	response.Returned = 1
 	response.Total = 1
 
@@ -112,13 +122,13 @@ func (man *DefaultMan) create(request *Request) (response Response) {
 }
 
 func (man *DefaultMan) update(request *Request) (response Response) {
-	if request.ObjectType == "" {
+	if request.EntryID == "" || !EntryTypes[request.ObjectType]{
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("request.Entry must have valid value  (%v)", request.Entry)
 		return
 	}
-	err := man.mongoDb.C(edraj).Update(request.Entry.ID, &request.Entry)
+	err := man.mongoDb.C(request.ObjectType).Update(request.Entry.ID, &request.Entry)
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
@@ -127,21 +137,18 @@ func (man *DefaultMan) update(request *Request) (response Response) {
 
 	response.Status = succeeded
 	response.Code = http.StatusCreated
-	// TODO return the id of the created object
-
 	return
 }
 
 func (man *DefaultMan) delete(request *Request) (response Response) {
-
-	if request.EntryID == "" {
+	if request.EntryID == "" || !EntryTypes[request.ObjectType]{
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("request.entryid must have valid value  (%s)", request.EntryID)
 		return
 	}
-	var entry Entry
-	err := man.mongoDb.C(edraj).Remove(&entry)
+
+	err := man.mongoDb.C(request.ObjectType).Remove(&struct{ _id string }{_id: request.EntryID})
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest

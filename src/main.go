@@ -57,18 +57,6 @@ func Log(handler http.Handler) http.Handler {
 
 func main() {
 
-	/*
-		r := mux.NewRouter()
-		r.HandleFunc("/api/entry", QueryAPI).Methods("GET")
-		r.HandleFunc("/api/entry/{id}", GetEntryAPI).Methods("GET")
-		r.HandleFunc("/api/entry", CreateEntryAPI).Methods("PUT")
-		r.HandleFunc("/api/entry/{id}", UpdateEntryAPI).Methods("POST")
-		r.HandleFunc("/api/entry/{id}", DeleteEntryAPI).Methods("DELETE")
-		r.HandleFunc("/api/domains", NotImplementedAPI).Methods("GET")
-		r.HandleFunc("/api/hello", HelloAPI).Methods("GET")
-		r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(config.assetsPath))))
-	*/
-
 	http.HandleFunc("/api/entry/", EntryAPI)
 	http.HandleFunc("/hello", HelloAPI)
 	http.Handle("/assets", http.FileServer(http.Dir(config.assetsPath)))

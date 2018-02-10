@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -146,13 +145,13 @@ func EntryAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data bytes.Buffer
-	var me map[string]interface{}
-	body2, _ := json.Marshal(request)
-	json.Unmarshal(body2, &me)
-	printme(me, "", &data)
+	//var data bytes.Buffer
+	//var me map[string]interface{}
+	//body2, _ := json.Marshal(request)
+	//json.Unmarshal(body2, &me)
+	//printme(me, "", &data)
 
-	fmt.Println(data.String())
+	//fmt.Println(data.String())
 
 	// TODO validate request
 	manager, ok := entryService.managers[request.ObjectType]
@@ -189,13 +188,14 @@ func HelloAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "not implemented yet !")
 }
 
+/*
 // Hello (EHLO message)
 func (server *DomainsMan) Hello(iIn Identity, sIn Signature, messageIn string) (iOut Identity,
 	sOut Signature, messageOut string, token string) {
 	// ? Is there a need to establish some form of a basic session here, after verification of the signature?
 	return Identity{}, Signature{}, "Hello back how can I help you?",
 		"token of verification - alternative to session"
-}
+}*/
 
 /*
 	Verbs: : PUT (Create), GET (Query ?query=&fields=), POST (Update), DELETE (Delete)
