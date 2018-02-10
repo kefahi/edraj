@@ -13,19 +13,20 @@ const (
 	addon        = "addon"
 	attachment   = "attachment"
 	block        = "block"
-	container    = "container"
 	comment      = "comment"
+	container    = "container"
 	content      = "content"
 	crawler      = "crawler"
 	domain       = "domain"
 	message      = "message"
 	miner        = "miner"
 	notification = "notification"
+	page         = "page"
 	reaction     = "reaction"
 	schema       = "schema"
-	trash        = "trash"
-	page         = "page"
 	workgroup    = "workgroup"
+
+	trash = "trash"
 
 	succeeded = "succeeded"
 	failed    = "failed"
@@ -41,18 +42,22 @@ const (
 var (
 	// EntryTypes the "enum" of accepted entrytypes
 	EntryTypes = map[string]bool{
-		workgroup:  true,
-		domain:     true,
-		actor:      true,
-		message:    true,
-		container:  true,
-		content:    true,
-		attachment: true,
-		comment:    true,
-		schema:     true,
-		addon:      true,
-		miner:      true,
-		crawler:    true,
+		actor:        true,
+		addon:        true,
+		attachment:   true,
+		block:        true,
+		comment:      true,
+		container:    true,
+		content:      true,
+		crawler:      true,
+		domain:       true,
+		message:      true,
+		miner:        true,
+		notification: true,
+		page:         true,
+		reaction:     true,
+		schema:       true,
+		workgroup:    true,
 	}
 )
 
@@ -65,8 +70,8 @@ type EntryService struct {
 // Manager interface
 type Manager interface {
 	init(config *Config) (err error)
-	query(request *Request) (response *QueryResponse)
-	get(request *Request) (response *QueryResponse)
+	query(request *Request) (response *Response)
+	get(request *Request) (response *Response)
 	create(request *Request) (response *Response)
 	update(request *Request) (response *Response)
 	delete(request *Request) (response *Response)
@@ -113,18 +118,11 @@ func (es *EntryService) init(config Config) (err error) {
 	return
 }
 
-func respond(w http.ResponseWriter, data interface{}) {
-	var code int
-	switch cast := data.(type) {
-	case *Response:
-		code = cast.Code
-	case *QueryResponse:
-		code = cast.Code
-	}
-	response, _ := json.Marshal(data)
+func respond(w http.ResponseWriter, response *Response) {
+	data, _ := json.Marshal(response)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(response)
+	w.WriteHeader(response.Code)
+	w.Write(data)
 }
 
 // EntryAPI serves the api
@@ -136,12 +134,11 @@ func EntryAPI(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	//if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 	if err := json.Unmarshal(body, &request); err != nil {
-		response := Response{
+		respond(w, &Response{
 			Status:  "failed",
 			Code:    http.StatusBadRequest,
 			Message: "Invalid request: " + err.Error(),
-		}
-		respond(w, response)
+		})
 		return
 	}
 

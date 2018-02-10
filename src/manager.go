@@ -27,14 +27,16 @@ func (man *DefaultMan) init(config *Config) (err error) {
 	return
 }
 
-func (man *DefaultMan) query(request *Request) (response *QueryResponse) {
-	response = &QueryResponse{}
+func (man *DefaultMan) query(request *Request) (response *Response) {
+	response = &Response{}
 	if !EntryTypes[request.EntryType] {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
 		response.Message = fmt.Sprintf("request objecttype must have valid values  (%s) (%s)", request.EntryID, request.EntryType)
 		return
 	}
+
+	// TODO consume the Query data (filters, pagination ...etc)
 
 	response.Entries = []Entry{}
 
@@ -55,6 +57,7 @@ func (man *DefaultMan) query(request *Request) (response *QueryResponse) {
 			response.Entries = append(response.Entries, Entry{Container: &value})
 		}
 
+		// TBD extend for all other types
 	}
 
 	if err != nil {
@@ -64,6 +67,7 @@ func (man *DefaultMan) query(request *Request) (response *QueryResponse) {
 		return
 	}
 
+	response.Total = int64(len(response.Entries))
 	response.Returned = int64(len(response.Entries))
 	response.Status = succeeded
 	response.Code = http.StatusFound
@@ -71,8 +75,8 @@ func (man *DefaultMan) query(request *Request) (response *QueryResponse) {
 	return
 }
 
-func (man *DefaultMan) get(request *Request) (response *QueryResponse) {
-	response = &QueryResponse{}
+func (man *DefaultMan) get(request *Request) (response *Response) {
+	response = &Response{}
 
 	if request.EntryID == "" || !EntryTypes[request.EntryType] {
 		response.Status = failed
@@ -113,6 +117,11 @@ func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}
 			e.Addon = &Addon{}
 		}
 		doc = e.Addon
+	case attachment:
+		if createIfNil && e.Attachment == nil {
+			e.Attachment = &Attachment{}
+		}
+		doc = e.Block
 	case block:
 		if createIfNil && e.Block == nil {
 			e.Block = &Block{}
@@ -133,6 +142,11 @@ func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}
 			e.Content = &Content{}
 		}
 		doc = e.Content
+	case crawler:
+		if createIfNil && e.Crawler == nil {
+			e.Crawler = &Crawler{}
+		}
+		doc = e.Content
 	case domain:
 		if createIfNil && e.Domain == nil {
 			e.Domain = &Domain{}
@@ -143,6 +157,16 @@ func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}
 			e.Message = &Message{}
 		}
 		doc = e.Message
+	case miner:
+		if createIfNil && e.Miner == nil {
+			e.Miner = &Miner{}
+		}
+		doc = e.Miner
+	case notification:
+		if createIfNil && e.Notification == nil {
+			e.Notification = &Notification{}
+		}
+		doc = e.Miner
 	case page:
 		if createIfNil && e.Page == nil {
 			e.Page = &Page{}

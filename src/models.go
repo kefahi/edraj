@@ -131,6 +131,18 @@ type Addon struct {
 	Name string
 }
 
+// Miner aka module /plugin
+type Miner struct {
+	ID   string `bson:"_id" json:"id"`
+	Name string
+}
+
+// Crawler aka module /plugin
+type Crawler struct {
+	ID   string `bson:"_id" json:"id"`
+	Name string
+}
+
 // Schema holdes the details of a schema definition
 type Schema struct {
 	ID string `bson:"_id" json:"id"`
@@ -226,31 +238,19 @@ type Reaction struct {
 	Type      string    // like/dislike/...
 }
 
-// Signature of data
-/*type Signature struct {
-	ActorID          string
-	ActorDisplayname string
-	ActorShortname   string
-	ActorType        string // Actor, Workgroup, Domain
-	ActorDomain      string
-	Signature        string
-	PublickeyUsed    string
-	FieldsSigned     []string
-}*/
-
 // Query the query object.
 type Query struct {
-	EntryType  []string `bson:",omitempty" json:",omitempty"` // Of EntryTypes
-	Text       string   `bson:",omitempty" json:",omitempty"` // free text search
-	Date       string   `bson:",omitempty" json:",omitempty"` // from-, -to, from-to
-	Sort       string   `bson:",omitempty" json:",omitempty"` // Sort by fields
-	Path       string   `bson:",omitempty" json:",omitempty"` // Object path. support patterns?
-	Owner      string   `bson:",omitempty" json:",omitempty"` // by ownerid
-	Tags       string   `bson:",omitempty" json:",omitempty"` // T1,+T2,-T3
-	Categories string   `bson:",omitempty" json:",omitempty"` // C1,+C2,-C3
-	Fields     string   `bson:",omitempty" json:",omitempty"` // A,+B,-C
-	Offset     int      `bson:",omitempty" json:",omitempty"` //
-	Limit      int      `bson:",omitempty" json:",omitempty"` // aka page-size
+	//EntryType  []string `bson:",omitempty" json:",omitempty"` // Of EntryTypes
+	Text       string `bson:",omitempty" json:",omitempty"` // free text search
+	Date       string `bson:",omitempty" json:",omitempty"` // from-, -to, from-to
+	Sort       string `bson:",omitempty" json:",omitempty"` // Sort by fields
+	Path       string `bson:",omitempty" json:",omitempty"` // Object path. support patterns?
+	Owner      string `bson:",omitempty" json:",omitempty"` // by ownerid
+	Tags       string `bson:",omitempty" json:",omitempty"` // T1,+T2,-T3
+	Categories string `bson:",omitempty" json:",omitempty"` // C1,+C2,-C3
+	Fields     string `bson:",omitempty" json:",omitempty"` // A,+B,-C
+	Offset     int    `bson:",omitempty" json:",omitempty"` //
+	Limit      int    `bson:",omitempty" json:",omitempty"` // aka page-size
 }
 
 // Entry general entry data
@@ -258,47 +258,52 @@ type Entry struct {
 	Further []struct{} `bson:",omitempty" json:",omitempty"` // Further entries to explore. Children/related/trending/top/popular
 
 	// json with type-specific fields
-	Actor     *Actor     `bson:",omitempty" json:",omitempty"`
-	Addon     *Addon     `bson:",omitempty" json:",omitempty"`
-	Block     *Block     `bson:",omitempty" json:",omitempty"`
-	Comment   *Comment   `bson:",omitempty" json:",omitempty"`
-	Container *Container `bson:",omitempty" json:",omitempty"`
-	Content   *Content   `bson:",omitempty" json:",omitempty"`
-	Domain    *Domain    `bson:",omitempty" json:",omitempty"`
-	Message   *Message   `bson:",omitempty" json:",omitempty"`
-	Page      *Page      `bson:",omitempty" json:",omitempty"`
-	Reaction  *Reaction  `bson:",omitempty" json:",omitempty"`
-	Schema    *Schema    `bson:",omitempty" json:",omitempty"`
-	Workgroup *Workgroup `bson:",omitempty" json:",omitempty"`
+	Actor        *Actor        `bson:",omitempty" json:",omitempty"`
+	Addon        *Addon        `bson:",omitempty" json:",omitempty"`
+	Attachment   *Attachment   `bson:",omitempty" json:",omitempty"`
+	Block        *Block        `bson:",omitempty" json:",omitempty"`
+	Comment      *Comment      `bson:",omitempty" json:",omitempty"`
+	Container    *Container    `bson:",omitempty" json:",omitempty"`
+	Content      *Content      `bson:",omitempty" json:",omitempty"`
+	Crawler      *Crawler      `bson:",omitempty" json:",omitempty"`
+	Domain       *Domain       `bson:",omitempty" json:",omitempty"`
+	Message      *Message      `bson:",omitempty" json:",omitempty"`
+	Miner        *Miner        `bson:",omitempty" json:",omitempty"`
+	Notification *Notification `bson:",omitempty" json:",omitempty"`
+	Page         *Page         `bson:",omitempty" json:",omitempty"`
+	Reaction     *Reaction     `bson:",omitempty" json:",omitempty"`
+	Schema       *Schema       `bson:",omitempty" json:",omitempty"`
+	Workgroup    *Workgroup    `bson:",omitempty" json:",omitempty"`
 	// ...
 }
 
 // Request object TODO support bulk operations as well
 type Request struct {
 	Signature Signature // Requestor's signature
-	//Timestamp string
 	// Action/verb/affordance
 	Verb      string // get, query, update, create, delete
 	EntryType string `bson:",omitempty" json:",omitempty"` // from EntryTypes
-	EntryID   string `bson:",omitempty" json:",omitempty"` // for get, delete
 
-	Entry *Entry `bson:",omitempty" json:",omitempty"` // for create, update
-	Query *Query `bson:",omitempty" json:",omitempty"` // For query
+	// Operation scale
+	Scale   string `bson:",omitempty" json:",omitempty"` // 'id': just the EntryID field, 'entry': just the Entry field, 'query': Just the Query field, 'entries': Just the Entries field
+	EntryID string `bson:",omitempty" json:",omitempty"` // for get, delete. scale = id
+	Entry   *Entry `bson:",omitempty" json:",omitempty"` // for single create, update. scale = entry
+	Query   *Query `bson:",omitempty" json:",omitempty"` // For query. scale = query
 }
 
-// Response of an api call
+/*// Response of an api call
 type Response struct {
 	Status  string // succeeded / failed
 	Code    int    // Http: 200 OK, 202 Created, 404 Not found, 500 internal server error
 	Message string // in case failed the error message is provided
-}
+}*/
 
-// QueryResponse of the Entry api
-type QueryResponse struct {
-	Status   string // succeeded / failed
-	Code     int    // Http: 200 OK, 202 Created, 404 Not found, 500 internal server error
-	Message  string //  message about the operation
-	Total    int64
-	Returned int64
-	Entries  []Entry `json:"entries,omitempty"`
+// Response of the Entry api
+type Response struct {
+	Status   string  // succeeded / failed
+	Code     int     // Http: 200 OK, 202 Created, 404 Not found, 500 internal server error
+	Message  string  `json:",omitempty"` //  message about the operation
+	Total    int64   `json:",omitempty"`
+	Returned int64   `json:",omitempty"`
+	Entries  []Entry `json:",omitempty"`
 }
