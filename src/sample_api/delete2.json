@@ -13,7 +13,7 @@
 		"fieldssigned": ["ra", "rb"]
 	},
 	"timestamp": "some time here",
-	"objecttype": "content",
+	"entrytype": "content",
 	"verb": "delete",
 	"entryid": "two"
 }

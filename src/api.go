@@ -9,24 +9,23 @@ import (
 )
 
 const (
-	domain       = "domain"
 	actor        = "actor"
-	message      = "message"
-	container    = "container"
-	content      = "content"
+	addon        = "addon"
 	attachment   = "attachment"
+	block        = "block"
+	container    = "container"
 	comment      = "comment"
+	content      = "content"
+	crawler      = "crawler"
+	domain       = "domain"
+	message      = "message"
+	miner        = "miner"
+	notification = "notification"
 	reaction     = "reaction"
 	schema       = "schema"
-	addon        = "addon"
-	miner        = "miner"
-	crawler      = "crawler"
-	notification = "notification"
-	workgroup    = "workgroup"
 	trash        = "trash"
 	page         = "page"
-	site         = "site"
-	block        = "block"
+	workgroup    = "workgroup"
 
 	succeeded = "succeeded"
 	failed    = "failed"
@@ -59,7 +58,8 @@ var (
 
 // EntryService serving
 type EntryService struct {
-	managers map[string]Manager
+	//managers map[string]Manager
+	manager Manager
 }
 
 // Manager interface
@@ -67,27 +67,27 @@ type Manager interface {
 	init(config *Config) (err error)
 	query(request *Request) (response *QueryResponse)
 	get(request *Request) (response *QueryResponse)
-	create(request *Request) (response Response)
-	update(request *Request) (response Response)
-	delete(request *Request) (response Response)
+	create(request *Request) (response *Response)
+	update(request *Request) (response *Response)
+	delete(request *Request) (response *Response)
 }
 
 func (es *EntryService) init(config Config) (err error) {
 
-	defaultMan := DefaultMan{}
-	defaultMan.init(&config)
-
-	es.managers = map[string]Manager{}
-	es.managers[actor] = &defaultMan
-	es.managers[workgroup] = &defaultMan
-	es.managers[domain] = &defaultMan
-	es.managers[addon] = &defaultMan
-	es.managers[content] = &defaultMan
-	es.managers[message] = &defaultMan
-	es.managers[schema] = &defaultMan
-	es.managers[crawler] = &defaultMan
-	es.managers[notification] = &defaultMan
-
+	es.manager = &DefaultMan{}
+	es.manager.init(&config)
+	/*
+		es.managers = map[string]Manager{}
+		es.managers[actor] = &defaultMan
+		es.managers[workgroup] = &defaultMan
+		es.managers[domain] = &defaultMan
+		es.managers[addon] = &defaultMan
+		es.managers[content] = &defaultMan
+		es.managers[message] = &defaultMan
+		es.managers[schema] = &defaultMan
+		es.managers[crawler] = &defaultMan
+		es.managers[notification] = &defaultMan
+	*/
 	/*
 		es.managers[workgroup] = &WorkgroupMan{}
 		err = es.managers[workgroup].init(&config)
@@ -154,7 +154,7 @@ func EntryAPI(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(data.String())
 
 	// TODO validate request
-	manager, ok := entryService.managers[request.ObjectType]
+	/*manager, ok := entryService.managers[request.ObjectType]
 	if !ok {
 		respond(w, Response{
 			Status:  "failed",
@@ -162,19 +162,19 @@ func EntryAPI(w http.ResponseWriter, r *http.Request) {
 			Message: "Invalid entry type requested: " + request.ObjectType,
 		})
 		return
-	}
+	}*/
 
 	switch strings.ToUpper(request.Verb) {
 	case query:
-		respond(w, manager.query(&request))
+		respond(w, entryService.manager.query(&request))
 	case get:
-		respond(w, manager.get(&request))
+		respond(w, entryService.manager.get(&request))
 	case create:
-		respond(w, manager.create(&request))
+		respond(w, entryService.manager.create(&request))
 	case update:
-		respond(w, manager.update(&request))
+		respond(w, entryService.manager.update(&request))
 	case delete:
-		respond(w, manager.delete(&request))
+		respond(w, entryService.manager.delete(&request))
 	}
 }
 
