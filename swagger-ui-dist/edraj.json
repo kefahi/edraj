@@ -13,291 +13,23 @@
         }
     },
     "tags": [
-        { "name": "actor", "description": "Operations around the actor (aka agent)" },
-        { "name": "content", "description": "Content Management" },
-        { "name": "domain", "description": "Domain Registry" },
-        { "name": "schema", "description": "Schema Registry" },
-        { "name": "addon", "description": "Addons repo" },
-        { "name": "public_miner", "description": "Public miners repo" },
-        { "name": "notification", "description": "Notifications subscribtion and publishing" },
-        { "name": "local_miner", "description": "Private miner on the local and harvested content" },
-        { "name": "page", "description": "Public web elements" }
+        { "name": "entry", "description": "entry api operations" }
     ],
     "paths": {
-        "/content": {
+        "/entry": {
             "post": {
-                "tags": ["content"],
-                "summary": "Add a new content",
-                "description": "",
-                "operationId": "addContent",
-                "parameters": [],
-                "responses": { "405": { "description": "Invalid input" } },
-                "security": [{ "edraj_auth": ["write:content", "read:content"] }],
-                "requestBody": { "content": { "application/json": { "description": "Content object ", "schema": { "$ref": "#/components/schemas/Content" } } } }
-            }
-        },
-        "/content/findByTags": {
-            "get": {
-                "tags": ["content"],
-                "summary": "Finds Content by tags",
-                "description": "Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-                "operationId": "findContentByTags",
-                "parameters": [{
-                    "name": "tags",
-                    "in": "query",
-                    "description": "Tags to filter by",
-                    "required": true,
-                    "schema": { "type": "array", "items": { "type": "string" } }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Content" } } } }
-                    },
-                    "400": { "description": "Invalid tag value" }
-                }
-            }
-        },
-        "/content/{contentId}": {
-            "get": {
-                "tags": ["content"],
-                "summary": "Find content by ID",
-                "description": "Returns a single content",
-                "operationId": "getContentById",
-                "parameters": [{
-                    "name": "contentId",
-                    "in": "path",
-                    "description": "ID of content to return",
-                    "required": true,
-                    "type": "string",
-                    "format": "uuid"
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Content" } } }
-                    },
-                    "400": { "description": "Invalid ID supplied" },
-                    "404": { "description": "Content not found" }
-                }
-            },
-            "post": {
-                "tags": ["content"],
-                "summary": "Updates a content with form data",
-                "description": "",
-                "operationId": "updateContentWithForm",
-                "parameters": [{
-                    "name": "contentId",
-                    "in": "path",
-                    "description": "ID of content that needs to be updated",
-                    "required": true,
-                    "type": "string",
-                    "format": "uuid"
-                }],
-                "responses": { "405": { "description": "Invalid input" } },
-                "requestBody": {
-                    "content": {
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "description": "Updated name of the content",
-                                        "type": "string",
-                                        "required": false
-                                    },
-                                    "status": {
-                                        "description": "Updated status of the content",
-                                        "type": "string",
-                                        "required": false
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": ["content"],
-                "summary": "Deletes a content",
-                "description": "",
-                "operationId": "deleteContent",
-                "parameters": [{
-                    "name": "contentId",
-                    "in": "path",
-                    "description": "Content id to delete",
-                    "required": true,
-                    "type": "string",
-                    "format": "uuid"
-                }],
-                "responses": {
-                    "400": { "description": "Invalid ID supplied" },
-                    "404": { "description": "Content not found" }
-                }
-            }
-        },
-        "/content/{contentId}/uploadPayload": {
-            "post": {
-                "tags": ["content"],
-                "summary": "uploads the binay payload",
-                "description": "",
-                "operationId": "uploadFile",
-                "parameters": [{
-                    "name": "contentId",
-                    "in": "path",
-                    "description": "ID of content to update",
-                    "required": true,
-                    "type": "string",
-                    "format": "uuid"
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiResponse" } } }
-                    }
-                },
-                "requestBody": { "content": { "application/octet-stream": { "schema": { "type": "string", "format": "binary" } } } }
-            }
-        },
-        "/actor": {
-            "post": {
-                "tags": ["actor"],
-                "summary": "Create actor",
-                "description": "This can only be done by the logged in admin.",
-                "operationId": "createActor",
-                "parameters": [],
-                "responses": { "default": { "description": "successful operation" } },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "description": "Created Actor object",
-                            "schema": { "$ref": "#/components/schemas/Actor" }
-                        }
-                    }
-                }
-            }
-        },
-        "/actor/login": {
-            "get": {
-                "tags": ["actor"],
-                "summary": "Logs actor into the system",
-                "description": "",
-                "operationId": "loginActor",
-                "parameters": [{
-                        "name": "username",
-                        "in": "query",
-                        "description": "The user name for login",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "description": "The password for login in clear text",
-                        "required": true,
-                        "type": "string",
-                        "format": "password"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "string" }
-                            }
-                        }
-                    },
-                    "400": { "description": "Invalid username/password supplied" }
-                }
-            }
-        },
-        "/actor/logout": {
-            "get": {
-                "tags": ["actor"],
-                "summary": "Logs out current logged in user session",
-                "description": "",
-                "operationId": "logoutActor",
-                "parameters": [],
-                "responses": { "default": { "description": "successful operation" } }
-            }
-        },
-        "/actor/{username}": {
-            "get": {
-                "tags": ["actor"],
-                "summary": "Get user by user name",
-                "description": "",
-                "operationId": "getUserByName",
-                "parameters": [{
-                    "name": "username",
-                    "in": "path",
-                    "description": "The name that needs to be fetched. Use user1 for testing. ",
-                    "required": true,
-                    "type": "string"
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/xml": { "schema": { "$ref": "#/components/schemas/Actor" } },
-                            "application/json": { "schema": { "$ref": "#/components/schemas/Actor" } }
-                        }
-                    },
-                    "400": { "description": "Invalid username supplied" },
-                    "404": { "description": "User not found" }
-                }
-            },
-            "put": {
-                "tags": ["actor"],
-                "summary": "Updated actor",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "updateActor",
-                "parameters": [{
-                    "name": "username",
-                    "in": "path",
-                    "description": "name that need to be updated",
-                    "required": true,
-                    "type": "string"
-                }],
-                "responses": {
-                    "400": { "description": "Invalid user supplied" },
-                    "404": { "description": "User not found" }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "description": "Updated user object",
-                            "schema": { "$ref": "#/components/schemas/Actor" }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": ["actor"],
-                "summary": "Delete user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "deleteActor",
-                "parameters": [{
-                    "name": "username",
-                    "in": "path",
-                    "description": "The name that needs to be deleted",
-                    "required": true,
-                    "type": "string"
-                }],
-                "responses": {
-                    "400": { "description": "Invalid username supplied" },
-                    "404": { "description": "User not found" }
-                }
+                "tags": ["entry"],
+                "summary": "entry operation",
+                "description": "entry operations",
+                "operationId": "entry",
+                "requestBody": { "content": { "application/json": { "description": "Request object ", "schema": { "$ref": "#/components/schemas/Request" } } } },
+                "responses": { "200": { "description": "response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Response" } } } } }
             }
         }
     },
-    "externalDocs": {
-        "description": "Find out more about Edraj",
-        "url": "https://edraj.io"
-    },
     "components": {
         "schemas": {
-            "GeoPoint": {
+            "Geopoint": {
                 "type": "object",
                 "description": "Geo coordinates",
                 "properties": {
@@ -306,91 +38,129 @@
                 },
                 "required": ["latitude", "longitude"]
             },
-            "MediaType": {
-                "type": "string",
-                "enum": ["image/png", "audio/mp3", "video/mp4", "sqlite", "markdown", "plain_text", "document", "structured", "application/json"]
-            },
-            "File": {
+            "Address": {
                 "type": "object",
                 "properties": {
-                    "media_type": { "$ref": "#/components/schemas/MediaType" },
-                    "file_name": { "type": "string" },
-                    "id": { "type": "string", "format": "uuid" },
-                    "checksum": { "type": "object", "properties": { "algorithm": { "type": "string", "enum": ["md5", "sha256"] }, "value": { "type": "string" } } },
-                    "path": { "type": "string" },
-                    "references": { "type": "array", "itmes": { "type": "string", "format": "uuid" } },
-                    "OneOf": {
-                        "binary": { "type": "string", "format": "binary" },
-                        "text": { "type": "string" },
-                        "path": { "type": "string" },
-                        "url": { "type": "string" }
-                    }
+                    "Geopoint": { "$ref": "#/components/schemas/Geopoint" },
+                    "Line1": { "type": "string" },
+                    "Line2": { "type": "string" },
+                    "Zipcode": { "type": "string" },
+                    "City": { "type": "string" },
+                    "State": { "type": "string" },
+                    "Country": { "type": "string" }
+                }
+            },
+            "Contact": {
+                "type": "object",
+                "properties": {
+                    "Type": { "type": "string", "enum": ["Email", "LandPhone", "Mobile", "Twitter", "Facebook", "Skype", "Linkedin"] },
+                    "Value": { "type": "string" }
                 }
             },
             "Identity": {
                 "type": "object",
                 "properties": {
-                    "id": { "type": "string", "format": "uuid" },
-                    "pretty_name": { "type": "string" },
-                    "unique_name": { "type": "string" },
-                    "pulic_keys": { "type": "array", "items": { "type": "string" } },
-                    "domain": { "type": "string" }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Prettyname": { "type": "string" },
+                    "Shortname": { "type": "string" },
+                    "Type": { "type": "string" },
+                    "Keys": {
+                        "type": "object",
+                        "properties": {
+                            "Name": { "type": "string" },
+                            "Publickey": { "type": "string" }
+                        }
+                    },
+                    "Domain": { "type": "string" }
+                }
+            },
+            "Signature": {
+                "type": "object",
+                "properties": {
+                    "Identity": { "$ref": "#/components/schemas/Identity" },
+                    "Signature": { "type": "string" },
+                    "Keyname": { "type": "string" },
+                    "FieldsSigned": { "type": "array", "items": "string" }
                 }
             },
             "ActorGroup": {
                 "type": "object",
                 "properties": {
-                    "uuid": { "type": "string", "format": "uuid" },
-                    "name": { "type": "string" },
-                    "members": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Name": { "type": "string" },
+                    "Members": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } }
                 }
             },
             "Actor": {
                 "type": "object",
                 "properties": {
-                    "uuid": { "type": "string", "format": "uuid" },
-                    "pretty_name": { "type": "string" },
-                    "unique_name": { "type": "string" },
-                    "biography": { "type": "string" },
-                    "domain": { "type": "string" },
-                    "emails": { "type": "array", "items": { "type": "string", "format": "email" } },
-                    "related-actors": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } },
-                    "actor-groups": { "type": "array", "items": { "$ref": "#/components/schemas/ActorGroup" } },
-                    "organizations": { "type": "array", "items": { "type": "string" } },
-                    "phones": { "type": "array", "items": { "type": "string" } },
-                    "urls": { "type": "array", "items": { "type": "string" } }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Prettyname": { "type": "string" },
+                    "Shortname": { "type": "string" },
+                    "Biography": { "type": "string" },
+                    "Domain": { "type": "string" },
+                    "Comms": { "type": "array", "items": { "$ref": "#/components/schemas/Contact" } },
+                    "Contacts": { "type": "array", "items": { "$ref": "#/components/schemas/Contact" } },
+                    "RelatedActors": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } },
+                    "BannedActors": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } },
+                    "ActorGroups": { "type": "array", "items": { "$ref": "#/components/schemas/ActorGroup" } },
+                    "organizations": { "type": "array", "items": { "type": "string" } }
                 }
             },
             "Workgroup": {
                 "type": "object",
                 "properties": {
-                    "id": { "type": "string", "format": "uuid" },
-                    "pretty_name": { "type": "string" },
-                    "unique_name": { "type": "string" },
-                    "members": { "type": "array", "items": { "type": "string", "format": "uuid" } },
-                    "permissions": { "type": "array", "items": { "$ref": "#/components/schemas/Permission" } }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Displayname": { "type": "string" },
+                    "Shortname": { "type": "string" },
+                    "Keys": { "type": "array", "items": { "$ref": "#/components/schemas/Keypair" } },
+                    "Members": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } },
+                    "Permissions": { "type": "array", "items": { "$ref": "#/components/schemas/Permission" } }
+                }
+            },
+            "Attachment": {
+                "type": "object",
+                "properties": {
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Name": { "type": "string" },
+                    "Checksum": { "type": "object", "properties": { "algorithm": { "type": "string", "enum": ["md5", "sha256"] }, "value": { "type": "string" } } },
+                    "Size": { "type": "integer" },
+                    "MediaType": { "$ref": "#/components/schemas/MediaType" },
+                    "Signature": { "$ref": "#/components/schemas/Signature" },
+                    "References": { "type": "array", "itmes": { "type": "string", "format": "uuid" } },
+                    "OneOf": {
+                        "Binary": { "type": "string", "format": "binary" },
+                        "Text": { "type": "string" },
+                        "Path": { "type": "string" },
+                        "URL": { "type": "string" }
+                    }
                 }
             },
             "Message": {
                 "type": "object",
                 "properties": {
-                    "thread_id": { "type": "string", "format": "uuid" },
-                    "recipients": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } },
-                    "sender": { "$ref": "#/components/schemas/Identity" },
-                    "id": { "type": "string", "format": "uuid" },
-                    "timestamp": { "type": "string", "format": "date-time" },
-                    "geo_point": { "$ref": "#/components/schemas/GeoPoint" },
-                    "subject": { "type": "string" },
-                    "body": { "type": "string" },
-                    "attachments": { "type": "array", "items": { "$ref": "#/components/schemas/File" } }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "ThreadId": { "type": "string", "format": "uuid" },
+                    "Recipients": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } },
+                    "Sender": { "$ref": "#/components/schemas/Identity" },
+                    "Timestamp": { "type": "string", "format": "date-time" },
+                    "Geopoint": { "$ref": "#/components/schemas/Geopoint" },
+                    "Subject": { "type": "string" },
+                    "Body": { "type": "string" },
+                    "Attachments": { "type": "array", "items": { "$ref": "#/components/schemas/Attachment" } }
                 }
             },
             "Permission": {
                 "type": "object",
                 "properties": {
-                    "type": { "type": "string", "enum": ["admin", "write", "read", "delete", "query", "manage_reactions"] },
-                    "grantees": { "type": "array", "items": { "type": "string", "format": "uuid" } }
+                    "Type": { "type": "string", "enum": ["admin", "write", "read", "delete", "query", "manage_reactions"] },
+                    "Actors": { "type": "array", "items": { "$ref": "#/components/schemas/Identity" } },
+                    "Groups": { "type": "array", "items": { "$ref": "#/components/schemas/ActorGroup" } }
                 }
+            },
+            "MediaType": {
+                "type": "string",
+                "enum": ["image/png", "audio/mp3", "video/mp4", "sqlite", "markdown", "plain_text", "document", "structured", "application/json"]
             },
             "Change": {
                 "type": "object",
@@ -403,54 +173,55 @@
             "Content": {
                 "type": "object",
                 "properties": {
-                    "owner_id": { "type": "string", "format": "uuid" },
-                    "id": { "type": "string", "format": "uuid" },
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Shortname": { "type": "string" },
+                    "Displayname": { "type": "string" },
+                    "Title": { "type": "string" },
+                    "Signature": { "$ref": "#/components/schemas/Signature" },
                     "timestamp": { "type": "string", "format": "date-time" },
-                    "geo_point": { "$ref": "#/components/schemas/GeoPoint" },
-                    "title": { "type": "string" },
-                    "unique_name": { "type": "string" },
-                    "body": { "type": "string" },
-                    "tags": { "type": "array", "items": { "type": "string" } },
-                    "categories": { "type": "array", "items": { "type": "string" } },
-                    "permissions": { "type": "array", "items": { "$ref": "#/components/schemas/Permission" } },
-                    "payload": { "type": "array", "items": { "$ref": "#/components/schemas/File" } },
-                    "history": { "type": "array", "items": { "$ref": "#/components/schemas/Change" } }
+                    "Geopoint": { "$ref": "#/components/schemas/Geopoint" },
+                    "Body": { "type": "string" },
+                    "Tags": { "type": "array", "items": { "type": "string" } },
+                    "Categories": { "type": "array", "items": { "type": "string" } },
+                    "Permissions": { "type": "array", "items": { "$ref": "#/components/schemas/Permission" } },
+                    "Attachments": { "type": "array", "items": { "$ref": "#/components/schemas/Attachment" } },
+                    "History": { "type": "array", "items": { "$ref": "#/components/schemas/Change" } }
                 }
             },
             "Comment": {
                 "type": "object",
                 "properties": {
-                    "id": { "type": "string", "format": "uuid" },
-                    "actor": { "$ref": "#/components/schemas/Identity" },
-                    "timestamp": { "type": "string", "format": "date-time" },
-                    "geo_point": { "$ref": "#/components/schemas/GeoPoint" },
-                    "parent_comment": { "type": "string", "format": "uuid" },
-                    "content_id": { "type": "string", "format": "uuid" },
-                    "text": { "type": "string" }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Actor": { "$ref": "#/components/schemas/Identity" },
+                    "Timestamp": { "type": "string", "format": "date-time" },
+                    "Geopoint": { "$ref": "#/components/schemas/Geopoint" },
+                    "ParentComment": { "type": "string", "format": "uuid" },
+                    "ContentID": { "type": "string", "format": "uuid" },
+                    "Text": { "type": "string" }
                 }
             },
             "Reaction": {
                 "type": "object",
                 "properties": {
-                    "id": { "type": "string", "format": "uuid" },
-                    "actor": { "$ref": "#/components/schemas/Identity" },
-                    "timestamp": { "type": "string", "format": "date-time" },
-                    "content_id": { "type": "string", "format": "uuid" },
-                    "geo_point": { "$ref": "#/components/schemas/GeoPoint" },
-                    "type": { "type": "string", "enum": ["like", "dislike", "love", "sad", "angry", "laugh", "disgusted"] }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "Actor": { "$ref": "#/components/schemas/Identity" },
+                    "Timestamp": { "type": "string", "format": "date-time" },
+                    "ContentID": { "type": "string", "format": "uuid" },
+                    "Geopoint": { "$ref": "#/components/schemas/Geopoint" },
+                    "Type": { "type": "string", "enum": ["like", "dislike", "love", "sad", "angry", "laugh", "disgusted"] }
                 }
             },
             "Container": {
                 "type": "object",
                 "properties": {
-                    "owner_id": { "type": "string", "format": "uuid" },
-                    "id": { "type": "string", "format": "uuid" },
-                    "timestamp": { "type": "string", "format": "date-time" },
-                    "name": { "type": "string" },
-                    "unique_name": { "type": "string" },
-                    "tags": { "type": "array", "items": { "type": "string" } },
-                    "categories": { "type": "array", "items": { "type": "string" } },
-                    "permissions": { "type": "array", "items": { "$ref": "#/components/schemas/Permission" } }
+                    "ID": { "type": "string", "format": "uuid" },
+                    "OwnerID": { "type": "string", "format": "uuid" },
+                    "Timestamp": { "type": "string", "format": "date-time" },
+                    "Displayname": { "type": "string" },
+                    "Shortname": { "type": "string" },
+                    "Tags": { "type": "array", "items": { "type": "string" } },
+                    "Categories": { "type": "array", "items": { "type": "string" } },
+                    "Permissions": { "type": "array", "items": { "$ref": "#/components/schemas/Permission" } }
                 }
             },
             "Notification": {
@@ -489,13 +260,103 @@
                     "tempate": { "type": "string" }
                 }
             },
-            "ApiResponse": {
+            "Query": {
                 "type": "object",
                 "properties": {
-                    "code": { "type": "integer", "format": "int32" },
-                    "type": { "type": "string" },
-                    "message": { "type": "string" }
+                    "EntryType": { "type": "string" },
+                    "Text": { "type": "string" },
+                    "DateRange": { "type": "string" },
+                    "Sort": { "type": "string" },
+                    "Path": { "type": "string" },
+                    "Owner": { "type": "string" },
+                    "Tags": { "type": "string" },
+                    "Categories": { "type": "string" },
+                    "Fields": { "type": "string" },
+                    "Offset": { "type": "string" },
+                    "Limit": { "type": "string" }
                 }
+            },
+            "Entry": {
+                "type": "object",
+                "properties": {
+                    "Further": { "type": "array", "items": { "type": "object" } },
+
+                    "Actor": { "$ref": "#/components/schemas/Actor" },
+                    "Addon": { "$ref": "#/components/schemas/Addon" },
+                    "Attachment": { "$ref": "#/components/schemas/Attachment" },
+                    "Block": { "$ref": "#/components/schemas/Block" },
+                    "Comment": { "$ref": "#/components/schemas/Comment" },
+                    "Container": { "$ref": "#/components/schemas/Container" },
+                    "Content": { "$ref": "#/components/schemas/Content" },
+                    "Crawler": { "$ref": "#/components/schemas/Crawler" },
+                    "Domain": { "$ref": "#/components/schemas/Domain" },
+                    "Message": { "$ref": "#/components/schemas/Message" },
+                    "Miner": { "$ref": "#/components/schemas/Miner" },
+                    "Notification": { "$ref": "#/components/schemas/Notification" },
+                    "Reaction": { "$ref": "#/components/schemas/Reaction" },
+                    "Schema": { "$ref": "#/components/schemas/Schema" },
+                    "Workgroup": { "$ref": "#/components/schemas/Workgroup" }
+                }
+            },
+            "Addon": {
+                "type": "object",
+                "properties": {
+                    "Name": { "type": "string" }
+                }
+            },
+            "Crawler": {
+                "type": "object",
+                "properties": {
+                    "Name": { "type": "string" }
+                }
+            },
+            "Domain": {
+                "type": "object",
+                "properties": {
+                    "Name": { "type": "string" }
+                }
+            },
+            "Miner": {
+                "type": "object",
+                "properties": {
+                    "Name": { "type": "string" }
+                }
+            },
+            "Schema": {
+                "type": "object",
+                "properties": {
+                    "Name": { "type": "string" }
+                }
+            },
+            "Keypair": {
+                "type": "object",
+                "properties": {
+                    "Name": { "type": "string" }
+                }
+            },
+            "Request": {
+                "type": "object",
+                "properties": {
+                    "Signature": { "$ref": "#components/schemas/Signature" },
+                    "Verb": { "type": "string", "enum": ["GET", "QUERY", "UPDATE", "CREATE", "DELETE"] },
+                    "EntryType": { "type": "string" },
+                    "EntryID": { "type": "string" },
+                    "Entry": { "$ref": "#/components/schemas/Entry" },
+                    "Query": { "$ref": "#/components/schemas/Query" }
+                }
+            },
+
+            "Response": {
+                "type": "object",
+                "properties": {
+                    "Code": { "type": "integer", "format": "int32" },
+                    "Status": { "type": "string" },
+                    "Message": { "type": "string" },
+                    "Total": { "type": "integer", "format": "int32" },
+                    "Returned": { "type": "integer", "format": "int32" },
+                    "Entries": { "item": "array", "items": { "$ref": "#/components/schemas/Attachment" } }
+                },
+                "required": ["code", "status"]
             }
         },
         "responses": {},

@@ -106,6 +106,7 @@ func (man *DefaultMan) get(request *Request) (response *Response) {
 }
 
 func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}) {
+
 	switch objectType {
 	case actor:
 		if createIfNil && e.Actor == nil {

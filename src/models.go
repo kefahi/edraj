@@ -5,8 +5,8 @@ package main
 
 // Identity minimal user/agent pointer
 type Identity struct {
-	ID          string `bson:"_id" json:"id"`
-	Displayname string
+	ID          string `bson:"_id"`
+	Displayname string ``
 	Shortname   string
 	Type        string            // Actor, Workgroup, Domain
 	PublicKeys  map[string]string // Unique names of the list of active /
@@ -22,15 +22,15 @@ type Signature struct {
 	FieldsSigned []string
 }
 
-// GeoPoint long/lat
-type GeoPoint struct {
-	Latitude  string
-	Longitude string
+// Geopoint long/lat
+type Geopoint struct {
+	Latitude  float64
+	Longitude float64
 }
 
 // Attachment file meta
 type Attachment struct {
-	ID         string `bson:"_id" json:"id"`
+	ID         string `bson:"_id"`
 	Name       string
 	Checksum   string
 	Size       int64
@@ -48,7 +48,7 @@ type Attachment struct {
 
 // ActorGroup a logical grouping of actors for esier management
 type ActorGroup struct {
-	ID      string `bson:"_id" json:"id"`
+	ID      string `bson:"_id"`
 	Name    string
 	Members []Identity `bson:",omitempty" json:",omitempty"`
 }
@@ -69,7 +69,7 @@ type Contact struct {
 
 // Address a person's address / geographical locatiotion
 type Address struct {
-	Geo     GeoPoint
+	Geo     *Geopoint `bson:",omitempty" json:",omitempty"`
 	Line1   string
 	Line2   string
 	Zipcode string
@@ -80,7 +80,7 @@ type Address struct {
 
 // Actor aka User/Agent
 type Actor struct {
-	ID             string `bson:"_id" json:"id"`
+	ID             string `bson:"_id"`
 	Displayname    string
 	Shortname      string // unique
 	Domain         string //
@@ -96,6 +96,7 @@ type Actor struct {
 
 // Keypair : PKI keypair
 type Keypair struct {
+	Name    string
 	Public  string
 	Private string
 }
@@ -103,7 +104,7 @@ type Keypair struct {
 // Domain a logical pool of users. Future: A domain could have
 // multiple legs on more than one server. more of a replica setup.
 type Domain struct {
-	ID          string `bson:"_id" json:"id"`
+	ID          string `bson:"_id"`
 	Displayname string
 	Shortname   string
 	Keys        []Keypair
@@ -112,51 +113,51 @@ type Domain struct {
 
 // Page a collection of layed out blocks
 type Page struct {
-	ID string `bson:"_id" json:"id"`
+	ID string `bson:"_id"`
 }
 
 // Site a layout organization of the site and the specific pages it would render
 type Site struct {
-	ID string `bson:"_id" json:"id"`
+	ID string `bson:"_id"`
 } // Site Layout
 
 // Block in a page
 type Block struct {
-	ID string `bson:"_id" json:"id"`
+	ID string `bson:"_id"`
 }
 
 // Addon aka module /plugin
 type Addon struct {
-	ID   string `bson:"_id" json:"id"`
+	ID   string `bson:"_id"`
 	Name string
 }
 
 // Miner aka module /plugin
 type Miner struct {
-	ID   string `bson:"_id" json:"id"`
+	ID   string `bson:"_id"`
 	Name string
 }
 
 // Crawler aka module /plugin
 type Crawler struct {
-	ID   string `bson:"_id" json:"id"`
+	ID   string `bson:"_id"`
 	Name string
 }
 
 // Schema holdes the details of a schema definition
 type Schema struct {
-	ID string `bson:"_id" json:"id"`
+	ID string `bson:"_id"`
 }
 
 // Notification of an event
 type Notification struct {
-	ID        string `bson:"_id" json:"id"`
+	ID        string `bson:"_id"`
 	Timestamp string
 }
 
 // Message aka instant-message / email
 type Message struct {
-	ID          string `bson:"_id" json:"id"`
+	ID          string `bson:"_id"`
 	ThreadID    string `bson:"thread_id" json:"thread_id"`
 	Recipients  []Actor
 	Sender      Actor
@@ -165,18 +166,19 @@ type Message struct {
 	Subject     string
 	Body        string
 	Attachments []Attachment `bson:",omitempty" json:",omitempty"`
+	Geopoint    *Geopoint    `bson:",omitempty" json:",omitempty"`
 }
 
 // Workgroup Topic-centric as opposed to user-centric
 // I.e. its a sepcial type of information repo.
 // Think Forums, News websites, ...
 type Workgroup struct {
-	ID          string `bson:"_id" json:"id"`
+	ID          string `bson:"_id"`
 	Shortname   string
 	Displayname string
 	Domain      string
 	Keys        []Keypair
-	members     []Identity
+	Members     []Identity
 	Permissions []Permission
 }
 
@@ -189,12 +191,12 @@ type Change struct {
 
 // Content content
 type Content struct {
-	ID          string `bson:"_id" json:"id"`
+	ID          string `bson:"_id"`
 	Shortname   string
 	Displayname string
 	Timestamp   string
 	Signature   Signature
-	Geo         *GeoPoint `bson:",omitempty" json:",omitempty"`
+	Geopoint    *Geopoint `bson:",omitempty" json:",omitempty"`
 	Title       string
 	Tags        []string     `bson:",omitempty" json:",omitempty"`
 	Categories  []string     `bson:",omitempty" json:",omitempty"`
@@ -218,10 +220,10 @@ type Container struct {
 
 // Comment ...
 type Comment struct {
-	ID              string `bson:"_id" json:"id"`
+	ID              string `bson:"_id"`
 	Actor           Identity
 	Timestamp       string
-	Geo             *GeoPoint `bson:",omitempty" json:",omitempty"`
+	Geo             *Geopoint `bson:",omitempty" json:",omitempty"`
 	Signature       Signature
 	ContentID       string
 	ParentCommentID string
@@ -230,11 +232,11 @@ type Comment struct {
 
 // Reaction / comment should be part of reaction?
 type Reaction struct {
-	ID        string `bson:"_id" json:"id"`
+	ID        string `bson:"_id"`
 	OwnerID   Identity
 	Signature Signature
 	Timestamp string
-	Geo       *GeoPoint `bson:",omitempty" json:",omitempty"`
+	Geo       *Geopoint `bson:",omitempty" json:",omitempty"`
 	Type      string    // like/dislike/...
 }
 
