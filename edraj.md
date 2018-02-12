@@ -1,14 +1,14 @@
 # edraj
 
 ### The next-generation Information Management System
-<img src="images/edraj.png" alt="Websocket" width="50%" style="float: left; background:none; border:none; box-shadow:none;">
+<img src="revealjs/images/edraj.png" alt="Websocket" width="50%" style="float: left; background:none; border:none; box-shadow:none;">
 
 <p style="text-align: right; width: 100%;">Version 0.3<br/>Amman, January - 2018<br/>kefah.issa@gmail.com</p>
 
 ---
 # The challenge
 
-<img src="images/quote2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+<img src="revealjs/images/quote2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 ###	_One app/service to handle most of the user content management and communication needs (private/shared/public) as opposed to the scattered Social media outlets and user managed content options in addition to figuring the key qualities for that Next-gen app to succeed._
 
 
@@ -28,7 +28,7 @@
   - With the sheer number of outlets (providers) that overlap and confuse the users
 
 +++
-### Current Status-quo  <img src="images/openlock.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Current Status-quo  <img src="revealjs/images/openlock.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 A wide range of use-cases served by independent and greatly over-lapping applications each attempting to lock-in the user's data.
 - **Social Media apps**: Facebook, Instagram, Twitter
@@ -39,14 +39,14 @@ A wide range of use-cases served by independent and greatly over-lapping applica
 - **_Future_**: Sheets, Inventory: e.g. Excel, Access, Foxpro
 
 +++
-### Aspiration <img src="images/aspiration.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Aspiration <img src="revealjs/images/aspiration.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 One unified set of open-standards that enable all those use-cases (is able to handle various types of content) and run in a federated fashion. Offering superior content-management experience and eliminating vendor-lock-in that is overwhelming the users.
 
 Email (SMPT/IMAP4/POP3) comes as an example of open-standard used by the "Email" use-case.
 
 +++
-### Barriers  <img src="images/barrier.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Barriers  <img src="revealjs/images/barrier.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * Technically speaking there is no reason why one application (with a proper ecosystem) cannot serve all those use-cases and more. At the end of the day it boils down to information/data entities that should be maintained, indexed and shared / published.
 * Unfortunately and despite the fact that there have been several attempts to address sub-sets of use-cases, none of them tries to address the problem in its fully generality.
@@ -54,7 +54,7 @@ Let alone offering it at competitive quality and speed.
 * The social affinity to the existing social network offering (existing social graph weight).
 
 ---
-### Crossing the chasm <img src="images/cross.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Crossing the chasm <img src="revealjs/images/cross.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 Significant advantages must be offered for the users to switch:
 
@@ -67,7 +67,7 @@ Significant advantages must be offered for the users to switch:
 
 
 +++
-### Crossing the chasm (continued) <img src="images/cross.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Crossing the chasm (continued) <img src="revealjs/images/cross.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 6- **Performance and Quality**: The app **must** be very performing and not less stable than the current offerings.
 
@@ -76,7 +76,7 @@ Significant advantages must be offered for the users to switch:
 8- **Easy service and data redundancy options**
 
 +++
-### Unified data and meta-data <img src="images/metaData1.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Unified data and meta-data <img src="revealjs/images/metaData1.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * File-based content and meta-data persistence. The content and its meta-data file live in the file-system under certain relative path.
 * Content is well-defined and self-described (through meta-data)
@@ -92,7 +92,7 @@ Significant advantages must be offered for the users to switch:
   * Schema reference definition (for structured data)
 
 +++
-### Content Management Basics  <img src="images/metaData.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Content Management Basics  <img src="revealjs/images/metaData.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * Every entity in the system has a life-long globally unique identifier (guid): Actor, Work-group, Content, ...etc.
 * Basic **Verbs**:
@@ -106,7 +106,7 @@ Significant advantages must be offered for the users to switch:
 * Future: both in-motion and in-transit data should be encrypted
 
 +++
-### Federated and Standard-API-based <img src="images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Federated and Standard-API-based <img src="revealjs/images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 - A Domain is a collection of users along with the various edraj components (see <a href="#/5">Components section</a>).
 - Federation enables users and groups / communities to self-host and inter-operate with everyone else.
@@ -114,7 +114,7 @@ Significant advantages must be offered for the users to switch:
 - Federation is also a means to eliminate the concept of one single service-provider, helping distribute the processing load to a manageable level as opposed to requiring huge investment in infrastructure. As it eliminates the need / requirement for one central service provider; it will simply distribute the cost of hosting (computing/storage/data-transfer) over the federated domains.
 
 +++
-### Federated and Standard-API-based (continued) <img src="images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Federated and Standard-API-based (continued) <img src="revealjs/images/federated.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 Federation and the option of self-hosted inter-operable information management system empowered the users and communities to **finally** and **truly** own their content.
   - No Tracking
@@ -125,12 +125,12 @@ Federation and the option of self-hosted inter-operable information management s
   - Yes, there is a financial element associated with self-hosting; but its a small-price to pay that would set you free.
 
 +++
-### Performance and Quality <img src="images/quality.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Performance and Quality <img src="revealjs/images/quality.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 Imagine how poorly would an app be received if it lacks either of those two qualities. No matter how great its idea is, how nice-looking, how easy, ...etc. As such those two qualities are very key and are actually make-or-break.
 ---
 
-### Key concepts and definitions  <img src="images/definitions.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Key concepts and definitions  <img src="revealjs/images/definitions.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * **Actor**: Individual agent / user.
 * **Work-group**: Collaboration of a group of actors on workgroup-owned content (like FB pages/groups)
@@ -144,7 +144,7 @@ Imagine how poorly would an app be received if it lacks either of those two qual
 * **Page**: A single page view made of **Blocks** (physical view-able manifestation of the content).
 
 +++
-### Actor <img src="images/user.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Actor <img src="revealjs/images/user.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 User/profile (single-user):
 - Information about the user that includes:
@@ -156,13 +156,13 @@ User/profile (single-user):
   - Guids/Public-keys/API-url-pointers of other associated users (contacts, followed, friends, ...etc)
 
 +++
-### Work-group  <img src="images/workgroup.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Work-group  <img src="revealjs/images/workgroup.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 - Team-centeric (communities/interest groups) collaborative content management and communication medium.
 - Members from any domain can join/be invited per the privacy settings.
 
 +++
-### Content <img src="images/contentMang.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Content <img src="revealjs/images/contentMang.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 * Owners can: 
 	- Admin (Meta/privileges)
 	- Create/update/delete
@@ -173,7 +173,7 @@ User/profile (single-user):
 
 
 +++
-### Action <img src="images/action.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Action <img src="revealjs/images/action.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * Manage content: Create/Update/Delete, Set meta-data options (including permissions)
 * React: comment, share, like/dislike/interesting ...etc.
@@ -181,7 +181,7 @@ User/profile (single-user):
 * Subscribe to notification based on a filter.
 
 +++
-### Notification <img src="images/notifications3.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Notification <img src="revealjs/images/notifications3.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 Notification-streams (follow/unfollow person or work-group or specific-content, tag)
 A user can follow notifications (get stream of notifications) based on filter-rules:
@@ -193,7 +193,7 @@ A user can follow notifications (get stream of notifications) based on filter-ru
 - The ranking formula is also affected by positive reactions (likes + rating), shares, comments and people who reacted.
 
 +++
-### Page / Block <img src="images/pages.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Page / Block <img src="revealjs/images/pages.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 A page is a public presentation of selected content / streams. (blog-sphere like)
 
@@ -203,11 +203,11 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 
 
 ---
-<img src="images/quote2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+<img src="revealjs/images/quote2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 ##	_For every respective set of use-cases  edraj can be reduced to an existing known / popular platform: Blog, Email, Messaging, Social media, News services, Media management._
 
 ---
-### Main components <img src="images/puzzle.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Main components <img src="revealjs/images/puzzle.svg" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * **Identity Manager (idM)**: Manage Actors/users and people groups.
 * **Content Manager**: Create/Manage, React, and publish (permission / access control)
@@ -220,7 +220,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 * **Client-apps**: Mobile, Desktop, Web-SPA
 
 +++
-### Identity Manager (idM)  <img src="images/id.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Identity Manager (idM)  <img src="revealjs/images/id.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * Setup per domain, hosting an arbitrary number of users as determined by the admin
 * The identity manager also stores the public keys (and links to them) of users on other domains (followed / friends).
@@ -228,7 +228,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 
 
 +++
-### Content Manager <img src="images/content.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Content Manager <img src="revealjs/images/content.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 - Persistence of data / content with the proper Meta-data
 - Types of content:
@@ -244,7 +244,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 
 
 +++
-### Miner  <img src="images/mining.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Miner  <img src="revealjs/images/mining.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 - Index and classification of local data that enriches local meta data
 - Indexing of public content from other domains (public and permitted content)
@@ -252,12 +252,12 @@ A page is a public presentation of selected content / streams. (blog-sphere like
 - Public mining-only services could exist that would horizontally aggregate and promote relevant trending content.
 
 +++
-### Add-ons <img src="images/addon.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Add-ons <img src="revealjs/images/addon.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 - Plugins/Mini-apps
 - Public repositories (one formal)
 
 +++
-### Public interface <img src="images/interface.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Public interface <img src="revealjs/images/interface.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 - Serves public web-enabled/SEO-friendly content: Pages + blocks, including generating proper robots.txt+sitemaps.
 - Serves public API for
@@ -268,7 +268,7 @@ A page is a public presentation of selected content / streams. (blog-sphere like
   * Structured content query (schema-enabled content in a machine-consumable form)
 
 +++
-### Schema definitions <img src="images/database.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Schema definitions <img src="revealjs/images/database.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 Predefined schema definitions allow machine consumption of properly described structured data.
 The local + remote repos that contain the schema definitions for structured data.
 
@@ -285,12 +285,12 @@ Examples of data that require structured schema definitions:
 Each one of these data types is best represented by its own standard schema definition.
 
 +++
-### Client-apps <img src="images/app.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Client-apps <img src="revealjs/images/app.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 - Mobile apps: Progressive Android/iOS ..etc.
 - Web/Desktop apps: Progressive Web/Desktop apps and/or Native apps.
 
 +++
-### Distributed hashtables (DHT) <img src="images/consul.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Distributed hashtables (DHT) <img src="revealjs/images/consul.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 One official DHT exists and is configured per default, additional ones can be configured.
 - Domains: which are not DNS-based for two reasons:
 	- Enable more liberal naming (names in the formal repo are reviewed)
@@ -301,10 +301,10 @@ One official DHT exists and is configured per default, additional ones can be co
 
 ---
 ### High-level Architecture diagram 
-<img src="images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="100%" >
+<img src="revealjs/images/edraj-deployment.svg" style="background:none; border:none; box-shadow:none;" width="100%" >
 
 +++
-### Standards definition (OpenApi 3) _Work-in-progress_ <img src="images/openapi-icon.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Standards definition (OpenApi 3) _Work-in-progress_ <img src="revealjs/images/openapi-icon.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 <a href="swagger-ui-dist/index.html" target="_blank">click here for edraj api specifications</a>
 
@@ -393,7 +393,7 @@ This is user-managed
 
 ---
 
-### Roadmap and milestones <img src="images/milestone2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
+### Roadmap and milestones <img src="revealjs/images/milestone2.png" alt="Imagine yourself" width="20%" style="float: right; background:none; border:none; box-shadow:none;">
 
 * **Phase I. Conception** : December/17
 * **Phase II. Prototype** : June/18

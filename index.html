@@ -12,15 +12,15 @@
 
 		<title>Next-Gen Information Management System</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/white.css">
+		<link rel="stylesheet" href="revealjs/css/reveal.css">
+		<link rel="stylesheet" href="revealjs/css/theme/white.css">
 
 		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<link rel="stylesheet" href="revealjs/lib/css/zenburn.css">
   
     <!-- Imported from Gitpitch -->
-    <link rel="stylesheet" href="plugin/highlight/hybrid.css">
-    <link rel="stylesheet" href="lib/font/fontawesome-webfont/font-awesome.min.css">
+    <link rel="stylesheet" href="revealjs/plugin/highlight/hybrid.css">
+    <link rel="stylesheet" href="revealjs/lib/font/fontawesome-webfont/font-awesome.min.css">
 		<style>
 			
 			.centered {
@@ -117,7 +117,7 @@ button.navigate-down.enabled {
 			var link = document.createElement( 'link' );
 			link.rel = 'stylesheet';
 			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'revealjs/css/print/pdf.css' : 'revealjs/css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
 	</head>
@@ -140,8 +140,8 @@ button.navigate-down.enabled {
 
 		</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+		<script src="revealjs/lib/js/head.min.js"></script>
+		<script src="revealjs/js/reveal.js"></script>
 
 		<!--script src="/lib/js/jquery.min.js"></script-->
 		<script>
@@ -179,15 +179,15 @@ button.navigate-down.enabled {
 				},
             
 				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/highlight/highlight.js', async: true/*, callback: function() { hljs.initHighlightingOnLoad(); }*/ },
-					{ src: "plugin/math/math.js", async: true },
-					{ src: "plugin/chart/Chart.min.js"},
-					{ src: "plugin/chart/csv2chart.js"},
-					{ src: "plugin/zoom-js/zoom.js", async: true, condition: function() { return !!document.body.classList; } },
-					{ src: "plugin/notes/notes.js", async: true, condition: function() { return !!document.body.classList; } },
-          { src: 'plugin/highlight/reveal-code-focus-1.0.0-mod.js', async: true, callback: function() { RevealCodeFocus(); } }
+					{ src: 'revealjs/plugin/markdown/marked.js' },
+					{ src: 'revealjs/plugin/markdown/markdown.js' },
+					{ src: 'revealjs/plugin/highlight/highlight.js', async: true/*, callback: function() { hljs.initHighlightingOnLoad(); }*/ },
+					{ src: "revealjs/plugin/math/math.js", async: true },
+					{ src: "revealjs/plugin/chart/Chart.min.js"},
+					{ src: "revealjs/plugin/chart/csv2chart.js"},
+					{ src: "revealjs/plugin/zoom-js/zoom.js", async: true, condition: function() { return !!document.body.classList; } },
+					{ src: "revealjs/plugin/notes/notes.js", async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'revealjs/plugin/highlight/reveal-code-focus-1.0.0-mod.js', async: true, callback: function() { RevealCodeFocus(); } }
 				]
 			});
 		</script>
