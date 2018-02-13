@@ -125,7 +125,7 @@ func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}
 	fieldName := strings.Title(objectType)
 	field := reflect.ValueOf(e).Elem().FieldByName(fieldName)
 	doc = field.Interface()
-	if createIfNil /*&& field.Pointer() == 0*/ {
+	if createIfNil && field.IsNil() /*&& field.Pointer() == 0*/ {
 		field.Set(reflect.Indirect(reflect.New(field.Type().Elem())).Addr())
 		doc = field.Interface()
 	}

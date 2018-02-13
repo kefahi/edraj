@@ -121,6 +121,7 @@ func (es *EntryService) init(config Config) (err error) {
 func respond(w http.ResponseWriter, response *Response) {
 	data, _ := json.Marshal(response)
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-CODE", fmt.Sprintf("%s (%d): %s", response.Status, response.Code, response.Message))
 	w.WriteHeader(response.Code)
 	w.Write(data)
 }

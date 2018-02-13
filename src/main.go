@@ -17,10 +17,9 @@ import (
 //	"github.com/jban332/kin-openapi/openapi3"
 //	"github.com/jban332/kin-openapi/openapi3filter"
 
-
 func getOperation(req *http.Request) (*openapi3.Operation, error) {
 	// Load Swagger file
-	router := openapi3filter.NewRouter().WithSwaggerFromFile("swagger.json")
+	router := openapi3filter.NewRouter().WithSwaggerFromFile("../api-spec/edraj.json")
 
 	// Find route
 	route, _, err := router.FindRoute("GET", req.URL)
@@ -32,7 +31,7 @@ func getOperation(req *http.Request) (*openapi3.Operation, error) {
 	return route.Operation, nil
 }
 
-var router = openapi3filter.NewRouter().WithSwaggerFromFile("swagger.json")
+var router = openapi3filter.NewRouter().WithSwaggerFromFile("../api-spec/edraj.json")
 
 func validateRequest(req *http.Request) {
 	openapi3filter.ValidateRequest(nil, &openapi3filter.RequestValidationInput{
@@ -87,8 +86,10 @@ func init() {
 // Log wrapper for all http calls
 func Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		//log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
+		log.Printf("%s %s %s: %s", r.RemoteAddr, r.Method, r.URL, w.Header().Get("X-CODE"))
+		w.Header().Del("X-CODE")
 	})
 }
 

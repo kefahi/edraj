@@ -1,4 +1,5 @@
 #!/bin/bash
+reset
 [ -e /tmp/edraj ] && rm -rf /tmp/edraj
 go build -o edraj 
 (netstat -nptl | grep 27017) > /dev/null 2>&1
