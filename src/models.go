@@ -6,7 +6,7 @@ package main
 // Identity minimal user/agent pointer
 type Identity struct {
 	ID          string `bson:"_id"`
-	Displayname string ``
+	Displayname string
 	Shortname   string
 	Type        string            // Actor, Workgroup, Domain
 	PublicKeys  map[string]string // Unique names of the list of active /
@@ -159,9 +159,8 @@ type Notification struct {
 type Message struct {
 	ID          string `bson:"_id"`
 	ThreadID    string `bson:"thread_id" json:"thread_id"`
-	Recipients  []Actor
-	Sender      Actor
-	Signature   Signature
+	Recipients  []Identity
+	Signature   Signature // Sender's signature
 	Timestamp   string
 	Subject     string
 	Body        string
@@ -191,19 +190,20 @@ type Change struct {
 
 // Content content
 type Content struct {
-	ID          string `bson:"_id"`
-	Shortname   string
-	Displayname string
-	Timestamp   string
-	Signature   Signature
-	Geopoint    *Geopoint `bson:",omitempty" json:",omitempty"`
-	Title       string
-	Tags        []string     `bson:",omitempty" json:",omitempty"`
-	Categories  []string     `bson:",omitempty" json:",omitempty"`
-	Permissions []Permission `bson:",omitempty" json:",omitempty"`
-	History     []Change     `bson:",omitempty" json:",omitempty"`
-	Body        string
-	Attachments []Attachment `bson:",omitempty" json:",omitempty"`
+	ID            string `bson:"_id"`
+	Shortname     string
+	Displayname   string
+	Timestamp     string
+	Signature     Signature
+	Geopoint      *Geopoint `bson:",omitempty" json:",omitempty"`
+	Title         string
+	Tags          []string     `bson:",omitempty" json:",omitempty"`
+	Categories    []string     `bson:",omitempty" json:",omitempty"`
+	Permissions   []Permission `bson:",omitempty" json:",omitempty"`
+	History       []Change     `bson:",omitempty" json:",omitempty"`
+	Body          string
+	StucturedBody map[string]interface{} `bson:",omitempty" json:",omitempty"`
+	Attachments   []Attachment           `bson:",omitempty" json:",omitempty"`
 }
 
 // Container of content
@@ -287,7 +287,8 @@ type Request struct {
 	EntryType string `bson:",omitempty" json:",omitempty"` // from EntryTypes
 
 	// Operation scale
-	Scale   string `bson:",omitempty" json:",omitempty"` // 'id': just the EntryID field, 'entry': just the Entry field, 'query': Just the Query field, 'entries': Just the Entries field
+	// 'id': just the EntryID field, 'entry': just the Entry field, 'query': Just the Query field, 'entries': Just the Entries field
+	Scale   string `bson:",omitempty" json:",omitempty"`
 	EntryID string `bson:",omitempty" json:",omitempty"` // for get, delete. scale = id
 	Entry   *Entry `bson:",omitempty" json:",omitempty"` // for single create, update. scale = entry
 	Query   *Query `bson:",omitempty" json:",omitempty"` // For query. scale = query

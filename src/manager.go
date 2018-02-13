@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"path"
+	"reflect"
+	"strings"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -37,29 +38,44 @@ func (man *DefaultMan) query(request *Request) (response *Response) {
 	}
 
 	// TODO consume the Query data (filters, pagination ...etc)
+	query := bson.M{}
 
 	response.Entries = []Entry{}
-
 	var err error
-	switch request.EntryType {
-	case content:
-		objects := []Content{}
-		err = man.mongoDb.C(request.EntryType).Find(bson.M{}).All(&objects)
-		for _, object := range objects {
-			value := object
-			response.Entries = append(response.Entries, Entry{Content: &value})
-		}
-	case container:
-		objects := []Container{}
-		err = man.mongoDb.C(request.EntryType).Find(bson.M{}).All(&objects)
-		for _, object := range objects {
-			value := object
-			response.Entries = append(response.Entries, Entry{Container: &value})
-		}
 
-		// TBD extend for all other types
+	fieldName := strings.Title(request.EntryType)
+	fieldType := reflect.New(reflect.TypeOf(Entry{})).Elem().FieldByName(fieldName).Type().Elem()
+	slice := reflect.MakeSlice(reflect.SliceOf(fieldType), 0, 0)
+	objects := reflect.New(slice.Type())
+	objects.Elem().Set(slice)
+	err = man.mongoDb.C(request.EntryType).Find(query).All(objects.Interface())
+
+	for i := 0; i < objects.Elem().Len(); i++ {
+		entry := &Entry{}
+		reflect.ValueOf(entry).Elem().FieldByName(fieldName).Set(reflect.ValueOf(objects.Elem().Index(i).Addr().Interface()))
+		response.Entries = append(response.Entries, *entry)
 	}
 
+	/*
+		switch request.EntryType {
+		case content:
+			objects := []Content{}
+			err = man.mongoDb.C(request.EntryType).Find(query).All(&objects)
+			for _, object := range objects {
+				value := object
+				response.Entries = append(response.Entries, Entry{Content: &value})
+			}
+		case container:
+			objects := []Container{}
+			err = man.mongoDb.C(request.EntryType).Find(query).All(&objects)
+			for _, object := range objects {
+				value := object
+				response.Entries = append(response.Entries, Entry{Container: &value})
+			}
+
+			// TBD extend for all other types
+		}
+	*/
 	if err != nil {
 		response.Status = failed
 		response.Code = http.StatusBadRequest
@@ -106,92 +122,101 @@ func (man *DefaultMan) get(request *Request) (response *Response) {
 }
 
 func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}) {
-
-	switch objectType {
-	case actor:
-		if createIfNil && e.Actor == nil {
-			e.Actor = &Actor{}
-		}
-		doc = e.Actor
-	case addon:
-		if createIfNil && e.Addon == nil {
-			e.Addon = &Addon{}
-		}
-		doc = e.Addon
-	case attachment:
-		if createIfNil && e.Attachment == nil {
-			e.Attachment = &Attachment{}
-		}
-		doc = e.Block
-	case block:
-		if createIfNil && e.Block == nil {
-			e.Block = &Block{}
-		}
-		doc = e.Block
-	case comment:
-		if createIfNil && e.Comment == nil {
-			e.Comment = &Comment{}
-		}
-		doc = e.Comment
-	case container:
-		if createIfNil && e.Container == nil {
-			e.Container = &Container{}
-		}
-		doc = e.Container
-	case content:
-		if createIfNil && e.Content == nil {
-			e.Content = &Content{}
-		}
-		doc = e.Content
-	case crawler:
-		if createIfNil && e.Crawler == nil {
-			e.Crawler = &Crawler{}
-		}
-		doc = e.Content
-	case domain:
-		if createIfNil && e.Domain == nil {
-			e.Domain = &Domain{}
-		}
-		doc = e.Domain
-	case message:
-		if createIfNil && e.Message == nil {
-			e.Message = &Message{}
-		}
-		doc = e.Message
-	case miner:
-		if createIfNil && e.Miner == nil {
-			e.Miner = &Miner{}
-		}
-		doc = e.Miner
-	case notification:
-		if createIfNil && e.Notification == nil {
-			e.Notification = &Notification{}
-		}
-		doc = e.Miner
-	case page:
-		if createIfNil && e.Page == nil {
-			e.Page = &Page{}
-		}
-		doc = e.Page
-	case reaction:
-		if createIfNil && e.Reaction == nil {
-			e.Reaction = &Reaction{}
-		}
-		doc = e.Reaction
-	case schema:
-		if createIfNil && e.Schema == nil {
-			e.Schema = &Schema{}
-		}
-		doc = e.Schema
-	case workgroup:
-		if createIfNil && e.Workgroup == nil {
-			e.Workgroup = &Workgroup{}
-		}
-		doc = e.Workgroup
-	default:
-		log.Println("Bad object type ", objectType)
+	fieldName := strings.Title(objectType)
+	field := reflect.ValueOf(e).Elem().FieldByName(fieldName)
+	doc = field.Interface()
+	if createIfNil /*&& field.Pointer() == 0*/ {
+		field.Set(reflect.Indirect(reflect.New(field.Type().Elem())).Addr())
+		doc = field.Interface()
 	}
 	return
+	/*
+		switch objectType {
+		case actor:
+			if createIfNil && e.Actor == nil {
+				e.Actor = &Actor{}
+			}
+			doc = e.Actor
+		case addon:
+			if createIfNil && e.Addon == nil {
+				e.Addon = &Addon{}
+			}
+			doc = e.Addon
+		case attachment:
+			if createIfNil && e.Attachment == nil {
+				e.Attachment = &Attachment{}
+			}
+			doc = e.Block
+		case block:
+			if createIfNil && e.Block == nil {
+				e.Block = &Block{}
+			}
+			doc = e.Block
+		case comment:
+			if createIfNil && e.Comment == nil {
+				e.Comment = &Comment{}
+			}
+			doc = e.Comment
+		case container:
+			if createIfNil && e.Container == nil {
+				e.Container = &Container{}
+			}
+			doc = e.Container
+		case content:
+			if createIfNil && e.Content == nil {
+				e.Content = &Content{}
+			}
+			doc = e.Content
+		case crawler:
+			if createIfNil && e.Crawler == nil {
+				e.Crawler = &Crawler{}
+			}
+			doc = e.Content
+		case domain:
+			if createIfNil && e.Domain == nil {
+				e.Domain = &Domain{}
+			}
+			doc = e.Domain
+		case message:
+			if createIfNil && e.Message == nil {
+				e.Message = &Message{}
+			}
+			doc = e.Message
+		case miner:
+			if createIfNil && e.Miner == nil {
+				e.Miner = &Miner{}
+			}
+			doc = e.Miner
+		case notification:
+			if createIfNil && e.Notification == nil {
+				e.Notification = &Notification{}
+			}
+			doc = e.Miner
+		case page:
+			if createIfNil && e.Page == nil {
+				e.Page = &Page{}
+			}
+			doc = e.Page
+		case reaction:
+			if createIfNil && e.Reaction == nil {
+				e.Reaction = &Reaction{}
+			}
+			doc = e.Reaction
+		case schema:
+			if createIfNil && e.Schema == nil {
+				e.Schema = &Schema{}
+			}
+			doc = e.Schema
+		case workgroup:
+			if createIfNil && e.Workgroup == nil {
+				e.Workgroup = &Workgroup{}
+			}
+			doc = e.Workgroup
+		default:
+			log.Println("Bad object type ", objectType)
+		}
+		return
+	*/
 }
 
 func (man *DefaultMan) create(request *Request) (response *Response) {

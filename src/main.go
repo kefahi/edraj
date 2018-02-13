@@ -12,6 +12,42 @@ import (
 	mgo "gopkg.in/mgo.v2"
 )
 
+/*
+//import
+//	"github.com/jban332/kin-openapi/openapi3"
+//	"github.com/jban332/kin-openapi/openapi3filter"
+
+
+func getOperation(req *http.Request) (*openapi3.Operation, error) {
+	// Load Swagger file
+	router := openapi3filter.NewRouter().WithSwaggerFromFile("swagger.json")
+
+	// Find route
+	route, _, err := router.FindRoute("GET", req.URL)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get OpenAPI 3 operation
+	return route.Operation, nil
+}
+
+var router = openapi3filter.NewRouter().WithSwaggerFromFile("swagger.json")
+
+func validateRequest(req *http.Request) {
+	openapi3filter.ValidateRequest(nil, &openapi3filter.RequestValidationInput{
+		Request: req,
+		//Route:   router,
+	})
+
+	// Get response
+
+	openapi3filter.ValidateResponse(nil, &openapi3filter.ResponseValidationInput{
+	// ...
+	})
+}
+*/
+
 // Config options
 type Config struct {
 	assetsPath     string
