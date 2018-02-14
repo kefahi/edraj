@@ -1,0 +1,390 @@
+syntax = "proto3";
+package edraj;
+option go_package = "main";
+option java_package = "io.edraj";
+
+// import "google/api/annotations.proto";
+
+// ####################################################
+// Basic types: Geopoint, Address, Identity, Signature, 
+// Contact, ActorGroup, Permission, Keypair, Change
+
+message Geopoint {
+  float latitude = 1;
+  float longitude = 2;
+}
+
+message Address {
+  Geopoint geo=1;
+  string zipcode=2;
+  string street=3;
+  string city=4;
+  string state=5;
+  string country=6;
+}
+
+message Identity {
+  enum Type {
+    ACTOR=0;
+    WORKGROUP=1;
+  }
+
+  Type type =1;
+  string id =2;
+  string displayname=3;
+  string shortname=4;
+  map<string,string> publickeys =5;
+}
+
+message Signature {
+  Identity identity = 1;
+  string signature = 2;
+  string keyname = 3;
+  uint64 timestamp = 5;
+  repeated string fields_signed = 6;
+}
+
+message Contact {
+  enum Type {
+    EMAIL=0;
+    MOBILE=1;
+    URL=2;
+    FACEBOOK=3;
+    LINKEDIN=4;
+    TWITTER=5;
+    SKYPE=6;
+    LAND_PHONE=7;
+  }
+
+  Type type=1;
+  string value=2;
+}
+
+message ActorGroup {
+  string id=1;
+  string file_name=2;
+  repeated Identity members=3;
+}
+
+message Permission {
+  enum Type {
+    ADMIN=0;
+    DELETE=1;
+    QUERY=2;
+    EDIT=3;
+    MANAGE_SUB=4;
+  }
+
+  Type type = 1;
+  repeated Identity actors = 2;
+  repeated ActorGroup actorgroups = 3;
+}
+
+message Keypair {
+  string name =1;
+  string public =2;
+  string private =3;
+}
+
+message Change {
+  uint64 timestamp=1; // When
+  Identity identity=2; // Who
+  bytes delta=3; // What
+
+}
+
+// ########################################
+// Main types: Content, Container, Reaction, 
+// Comment, Message, Attachement
+// Workgroup, Actor ... addon, page, block, layout, 
+// miner, crawler, schema, domain, notification
+
+message Content {
+	string id = 1; 
+  string path = 2;
+  string shortname = 3;
+  string displayname = 4;
+  string description = 5;
+  uint64 timestamp = 6;
+  Signature signature = 7;
+  Geopoint geopoint = 8;
+  string body = 9;
+  repeated Attachment attachments = 10;
+  repeated string tags = 11; 
+  repeated string categories = 12;
+  repeated Permission permissions = 13;
+  repeated Change history = 14;
+}
+
+message Container {
+  string id = 1;
+  string path = 5;
+  string shortname = 2;
+  string displayname = 3;
+  uint64 timestamp = 4;
+  repeated string tags = 10; 
+  repeated string categories = 11;
+  repeated Permission permissions = 12;  
+}
+
+message Reaction {
+  enum Type {
+    LIKE=0;
+    LOVE=1;
+    SAD=2;
+    DISLIKE=3;
+    ANGRY=4;
+    LAUGH=5;
+  }
+  
+  Type type = 1;
+	Comment comment = 2;
+  string user_id = 3;
+  Geopoint geopoint = 4;
+  uint64 timestamp = 5;
+  Signature signature = 6;
+}
+
+
+message Attachment {
+  enum MediaType {
+    UNKNOWN = 0;
+    IMAGE_PNG = 1;
+    IMAGE_GIF = 2;
+    IMAGE_JPEG = 3;
+    AUDIO_WAV = 4;
+    AUDIO_OGG = 5;
+    AUDIO_MP3 = 6;
+    VIDEO_MP4 = 7;
+    JSON = 8;
+    SQLITE = 9;
+    PLAIN_TEXT= 10;
+    MARKDOWN = 11;
+    ODT = 12;
+    PDF = 13;
+    MSWORD = 14;
+    STRUCTURED =15; // Json-like (json/xml/bson/...)
+  }
+  
+  MediaType type = 1;
+  string name = 2;
+  string checksum =3;
+  //oneof file {
+	 bytes payload = 4;
+   string url = 5;
+	//};
+}
+
+message Workgroup {
+  string id = 1;
+  string shortname = 2;
+  string displayname = 3;
+  repeated Keypair keypairs = 4;
+  repeated Identity members = 5;
+  repeated Permission permissions = 6;
+} 
+
+message Message {
+  string id = 1;
+  string threadid = 2;
+  uint64 timestamp = 3;
+  repeated Identity recipients = 4;
+  Signature sender = 5;
+	string body = 6;
+  string subject = 7;
+  repeated Attachment attachments = 8;
+  Geopoint geopoint = 9;
+  repeated string mentions = 10;
+}
+
+message Actor {
+  string id = 1;
+  string displayname = 2;
+  string shortname = 3;
+  repeated Keypair keys = 4;
+  repeated Address addresses = 5;
+  repeated Contact comms = 6;
+  repeated Contact contacts = 7;
+  string biography = 8;
+  repeated Identity banned = 9;
+  repeated Identity affiliated = 10;
+  repeated ActorGroup groups = 11;
+}
+
+message Domain {
+  string id = 1;
+  string displayname = 2;
+  string shortname = 3;
+  repeated Keypair keys = 4;
+  repeated string active_ips = 5;
+}
+
+message Page {
+  string id = 1;
+}
+
+message Block {
+  string id = 1;
+}
+
+message Site {
+  string id = 1;
+}
+
+message Miner {
+  string id = 1;
+}
+
+message Crawler {
+  string id = 1;
+}
+
+message Schema {
+  string id = 1;
+}
+
+message Comment {
+  Geopoint geo_point = 1;
+}
+
+message Notification {
+  enum Type {
+    FRIENDSHIP_REQUEST=0;
+    FRIENDSHIP_ACCEPTED=1;
+    NEW_CONTENT=2;
+    NEW_REACTION=3;
+  }
+  
+  string id = 1;
+  uint64 timestamp = 2;
+}
+
+// ########################################
+// Envelopes: Query, Entry, Request, Response
+
+message Query {
+  EntryType entry_type = 1;
+  string text = 2;
+  uint64 fromt_time = 3;
+  uint64 to_time = 4;
+  string sort_by = 5;
+  string path = 6;
+  string tags = 7;
+  string categories = 8;
+  repeated string fields = 9;
+  int32 offset = 10;
+  int32 limit = 11;
+}
+
+message Entry {
+
+	EntryType type = 1;
+	EntryType id = 2;
+
+	Actor actor = 3;
+	Attachment attachment = 4;
+	Comment comment = 5;
+	Message message = 6;
+	Workgroup workgroup = 7;
+	Content content = 8;
+	Container container = 9;
+
+  repeated string further = 10;
+
+}
+
+enum EntryType {
+  ACTOR=0;
+  ADDON=1;
+  ATTACHMENT=2;
+  BLOCK=3;
+  COMMENT=4;
+  CONTAINER=5;
+  CONTENT=6;
+  CRAWLER=7;
+  DOMAIN=8;
+  MESSAGE=9;
+  MINER=10;
+  NOTIFICATION=11;
+  PAGE=12;
+  REACTION=13;
+  SCHEMA=14;
+  WORKGROUP=15;
+}
+
+message IdRequest {
+  Signature signature = 1;
+  EntryType entry_type = 2;
+  string entry_id = 3;
+}
+
+message QueryRequest {
+  Signature signature = 1;
+	Query query = 2;
+}
+
+message EntryRequest {
+  Signature signature = 1;
+	Entry entry = 2;
+}
+/*
+message Response {
+  enum StatusType {
+    FAILED=0;
+    SUCCEEDED=1;
+  }
+
+  StatusType status = 1;
+  int32 code = 2;
+  string message = 3; 
+  int64 total = 4;
+  int64 returned = 5;
+  repeated Entry entries = 6;
+}*/
+
+message Status {
+	int32 code = 1;
+	string message = 2;
+}
+
+// Response zero or more returned entries
+message Response {
+	Status status = 1;
+  int64 total = 2;
+  int64 returned = 3;
+  repeated Entry entries = 4;
+}
+
+message Receipt {
+	Status status = 1;
+}
+
+service EntryService {
+  rpc Create(EntryRequest) returns (Receipt);
+  rpc Update(EntryRequest) returns (Receipt);
+  rpc Query(QueryRequest) returns (Response);
+  rpc Get(IdRequest) returns (Response);
+  rpc Delete(IdRequest) returns (Receipt);
+}
+
+
+// ContentService: Content, Container, Attachment, Comment, Reaction,
+//                Schema, Message, Layout, Page, Block
+
+// IdentityService: Domain, Actor, Workgroup
+
+// IndexService: Miner, Crawer : search interface (query)
+
+// AddonsService: Addon : manage (q, c, d, u), run
+
+// Signup => create actor
+// Login, Logout => ?
+// Friend request => ?
+// Accept/Deny friend request => ?
+// Unfriend => ?
+// Send message => create message
+// Trending => ?
+// General search => ? Query
+// Index => ?
+
+

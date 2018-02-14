@@ -1,0 +1,11 @@
+
+go get google.golang.org/grpc
+go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+
+protoc ./edraj.proto --go_out=plugins=grpc:.
+protoc ./edraj.proto --go_out=plugins=grpc:grpc
+export GOPATH=/home/kefah/go
+protoc -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --go_out=google/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api,plugins=grpc:grpc -I. ./edraj.proto 
+
+

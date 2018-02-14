@@ -22,14 +22,14 @@
                 "summary": "entry operation",
                 "description": "entry operations",
                 "operationId": "entry",
-                "requestBody": { 
-                  "description": "Request object",
-                  "required": true,
-                  "content": { 
-                    "application/json": { 
-                      "schema": { "$ref": "#/components/schemas/Request" } 
-                    } 
-                  } 
+                "requestBody": {
+                    "description": "Request object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/Request" }
+                        }
+                    }
                 },
                 "responses": { "200": { "description": "response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Response" } } } } }
             }
@@ -88,7 +88,7 @@
                     "Identity": { "$ref": "#/components/schemas/Identity" },
                     "Signature": { "type": "string" },
                     "Keyname": { "type": "string" },
-                    "FieldsSigned": { "type": "array", "items": {"type":"string"} }
+                    "FieldsSigned": { "type": "array", "items": { "type": "string" } }
                 }
             },
             "ActorGroup": {
@@ -135,11 +135,11 @@
                     "Size": { "type": "integer" },
                     "MediaType": { "$ref": "#/components/schemas/MediaType" },
                     "Signature": { "$ref": "#/components/schemas/Signature" },
-                    "References": { "type": "array", "itmes": { "type": "string", "format": "uuid" } },
-                        "Binary": { "type": "string", "format": "binary" },
-                        "Text": { "type": "string" },
-                        "Path": { "type": "string" },
-                        "URL": { "type": "string" }
+                    "References": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+                    "Binary": { "type": "string", "format": "binary" },
+                    "Text": { "type": "string" },
+                    "Path": { "type": "string" },
+                    "URL": { "type": "string" }
                 }
             },
             "Message": {
@@ -254,7 +254,7 @@
                     "id": { "type": "string", "format": "uuid" },
                     "name": { "type": "string" },
                     "tempate": { "type": "string" },
-                    "blocks": { "item": "array", "items": { "type": "string", "format": "uuid" } }
+                    "blocks": { "type": "array", "items": { "type": "string", "format": "uuid" } }
                 }
             },
             "Block": {
@@ -342,7 +342,7 @@
             "Request": {
                 "type": "object",
                 "properties": {
-                    "Signature": { "$ref": "#components/schemas/Signature" },
+                    "Signature": { "$ref": "#/components/schemas/Signature" },
                     "Verb": { "type": "string", "enum": ["GET", "QUERY", "UPDATE", "CREATE", "DELETE"] },
                     "EntryType": { "type": "string" },
                     "EntryID": { "type": "string" },
@@ -359,7 +359,7 @@
                     "Message": { "type": "string" },
                     "Total": { "type": "integer", "format": "int32" },
                     "Returned": { "type": "integer", "format": "int32" },
-                    "Entries": { "item": "array", "items": { "$ref": "#/components/schemas/Attachment" } }
+                    "Entries": { "type": "array", "items": { "$ref": "#/components/schemas/Attachment" } }
                 },
                 "required": ["code", "status"]
             }

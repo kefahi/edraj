@@ -2,3 +2,6 @@
 *~
 src/edraj
 src/debug
+gserver
+gclient
+edraj.pb.go
