@@ -1,19 +1,17 @@
-all: gserver gclient
+
+.PHONY: all
+all: edraj test
 
 edraj.pb.go: ../api-spec/edraj.proto 
-	protoc -I ../api-spec/ ../api-spec/edraj.proto --go_out=plugins=grpc:. && sed -i 's/ json:"id,omitempty"/ json:"id,omitempty" bson:"_id"/g' ./edraj.pb.go
+	protoc -I ../api-spec/ ../api-spec/edraj.proto --go_out=plugins=grpc:. && sed -i 's/ json:"id,omitempty"/ json:"id,omitempty" bson:"_id"/g' ./edraj.pb.go && sed -i '1{s/$$/  DO NOT EDIT./}' ./edraj.pb.go
 
-gserver: server.go edraj.pb.go storage.go
-	go build -o gserver server.go edraj.pb.go storage.go
+edraj: client.go server.go edraj.pb.go storage.go
+	go build -o edraj client.go server.go edraj.pb.go storage.go
 
-gclient: client.go edraj.pb.go
-	go build -o gclient client.go edraj.pb.go
+.PHONY: test
+test: 
+	go test
 
-server: gserver
-	./gserver
-
-client: gclient
-	./gclient
-
+.PHONY: clean
 clean: 
-	rm -f gserver gclient edraj.pb.go
+	rm -f edraj edraj.pb.go

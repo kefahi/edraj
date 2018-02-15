@@ -2,6 +2,10 @@ package main
 
 import (
 	"flag"
+	"html/template"
+	"net/http"
+	"os"
+	"os/signal"
 
 	"fmt"
 	"net"
@@ -21,26 +25,7 @@ import (
 )
 
 const (
-	/*
-		actor        = "actor"
-		addon        = "addon"
-		attachment   = "attachment"
-		block        = "block"
-		comment      = "comment"
-		container    = "container"
-		content      = "content"
-		crawler      = "crawler"
-		domain       = "domain"
-		message      = "message"
-		miner        = "miner"
-		notification = "notification"
-		page         = "page"
-		reaction     = "reaction"
-		schema       = "schema"
-		workgroup    = "workgroup"
-	*/
 	trash = "trash"
-
 	edraj = "edraj"
 )
 
@@ -50,8 +35,6 @@ type EntryServer struct {
 	mongoDb      *mgo.Database
 	fileStore    Storage
 }
-
-var ()
 
 // Config options
 type Config struct {
@@ -75,6 +58,8 @@ var (
 	}
 
 	entryServer = new(EntryServer)
+	httpServer  *http.Server
+	grpcServer  *grpc.Server
 )
 
 func init() {
@@ -256,23 +241,80 @@ func (es *EntryServer) Delete(ctx context.Context, request *IdRequest) (response
 	return
 }
 
+// Log wrapper for all http calls
+func Log(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		glog.Infof("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		handler.ServeHTTP(w, r)
+	})
+}
+
 // Run ...
-func Run() error {
-	listen, err := net.Listen("tcp", ":50051")
+func runGRPC() {
+	listen, err := net.Listen("tcp", "127.0.0.1:50051")
 	if err != nil {
-		return err
+		glog.Fatal(err)
 	}
-	server := grpc.NewServer()
-	RegisterEntryServiceServer(server, entryServer)
+	grpcServer = grpc.NewServer()
+	RegisterEntryServiceServer(grpcServer, entryServer)
 	glog.Info("Starting the gRPC server")
-	server.Serve(listen)
-	return nil
+	grpcServer.Serve(listen)
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	template.Must(template.ParseFiles("index.html")).Execute(w, "Hello World!")
+}
+func runHTTP() {
+	http.Handle("/assets", http.FileServer(http.Dir(config.assetsPath)))
+	http.HandleFunc("/", index)
+	r := Log(http.DefaultServeMux)
+
+	httpServer = &http.Server{
+		Addr: config.servingAddress,
+		// Good practice to set timeouts to avoid Slowloris attacks.
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      r, // Pass our instance of gorilla/mux in.
+	}
+	glog.Infof("Started server at http://%s\n", config.servingAddress)
+	if err := httpServer.ListenAndServe(); err != nil {
+		glog.Fatal(err)
+	}
+}
+
+func mainServer() {
+	go runGRPC()
+	go runHTTP()
+
+	c := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(c, os.Interrupt)
+
+	// Block until we receive our signal.
+	<-c
+
+	// Create a deadline to wait for.
+	ctx, cancel := context.WithTimeout(context.Background(), config.shutdownWait)
+	defer cancel()
+	// Doesn't block if no connections, but will otherwise wait
+	// until the timeout deadline.
+	httpServer.Shutdown(ctx)
+	grpcServer.Stop()
+	// Optionally, you could run srv.Shutdown in a goroutine and block on
+	// <-ctx.Done() if your application should wait for other services
+	// to finalize based on context cancellation.
+	glog.Info("shutting down")
+	os.Exit(0)
 }
 
 func main() {
 	defer glog.Flush()
 
-	if err := Run(); err != nil {
-		glog.Fatal(err)
+	command := mainServer
+	if len(os.Args) > 1 && os.Args[1] == "client" {
+		command = mainClient
 	}
+	command()
 }

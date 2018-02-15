@@ -40,7 +40,7 @@ func check(response interface{}, err error) {
 	}
 }
 
-func main() {
+func mainClient() {
 
 	// Set up a connection to the server.
 	client := EntryClient{address: "localhost:50051"}
