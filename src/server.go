@@ -100,7 +100,7 @@ func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}
 	fieldName := strings.Title(objectType)
 	field := reflect.ValueOf(e).Elem().FieldByName(fieldName)
 	doc = field.Interface()
-	if createIfNil && field.IsNil() /*&& field.Pointer() == 0*/ {
+	if createIfNil && field.IsNil() {
 		field.Set(reflect.Indirect(reflect.New(field.Type().Elem())).Addr())
 		doc = field.Interface()
 	}
@@ -109,11 +109,11 @@ func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}
 
 // Create ...
 func (es *EntryServer) Create(ctx context.Context, request *EntryRequest) (response *Receipt, err error) {
-	response = &Receipt{}
+	response = &Receipt{Status: &Status{}}
 	glog.Info(request)
 	if request.Entry == nil {
 		response.Status.Code = int32(codes.InvalidArgument)
-		err = fmt.Errorf("Entry details are missing (%v).", request.Entry)
+		err = grpc.Errorf(codes.InvalidArgument, "Entry details are missing (%v).", request.Entry)
 		response.Status.Message = err.Error()
 		return
 	}
@@ -123,8 +123,9 @@ func (es *EntryServer) Create(ctx context.Context, request *EntryRequest) (respo
 
 	err = es.mongoDb.C(entryType).Insert(doc)
 	if err != nil {
-		response.Status.Code = int32(codes.InvalidArgument)
+		response.Status.Code = int32(codes.Internal)
 		response.Status.Message = fmt.Sprintf("Failed to create entry (%v).", request.Entry)
+		err = grpc.Errorf(codes.Internal, err.Error())
 		return
 	}
 
@@ -134,11 +135,11 @@ func (es *EntryServer) Create(ctx context.Context, request *EntryRequest) (respo
 
 // Update ...
 func (es *EntryServer) Update(ctx context.Context, request *EntryRequest) (response *Receipt, err error) {
-	response = &Receipt{}
+	response = &Receipt{Status: &Status{}}
 	glog.Info(request)
-	if request.Entry == nil /*|| request.Entry.Id == ""*/ {
+	if request.Entry == nil || request.Entry.Id == "" {
 		response.Status.Code = int32(codes.InvalidArgument)
-		err = fmt.Errorf("Entry details are missing (%v).", request.Entry)
+		err = grpc.Errorf(codes.Internal, "Entry details are missing (%v).", request.Entry)
 		response.Status.Message = err.Error()
 		return
 	}
@@ -151,6 +152,7 @@ func (es *EntryServer) Update(ctx context.Context, request *EntryRequest) (respo
 	if err != nil {
 		response.Status.Code = int32(codes.NotFound)
 		response.Status.Message = fmt.Sprintf("Failed to update entry (%v).", request.Entry)
+		err = grpc.Errorf(codes.NotFound, err.Error())
 		return
 	}
 
@@ -160,12 +162,12 @@ func (es *EntryServer) Update(ctx context.Context, request *EntryRequest) (respo
 
 // Query ...
 func (es *EntryServer) Query(ctx context.Context, request *QueryRequest) (response *Response, err error) {
-	response = &Response{}
+	response = &Response{Status: &Status{}}
 	glog.Info(request)
 
 	if request.Query == nil {
 		response.Status.Code = int32(codes.InvalidArgument)
-		err = fmt.Errorf("Query details are missing (%v).", request.Query)
+		err = grpc.Errorf(codes.InvalidArgument, "Query details are missing (%v).", request.Query)
 		response.Status.Message = err.Error()
 		return
 	}
@@ -190,6 +192,7 @@ func (es *EntryServer) Query(ctx context.Context, request *QueryRequest) (respon
 
 	if err != nil {
 		response.Status.Code = int32(codes.Internal)
+		err = grpc.Errorf(codes.Internal, err.Error())
 		return
 	}
 
@@ -200,11 +203,11 @@ func (es *EntryServer) Query(ctx context.Context, request *QueryRequest) (respon
 // Get ...
 func (es *EntryServer) Get(ctx context.Context, request *IdRequest) (response *Response, err error) {
 	glog.Info(request)
-	response = &Response{}
+	response = &Response{Status: &Status{}}
 
 	if request.EntryId == "" {
 		response.Status.Code = int32(codes.InvalidArgument)
-		err = fmt.Errorf("EntryId (%v) or EntryType (%v) are missing.", request.EntryId, request.EntryType)
+		err = grpc.Errorf(codes.InvalidArgument, "EntryId (%v) or EntryType (%v) are missing.", request.EntryId, request.EntryType)
 		response.Status.Message = err.Error()
 		return
 	}
@@ -217,6 +220,7 @@ func (es *EntryServer) Get(ctx context.Context, request *IdRequest) (response *R
 	if err != nil {
 		response.Status.Code = int32(codes.NotFound)
 		response.Status.Message = fmt.Sprintf("Failed to get entry (%v).", request.EntryId)
+		err = grpc.Errorf(codes.NotFound, err.Error())
 		return
 	}
 
@@ -231,10 +235,10 @@ func (es *EntryServer) Get(ctx context.Context, request *IdRequest) (response *R
 // Delete ...
 func (es *EntryServer) Delete(ctx context.Context, request *IdRequest) (response *Receipt, err error) {
 	glog.Info(request)
-	response = &Receipt{}
+	response = &Receipt{Status: &Status{}}
 	if request.EntryId == "" {
 		response.Status.Code = int32(codes.InvalidArgument)
-		err = fmt.Errorf("EntryId (%v) or EntryType (%v) are missing.", request.EntryId, request.EntryType)
+		err = grpc.Errorf(codes.InvalidArgument, "EntryId (%v) or EntryType (%v) are missing.", request.EntryId, request.EntryType)
 		response.Status.Message = err.Error()
 		return
 	}
@@ -244,6 +248,7 @@ func (es *EntryServer) Delete(ctx context.Context, request *IdRequest) (response
 	if err != nil {
 		response.Status.Code = int32(codes.NotFound)
 		response.Status.Message = fmt.Sprintf("Failed to delete entry (%v).", request.EntryId)
+		err = grpc.Errorf(codes.NotFound, err.Error())
 		return
 	}
 

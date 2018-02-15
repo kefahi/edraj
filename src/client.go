@@ -31,7 +31,12 @@ func check(response interface{}, err error) {
 	if err != nil {
 		log.Printf("call Failed: %v", err)
 	} else {
-		log.Printf("Returned : %v", response)
+		switch r := response.(type) {
+		case *Response:
+			log.Printf("Response: %v", r)
+		case *Receipt:
+			log.Printf("Receipt: %v", r)
+		}
 	}
 }
 

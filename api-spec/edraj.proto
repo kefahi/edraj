@@ -279,7 +279,7 @@ message Query {
 message Entry {
 
 	EntryType type = 1;
-	EntryType id = 2;
+	string id = 2;
 
 	Actor actor = 3;
 	Attachment attachment = 4;
