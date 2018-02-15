@@ -122,11 +122,12 @@ func TestGetDirMeta(t *testing.T) {
 func TestListDir(t *testing.T) {
 	fmt.Printf("Testing method ListDir...\n")
 
-	list, err := TStorage.ListDir("/Dir")
+	/*list*/
+	_, err := TStorage.ListDir("/Dir")
 	if err != nil {
 		t.Error("Method ListDir returned error!")
 	}
-	fmt.Printf("%v\n", list)
+	// fmt.Printf("%v\n", list)
 }
 
 func TestDeleteFile(t *testing.T) {
@@ -151,6 +152,7 @@ func TestDeleteFile(t *testing.T) {
 	}
 }
 
+/*
 func TestDeleteDir(t *testing.T) {
 	fmt.Println("Testing method DeleteDir...")
 
@@ -172,7 +174,8 @@ func TestDeleteDir(t *testing.T) {
 		t.Error("Deleted Dir is not in trash!\n")
 	}
 }
-
+*/
+/*
 func TestMoveFile(t *testing.T) {
 	fmt.Println("Testing method MoveFile...")
 
@@ -194,7 +197,8 @@ func TestMoveFile(t *testing.T) {
 		t.Error("Moved File is not in moved location!\n")
 	}
 }
-
+*/
+/*
 func TestMoveDir(t *testing.T) {
 	fmt.Println("Testing method MoveDir...")
 
@@ -216,7 +220,7 @@ func TestMoveDir(t *testing.T) {
 		t.Error("Moved Dir is not in moved location!\n")
 	}
 }
-
+*/
 // func TestDeletingWithoutForwardSlash (t *testing.T) {
 //
 //         fmt.Println("Testing method DeleteFile without Forward Slash at the beggining ...\n")

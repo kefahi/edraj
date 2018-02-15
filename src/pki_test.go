@@ -44,7 +44,7 @@ func TestPrivatePEM(t *testing.T) {
 	if err != nil {
 		t.Error("PrivatePEM method returned error!\n\n\t", err.Error())
 	}
-	fmt.Println(textPem)
+	//fmt.Println(textPem)
 
 	fmt.Println("Testing method LoadPrivatePEM...")
 	err = Tkeypair.LoadPrivatePEM([]byte(textPem))
@@ -55,11 +55,11 @@ func TestPrivatePEM(t *testing.T) {
 
 func TestPublicPEM(t *testing.T) {
 	fmt.Println("Testing method PublicPEM...")
-	textPem, err := Tkeypair.PublicPEM()
+	/*textPem*/ _, err := Tkeypair.PublicPEM()
 	if err != nil {
 		t.Error("PublicPEM method returned error!\n\n\t", err.Error())
 	}
-	fmt.Println(textPem)
+	//fmt.Println(textPem)
 }
 
 func TestSignNverifyData(t *testing.T) {

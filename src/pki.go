@@ -173,7 +173,7 @@ func (keypair *RsaKeypair) LoadPublicPem(publicPEM []byte) error {
 	if err != nil {
 		return errors.New("While parsing public key: " + err.Error())
 	}
-	fmt.Printf("key type %T\n", key)
+	//fmt.Printf("key type %T\n", key)
 
 	switch t := key.(type) {
 	case *rsa.PublicKey:
