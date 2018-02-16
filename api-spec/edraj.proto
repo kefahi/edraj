@@ -375,10 +375,8 @@ service EntryService {
   rpc Query(QueryRequest) returns (Response);
   rpc Get(IdRequest) returns (Response);
   rpc Delete(IdRequest) returns (Receipt);
-}
+  // rpc Stream(QueryRequest) returns (stream Notification);
 
-service NotificationService {
-  rpc Stream(QueryRequest) returns (stream Notification);
 }
 
 // ContentService: Content, Container, Attachment, Comment, Reaction,

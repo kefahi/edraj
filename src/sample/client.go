@@ -16,7 +16,8 @@ import (
 
 // EntryClient ...
 type EntryClient struct {
-	address   string
+	host      string
+	port      int
 	certsPath string
 	conn      *grpc.ClientConn
 	service   EntryServiceClient
@@ -42,12 +43,12 @@ func (ec *EntryClient) init() {
 	}
 
 	transportCreds := credentials.NewTLS(&tls.Config{
-		ServerName:   "localhost",
+		ServerName:   ec.host,
 		Certificates: []tls.Certificate{certificate},
 		RootCAs:      certPool,
 	})
 
-	ec.conn, err = grpc.Dial(ec.address, grpc.WithTransportCredentials(transportCreds))
+	ec.conn, err = grpc.Dial(fmt.Sprintf("%s:%d", ec.host, ec.port), grpc.WithTransportCredentials(transportCreds))
 
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -84,7 +85,7 @@ func printReturnedMeta(meta ...metadata.MD) {
 func main() {
 
 	// Set up a connection to the server.
-	client := EntryClient{address: "localhost:50051", certsPath: "../../out/"}
+	client := EntryClient{host: "localhost", port: 50051, certsPath: "../../out/"}
 	client.init()
 	defer client.close()
 
