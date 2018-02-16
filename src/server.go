@@ -1,22 +1,31 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"html/template"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"path"
+	"strings"
 	"time"
 
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 )
 
 // Config options
 type Config struct {
 	assetsPath     string
+	certsPath      string
 	templatesPath  string
 	servingAddress string
 	mongoAddress   string
@@ -28,6 +37,7 @@ var (
 	// Config optoins TODO read from config file and/or params
 	config = Config{
 		assetsPath:     "./assets/",
+		certsPath:      "../out/",
 		templatesPath:  "./templates/",
 		dataPath:       "./data", // Mongo, files, indexes ...
 		servingAddress: "127.0.0.1:5533",
@@ -52,6 +62,25 @@ func init() {
 // EntryGRPC implements EntryServiceServer and delegates the calls to EntryMan
 type EntryGRPC struct {
 	entryMan *EntryMan
+}
+
+func authInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	if headers, ok := metadata.FromIncomingContext(ctx); ok {
+		// Read edraj-signature-bin if invalid:
+		// return nil, grpc.Errorf(codes.Unauthenticated, "invalid signature")
+		for k, v := range headers {
+			if strings.HasPrefix(k, "edraj-") {
+				glog.Infof("Ctx %v: %v", k, v)
+			}
+		}
+	} else {
+		return nil, grpc.Errorf(codes.Unauthenticated, "missing context metadata")
+	}
+
+	grpc.SendHeader(ctx, metadata.New(map[string]string{"edraj-header": "my-value"}))
+	grpc.SetTrailer(ctx, metadata.New(map[string]string{"edraj-trailer": "my-value"}))
+
+	return handler(ctx, req)
 }
 
 // Create ...
@@ -90,11 +119,30 @@ func Log(handler http.Handler) http.Handler {
 
 // Run ...
 func runGRPC() {
-	listen, err := net.Listen("tcp", "127.0.0.1:50051")
+	listen, err := net.Listen("tcp", "localhost:50051")
 	if err != nil {
 		glog.Fatal(err)
 	}
-	grpcServer = grpc.NewServer()
+	certificate, err := tls.LoadX509KeyPair(path.Join(config.certsPath, "localhost.crt"), path.Join(config.certsPath, "localhost.key"))
+
+	certPool := x509.NewCertPool()
+	bs, err := ioutil.ReadFile(path.Join(config.certsPath, "edrajRootCA.crt"))
+	if err != nil {
+		glog.Fatalf("failed to read client ca cert: %s", err)
+	}
+
+	ok := certPool.AppendCertsFromPEM(bs)
+	if !ok {
+		glog.Fatal("failed to append client certs")
+	}
+
+	tlsConfig := &tls.Config{
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		Certificates: []tls.Certificate{certificate},
+		ClientCAs:    certPool,
+	}
+
+	grpcServer = grpc.NewServer(grpc.UnaryInterceptor(authInterceptor), grpc.Creds(credentials.NewTLS(tlsConfig)))
 	RegisterEntryServiceServer(grpcServer, entryGrpc)
 	glog.Info("Starting the gRPC server")
 	grpcServer.Serve(listen)

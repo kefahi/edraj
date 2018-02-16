@@ -254,8 +254,18 @@ message Notification {
     NEW_CONTENT=2;
     NEW_REACTION=3;
   }
-  
+
+  // Natural key
   string id = 1;
+
+
+  // TBD who
+
+  // TBD what
+
+
+  
+  // when
   uint64 timestamp = 2;
 }
 
@@ -367,6 +377,9 @@ service EntryService {
   rpc Delete(IdRequest) returns (Receipt);
 }
 
+service NotificationService {
+  rpc Stream(QueryRequest) returns (stream Notification);
+}
 
 // ContentService: Content, Container, Attachment, Comment, Reaction,
 //                Schema, Message, Layout, Page, Block

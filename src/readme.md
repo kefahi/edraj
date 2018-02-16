@@ -15,7 +15,26 @@ gometalinter ./ --exclude='main redeclared' --exclude='edraj.pb.go' --exclude='o
 ```
 
 
-`dlv debug --headless --listen=:2345 --log -- -myArg=123`
+dlv debug --headless --listen=:2345 --log -- -myArg=123`
+
+## SSL
+
+```bash
+git clone https://github.com/square/certstrap
+cd certstrap
+./build
+
+# copy bin/certstrap... to edraj/bin/certstrap
+
+./bin/certstrap init --passphrase "" -o edraj -cn edrajRootCA
+./bin/certstrap request-cert --passphrase "" --domain edraj.io
+./bin/certstrap sign --CA edrajRootCA edraj.io
+./bin/certstrap request-cert --passphrase "" --domain localhost
+./bin/certstrap sign --CA edrajRootCA localhost
+./bin/certstrap request-cert --passphrase "" -cn kefah
+./bin/certstrap sign --CA edrajRootCA kefah
+
+```
 
 ## TODO
 + Fix Delete method
