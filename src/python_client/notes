@@ -1,0 +1,5 @@
+pip3 install --user grpcio-tools
+
+#protoc --proto_path=../../ --python_out=plugins=grpc:. ../../api-spec/edraj.proto 
+python3 -m grpc_tools.protoc --proto_path=../../api-spec --python_out=. --grpc_python_out=. ../../api-spec/edraj.proto
+

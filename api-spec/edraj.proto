@@ -145,7 +145,6 @@ message Reaction {
   Signature signature = 6;
 }
 
-
 message Attachment {
   enum MediaType {
     UNKNOWN = 0;
@@ -166,14 +165,21 @@ message Attachment {
     STRUCTURED =15; // Json-like (json/xml/bson/...)
   }
   
-  MediaType type = 1;
-  string name = 2;
-  string checksum =3;
-  //oneof file {
-	 bytes payload = 4;
+   MediaType type = 1;
+   string name = 2;
+   string checksum =3;
+   bytes payload = 4;
    string url = 5;
-	//};
-}
+   string file_path = 6; // Path to file relative to root_path
+   uint64 size = 7;
+   float duration = 8; // Video, Audio
+   uint32 width = 9; // Image, Video
+   uint32 height = 10; // Image, Video
+   float bitrate = 11; // Video, Audio
+   float sampling = 12; // Audio
+   string mime = 13; // output of "file -b -i filename"
+   string type_description = 14; // output of "file -b filename"
+ }
 
 message Workgroup {
   string id = 1;

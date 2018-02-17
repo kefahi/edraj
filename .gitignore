@@ -6,3 +6,6 @@ gserver
 gclient
 edraj.pb.go
 certs
+__pycache__
+edraj_pb2_grpc.py
+edraj_pb2.py

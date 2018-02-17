@@ -36,6 +36,15 @@ cd certstrap
 
 ```
 
+# Extract details from files
+```
+file -b -i filename # mime 
+file -b file name # detailed description
+feh -L '{"pixels":"%p", "format":"%t", "height":"%h", "width":"%w", "zoom":"%z", "rotation":"%r", "filename":"%n"}' revealjs/images/*
+identify -verbose imagefilename
+
+```
+
 ## TODO
 + Fix Delete method
 + Add more generic tests
