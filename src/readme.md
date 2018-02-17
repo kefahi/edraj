@@ -49,3 +49,8 @@ identify -verbose imagefilename
 + Fix Delete method
 + Add more generic tests
 
+## Using git-lfs
+1. Install git-lfs 
+2. git lfs pull
+* Estimated size (211MB)
+
