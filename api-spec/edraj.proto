@@ -260,13 +260,15 @@ message Notification {
 
 
   // TBD who
+  Identity who = 2;
 
   // TBD what
+  string what = 3;
 
 
   
   // when
-  uint64 timestamp = 2;
+  uint64 timestamp = 4;
 }
 
 // ########################################
@@ -375,7 +377,7 @@ service EntryService {
   rpc Query(QueryRequest) returns (Response);
   rpc Get(IdRequest) returns (Response);
   rpc Delete(IdRequest) returns (Receipt);
-  // rpc Stream(QueryRequest) returns (stream Notification);
+  rpc Notifications(QueryRequest) returns (stream Notification);
 
 }
 
