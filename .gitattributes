@@ -3,3 +3,5 @@ mongo filter=lfs diff=lfs merge=lfs -text
 vault filter=lfs diff=lfs merge=lfs -text
 consul filter=lfs diff=lfs merge=lfs -text
 certstrap filter=lfs diff=lfs merge=lfs -text
+maqola_media.tgz filter=lfs diff=lfs merge=lfs -text
+maqola.sql.gz filter=lfs diff=lfs merge=lfs -text

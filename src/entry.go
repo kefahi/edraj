@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/golang/glog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	mgo "gopkg.in/mgo.v2"
@@ -49,7 +48,7 @@ func entryObject(objectType string, e *Entry, createIfNil bool) (doc interface{}
 
 func (man *EntryMan) create(request *EntryRequest) (response *Receipt, err error) {
 	response = &Receipt{Status: &Status{}}
-	glog.Info(request)
+	//glog.Info(request)
 	if request.Entry == nil {
 		response.Status.Code = int32(codes.InvalidArgument)
 		err = status.Errorf(codes.InvalidArgument, "Entry details are missing (%v).", request.Entry)
@@ -74,7 +73,7 @@ func (man *EntryMan) create(request *EntryRequest) (response *Receipt, err error
 
 func (man *EntryMan) update(request *EntryRequest) (response *Receipt, err error) {
 	response = &Receipt{Status: &Status{}}
-	glog.Info(request)
+	//glog.Info(request)
 	if request.Entry == nil || request.Entry.Id == "" {
 		response.Status.Code = int32(codes.InvalidArgument)
 		err = status.Errorf(codes.Internal, "Entry details are missing (%v).", request.Entry)
@@ -100,7 +99,7 @@ func (man *EntryMan) update(request *EntryRequest) (response *Receipt, err error
 
 func (man *EntryMan) query(request *QueryRequest) (response *Response, err error) {
 	response = &Response{Status: &Status{}}
-	glog.Info(request)
+	//glog.Info(request)
 
 	if request.Query == nil {
 		response.Status.Code = int32(codes.InvalidArgument)
@@ -119,7 +118,10 @@ func (man *EntryMan) query(request *QueryRequest) (response *Response, err error
 	slice := reflect.MakeSlice(reflect.SliceOf(fieldType), 0, 0)
 	objects := reflect.New(slice.Type())
 	objects.Elem().Set(slice)
-	err = man.mongoDb.C(entryType).Find(query).All(objects.Interface())
+	if request.Query.Limit == 0 {
+		request.Query.Limit = 2
+	}
+	err = man.mongoDb.C(entryType).Find(query).Skip(int(request.Query.Offset)).Limit(int(request.Query.Limit)).All(objects.Interface())
 
 	for i := 0; i < objects.Elem().Len(); i++ {
 		entry := &Entry{}
@@ -138,7 +140,7 @@ func (man *EntryMan) query(request *QueryRequest) (response *Response, err error
 }
 
 func (man *EntryMan) get(request *IdRequest) (response *Response, err error) {
-	glog.Info(request)
+	//glog.Info(request)
 	response = &Response{Status: &Status{}}
 
 	if request.EntryId == "" {
@@ -169,7 +171,7 @@ func (man *EntryMan) get(request *IdRequest) (response *Response, err error) {
 }
 
 func (man *EntryMan) delete(request *IdRequest) (response *Receipt, err error) {
-	glog.Info(request)
+	// glog.Info(request)
 	response = &Receipt{Status: &Status{}}
 	if request.EntryId == "" {
 		response.Status.Code = int32(codes.InvalidArgument)

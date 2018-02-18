@@ -26,7 +26,8 @@ def run():
     response = stub.Query(edraj_pb2.QueryRequest(query=edraj_pb2.Query(entry_type='CONTENT')), metadata=[('edraj-foo', 'bar')])
 
     for entry in response.entries:
-        print(entry.content.tags)
+        #print(entry.content.tags)
+        print(entry.content)
 
 
 if __name__ == '__main__':

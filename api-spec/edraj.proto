@@ -24,6 +24,11 @@ message Address {
 }
 
 message Identity {
+  enum Type {
+    ACTOR =0;
+    WORKGROUP =1;
+  }
+  Type type = 1;
   string id =2;
   string displayname=3;
   string shortname=4;
@@ -61,11 +66,12 @@ message ActorGroup {
 
 message Permission {
   enum Type {
-    ADMIN=0;
-    DELETE=1;
-    QUERY=2;
-    EDIT=3;
+    NONE=0; 
+    QUERY=1;
+    EDIT=2;
     MANAGE_SUB=4;
+    DELETE=8;
+    ADMIN=16;
   }
 
   Type type = 1;
@@ -111,6 +117,7 @@ message Content {
   repeated Reaction reactions = 16;
   repeated Comment comments = 17;
   uint64 last_updated = 18;
+  bool is_draft = 19; // draft (in-the-works) vs publish status
 }
 
 message Container {

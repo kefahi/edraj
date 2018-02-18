@@ -25,7 +25,7 @@ edraj.pb.go: ../api-spec/edraj.proto
 
 
 edraj: server.go edraj.pb.go storage.go entry.go
-	go build -o edraj server.go edraj.pb.go storage.go entry.go
+	go build -o edraj server.go edraj.pb.go storage.go entry.go grpc.go http.go
 
 .PHONY: test
 test: 
