@@ -33,6 +33,7 @@ message Identity {
   string displayname=3;
   string shortname=4;
   map<string,string> publickeys =5;
+  string domain = 6;
 }
 
 message Signature {
@@ -345,20 +346,26 @@ enum EntryType {
   WORKGROUP=15;
 }
 
+// IdRequest get a sepcific entry
 message IdRequest {
-  Signature signature = 1;
-  EntryType entry_type = 2;
-  string entry_id = 3;
+  Identity requestor = 1;
+  uint64 timestamp = 2;
+  EntryType entry_type = 3;
+  string entry_id = 4;
 }
 
+// QueryRequest search for entries
 message QueryRequest {
-  Signature signature = 1;
-	Query query = 2;
+  Identity requestor = 1;
+  uint64 timestamp = 2;
+	Query query = 3;
 }
 
+// EntryRequest push a new or update for an entry
 message EntryRequest {
-  Signature signature = 1;
-	Entry entry = 2;
+  Identity requestor = 1;
+  uint64 timestamp = 2;
+	Entry entry = 3;
 }
 /*
 message Response {

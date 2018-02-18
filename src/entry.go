@@ -135,6 +135,10 @@ func (man *EntryMan) query(request *QueryRequest) (response *Response, err error
 		return
 	}
 
+	response.Returned = int64(len(response.Entries))
+	total, _ := man.mongoDb.C(entryType).Find(query).Count()
+	response.Total = int64(total)
+
 	response.Status.Code = int32(codes.OK)
 	return
 }
