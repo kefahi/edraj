@@ -139,7 +139,7 @@ func (es *EntryGRPC) Notifications(request *QueryRequest, stream EntryService_No
 	// TODO handle cancelation
 	ctx := stream.Context()
 	for i := 0; i < 10; i++ {
-		d := time.Duration(rand.Intn(10)) * time.Second
+		d := time.Duration(rand.Intn(3)) * time.Second
 		logSleep(ctx, d)
 		select {
 		case <-time.After(d):

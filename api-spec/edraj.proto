@@ -24,12 +24,6 @@ message Address {
 }
 
 message Identity {
-  enum Type {
-    ACTOR=0;
-    WORKGROUP=1;
-  }
-
-  Type type =1;
   string id =2;
   string displayname=3;
   string shortname=4;
@@ -37,7 +31,6 @@ message Identity {
 }
 
 message Signature {
-  Identity identity = 1;
   string signature = 2;
   string keyname = 3;
   uint64 timestamp = 5;
@@ -105,7 +98,7 @@ message Content {
   string shortname = 3;
   string displayname = 4;
   string description = 5;
-  uint64 timestamp = 6;
+  uint64 created = 6;
   Signature signature = 7;
   Geopoint geopoint = 8;
   string body = 9;
@@ -114,6 +107,10 @@ message Content {
   repeated string categories = 12;
   repeated Permission permissions = 13;
   repeated Change history = 14;
+  Identity actor_id = 15;
+  repeated Reaction reactions = 16;
+  repeated Comment comments = 17;
+  uint64 last_updated = 18;
 }
 
 message Container {
@@ -121,10 +118,12 @@ message Container {
   string path = 5;
   string shortname = 2;
   string displayname = 3;
-  uint64 timestamp = 4;
+  uint64 created = 4;
+  string description = 6;
   repeated string tags = 10; 
   repeated string categories = 11;
-  repeated Permission permissions = 12;  
+  repeated Permission permissions = 12; 
+  Identity actor_id = 13; 
 }
 
 message Reaction {
@@ -137,12 +136,13 @@ message Reaction {
     LAUGH=5;
   }
   
-  Type type = 1;
-	Comment comment = 2;
-  string user_id = 3;
+  Type type = 1; 
+  
   Geopoint geopoint = 4;
-  uint64 timestamp = 5;
+  uint64 created = 5;
   Signature signature = 6;
+  Identity actor_id = 7;
+  uint64 last_updated = 8;
 }
 
 message Attachment {
@@ -179,6 +179,9 @@ message Attachment {
    float sampling = 12; // Audio
    string mime = 13; // output of "file -b -i filename"
    string type_description = 14; // output of "file -b filename"
+   string description = 15;
+   repeated string tags = 16; 
+   repeated string categories = 17; 
  }
 
 message Workgroup {
@@ -251,6 +254,11 @@ message Schema {
 
 message Comment {
   Geopoint geo_point = 1;
+  Identity actor_id = 2;
+  string title = 3;
+  string body = 4;
+  uint64 created = 5;
+  uint64 last_updated = 6;
 }
 
 message Notification {
