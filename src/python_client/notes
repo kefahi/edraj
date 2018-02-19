@@ -4,4 +4,5 @@ pip3 install --user grpcio-tools
 python3 -m grpc_tools.protoc --proto_path=../../api-spec --python_out=. --grpc_python_out=. ../../api-spec/edraj.proto
 
 
-mongo edraj --eval 'db.content.drop();'  && ./maqola_loader.py
+mongo edraj --eval 'db.content.drop();'  && ./maqola_loader.py 
+mongo edraj --eval 'db.content.createIndex( { displayname: "text", body: "text" }, {"default_language":"none"} );' #  Arabic sadly requires 3rd party license

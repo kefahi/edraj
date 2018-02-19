@@ -10,7 +10,8 @@
 	"timestamp": 1518993431,
 	"query":{
 		"entry_type":6,
-		"limit":5,
+		"tags": [ "مَدح" ],
+		"limit":50,
 		"offset":10
 	}
 }

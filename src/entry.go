@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -112,6 +113,16 @@ func (man *EntryMan) query(request *QueryRequest) (response *Response, err error
 
 	response.Entries = []*Entry{}
 	entryType := strings.ToLower(request.Query.EntryType.String())
+
+	if request.Query.Text != "" {
+		query["$text"] = bson.M{"$search": request.Query.Text}
+	}
+
+	if len(request.Query.Tags) > 0 {
+		query["tags"] = bson.M{"$all": request.Query.Tags} // $all for and, $in for or
+	}
+
+	grpclog.Info("Query: ", query)
 
 	fieldName := strings.Title(entryType)
 	fieldType := reflect.New(reflect.TypeOf(Entry{})).Elem().FieldByName(fieldName).Type().Elem()

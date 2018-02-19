@@ -34,6 +34,7 @@ message Identity {
   string shortname=4;
   map<string,string> publickeys =5;
   string domain = 6;
+  string description = 7; // Additional notes / bio if/when needed
 }
 
 message Signature {
@@ -114,7 +115,8 @@ message Content {
   repeated string categories = 12;
   repeated Permission permissions = 13;
   repeated Change history = 14;
-  Identity actor_id = 15;
+  Identity actor = 15; // Curator or committer : the person who collected and picked this content
+  Identity author = 20; // The original author of the content
   repeated Reaction reactions = 16;
   repeated Comment comments = 17;
   uint64 last_updated = 18;
@@ -131,7 +133,7 @@ message Container {
   repeated string tags = 10; 
   repeated string categories = 11;
   repeated Permission permissions = 12; 
-  Identity actor_id = 13; 
+  Identity actor = 13; 
 }
 
 message Reaction {
@@ -149,7 +151,7 @@ message Reaction {
   Geopoint geopoint = 4;
   uint64 created = 5;
   Signature signature = 6;
-  Identity actor_id = 7;
+  Identity actor = 7;
   uint64 last_updated = 8;
 }
 
@@ -262,7 +264,7 @@ message Schema {
 
 message Comment {
   Geopoint geo_point = 1;
-  Identity actor_id = 2;
+  Identity actor = 2;
   string title = 3;
   string body = 4;
   uint64 created = 5;
@@ -303,8 +305,8 @@ message Query {
   uint64 to_time = 4;
   string sort_by = 5;
   string path = 6;
-  string tags = 7;
-  string categories = 8;
+  repeated string tags = 7;
+  repeated string categories = 8;
   repeated string fields = 9;
   int32 offset = 10;
   int32 limit = 11;

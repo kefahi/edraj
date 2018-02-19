@@ -17,10 +17,16 @@ def load(stub):
     cursor = mysql.cursor()
     sub_cursor = mysql.cursor()
     users = {}
+    authors = {}
     cursor.execute("select * from tbl_user")
     all = cursor.fetchall()
     for one in all: 
         users[one['id']] = {'prettyname': one['prettyname']}
+    
+    cursor.execute("select * from tbl_author")
+    all = cursor.fetchall()
+    for one in all: 
+        authors[one['id']] = {'prettyname': one['prettyname'], 'description': one['description'], 'shortname': one['shortname']}
     
     cursor.execute("select * from tbl_entry")
     all = cursor.fetchall()
@@ -30,9 +36,15 @@ def load(stub):
             displayname = one['title'], 
             created = one['created_at'], 
             body = one['text'], 
-            actor_id = edraj.Identity(id=str(one['user_id'])))
-        if users[one['user_id']] and users[one['user_id']]['prettyname']:
-            entry.actor_id.displayname = users[one['user_id']]['prettyname']
+            author = edraj.Identity(id=str(one['author_id'])),
+            actor = edraj.Identity(id=str(one['user_id'])))
+        if users[one['user_id']]:
+            entry.actor.displayname = users[one['user_id']]['prettyname']
+
+        if authors[one['author_id']]:
+            entry.author.displayname = authors[one['author_id']]['prettyname']
+            entry.author.shortname   = authors[one['author_id']]['shortname']
+            entry.author.description = authors[one['author_id']]['description']
         
         if one['updated_at']:
             entry.last_updated = one['updated_at']
@@ -44,7 +56,7 @@ def load(stub):
             attachment = entry.attachments.add(file_path = str(one['id']%100) + '/' + str(one['id']) + '/' + rec['filename'])
             if rec['description']:
                 attachment.description = rec['description']
-            attachment.type = edraj.Attachment.IMAGE_JPEG if type == 1 else edraj.Attachment.AUDIO_MP3 # 'image/jpeg' if type == 1 else 'audio/mpeg3'
+            attachment.type = edraj.Attachment.IMAGE_JPEG if rec['type'] == 1 else edraj.Attachment.AUDIO_MP3 # 'image/jpeg' if type == 1 else 'audio/mpeg3'
             
 
         sub_cursor.execute("select * from tbl_entry_tag where entry_id = %s", (one['id']))
@@ -56,10 +68,12 @@ def load(stub):
         recs = sub_cursor.fetchall()
         for rec in recs:                     
             comment = entry.comments.add(
-                actor_id=edraj.Identity(id=str(rec['user_id'])), 
+                actor=edraj.Identity(id=str(rec['user_id'])), 
                 created= rec['created_at'], 
                 #'status': rec['publish_status'], 
                 body= rec['text'])
+            if users[rec['user_id']] and users[rec['user_id']]['prettyname']:
+                comment.actor.displayname = users[rec['user_id']]['prettyname']
             if rec['title']:
                 comment.title = rec['title']
             if rec['updated_at']:
@@ -68,7 +82,7 @@ def load(stub):
         sub_cursor.execute("select * from tbl_entry_vote where entry_id = %s", (one['id']))
         recs = sub_cursor.fetchall()
         for rec in recs:
-            reaction = entry.reactions.add(actor_id=edraj.Identity(id=str(rec['user_id'])))
+            reaction = entry.reactions.add(actor=edraj.Identity(id=str(rec['user_id'])))
             if rec['created_at']:
                 reaction.created = rec['created_at']
             if rec['updated_at']:
@@ -91,7 +105,7 @@ def load(stub):
         recs = sub_cursor.fetchall()
         for rec in recs:
             change = {
-                "actor_id": rec['user_id'],
+                "actor": rec['user_id'],
                 "old_id": rec['id'],
                 "old": {}
                 }
@@ -103,7 +117,7 @@ def load(stub):
                 change['old']['title'] = rec['old_title']
 
             if rec['old_author_id']:
-                change['old']['actor_id'] = rec['old_author_id']
+                change['old']['actor'] = rec['old_author_id']
 
             if rec['old_tags']:
                 change['old']['tags'] = rec['old_tags']

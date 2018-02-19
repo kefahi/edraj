@@ -30,6 +30,8 @@ const vm = new Vue({
                        "timestamp": 1518993431,*/
             "query": {
                 "entry_type": 6,
+                //"text": "الأندلس",
+                //"tags": ["حِكمَة", "شِعر", "مَدح"],
                 "limit": 20,
                 "offset": 10
             }

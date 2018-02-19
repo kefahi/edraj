@@ -13,19 +13,39 @@
 <body>
     <hr/>
     <div class="container" id="app">
-        <h3 class="text-center">مقولة {{ total }}</h3>
-        <h4 class="text-center"><button v-on:click="previous">السابق</button>|<button v-on:click="next">التالي</button> </h4>
+        <h3 class="text-center">مقولة </h3>
+        <h4 class="text-center">
+المجموع {{ total }} | عرض من {{request.query.offset}} إلى {{request.query.offset+request.query.limit}} | 
+<button v-on:click="previous">السابق</button>|<button v-on:click="next">التالي</button> 
+</h4>
         <div class="columns large-4" v-for="result in results">
             <div class="card">
                 <div class="card-divider">
-                    {{ result.content.displayname }}
+                    {{ result.content.displayname }} | {{ result.content.author.displayname }}
                 </div>
+                <div v-for="attachment in result.content.attachments">
+                    <div v-if="attachment.type == 3">
+                        <img :src="'maqola/' + attachment.file_path">
+                    </div>
+                    <div v-if="attachment.type == 6">
+                        <audio controls="controls" :src="'maqola/' + attachment.file_path" preload="auto" />
+                    </div>
+                    <hr/>
+                </div>
+
                 <div class="card-section">
                     <p v-html="result.content.body"></p>
                 </div>
+
+
                 <div class="card-divider">
-                    {{ result.content.tags }}
+                    {{ result.content.tags }} <br/> {{ result.content.actor.displayname}}
                 </div>
+                <div v-for="comment in result.content.comments">
+                    تعليق: "{{comment.title}}/{{comment.body}}"
+                    <!-- {{comment.actor.displayname}} -->
+                </div>
+
             </div>
         </div>
     </div>
