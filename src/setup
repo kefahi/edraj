@@ -1,14 +1,26 @@
 #!/bin/bash
 # Manual
 # download  'https://github.com/git-lfs/git-lfs/releases/download/v2.3.4/git-lfs-linux-amd64-2.3.4.tar.gz' 
-# extract and put at ~/bin/git-lfs then mke sure that is on path
+# tar -vxf git-lfs-linux-amd64-2.3.4.tar.gz
+# extract and install at ~/bin/git-lfs then mke sure that is on path
+echo '
+[mongodb-org-testing]
+name=MongoDB Testing Repository
+baseurl=https://repo.mongodb.org/yum/redhat/7Server/mongodb-org/testing/x86_64/
+gpgcheck=0
+enabled=1
+' > /tmp/mongodb-3.6.repo
+# as root: cp /tmp/mongodb-3.6.repo /etc/yum.repos.d/
 # as root install and run mongodb
+# as root install protobuf-ompiler
 
 pip3 install --user grpcio-tools
+export GOPATH="$HOME/go/bin:$PATH"
 go get github.com/BurntSushi/toml gopkg.in/mgo.v2 github.com/gorilla/mux
 go get google.golang.org/grpc
 go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/golang/protobuf/protoc-gen-go
 mongo edraj --eval 'db.content.drop();'
 mongorestore --gzip --dir ../sample_data/dump/
 mongo edraj --eval 'db.content.count();'
