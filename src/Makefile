@@ -24,7 +24,7 @@ edraj.pb.go: ../api-spec/edraj.proto
 	python3 -m grpc_tools.protoc --proto_path=../api-spec --python_out=./python_client/ --grpc_python_out=./python_client/ ../api-spec/edraj.proto
 
 
-edraj: server.go edraj.pb.go storage.go entry.go
+edraj: server.go edraj.pb.go storage.go entry.go grpc.go http.go
 	go build -o edraj server.go edraj.pb.go storage.go entry.go grpc.go http.go
 
 .PHONY: test

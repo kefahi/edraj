@@ -1,7 +1,9 @@
-mongod filter=lfs diff=lfs merge=lfs -text
-mongo filter=lfs diff=lfs merge=lfs -text
-vault filter=lfs diff=lfs merge=lfs -text
-consul filter=lfs diff=lfs merge=lfs -text
-certstrap filter=lfs diff=lfs merge=lfs -text
-maqola_media.tgz filter=lfs diff=lfs merge=lfs -text
-maqola.sql.gz filter=lfs diff=lfs merge=lfs -text
+bin/certstrap filter=lfs diff=lfs merge=lfs -text
+bin/mongod filter=lfs diff=lfs merge=lfs -text
+bin/vault filter=lfs diff=lfs merge=lfs -text
+sample_data/dump/edraj/content.bson.gz filter=lfs diff=lfs merge=lfs -text
+bin/consul filter=lfs diff=lfs merge=lfs -text
+bin/mongo filter=lfs diff=lfs merge=lfs -text
+sample_data/maqola_media.tgz filter=lfs diff=lfs merge=lfs -text
+sample_data/maqola.sql.gz filter=lfs diff=lfs merge=lfs -text
+sample_data/dump/edraj/content.metadata.json.gz filter=lfs diff=lfs merge=lfs -text

@@ -74,8 +74,8 @@ func runHTTP() {
 
 	http.HandleFunc("/api/entry/", EntryAPI)
 	http.HandleFunc("/api/hello", HelloAPI)
-	http.Handle("/assets", http.FileServer(http.Dir(config.assetsPath)))
-	http.HandleFunc("/", index)
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(config.assetsPath))))
+	//http.HandleFunc("/", index)
 	r := Log(http.DefaultServeMux)
 
 	httpServer = &http.Server{
