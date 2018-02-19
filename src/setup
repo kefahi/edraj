@@ -1,4 +1,9 @@
 #!/bin/bash
+# Manual
+# download  'https://github.com/git-lfs/git-lfs/releases/download/v2.3.4/git-lfs-linux-amd64-2.3.4.tar.gz' 
+# extract and put at ~/bin/git-lfs then mke sure that is on path
+# as root install and run mongodb
+
 pip3 install --user grpcio-tools
 go get github.com/BurntSushi/toml gopkg.in/mgo.v2 github.com/gorilla/mux
 go get google.golang.org/grpc
