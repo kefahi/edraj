@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <title> Edraj </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css" />
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 
@@ -12,7 +14,8 @@
     <hr/>
     <div class="container" id="app">
         <h3 class="text-center">مقولة {{ total }}</h3>
-        <div class="columns medium-3" v-for="result in results">
+        <h4 class="text-center"><button v-on:click="previous">السابق</button>|<button v-on:click="next">التالي</button> </h4>
+        <div class="columns large-4" v-for="result in results">
             <div class="card">
                 <div class="card-divider">
                     {{ result.content.displayname }}
@@ -26,8 +29,6 @@
             </div>
         </div>
     </div>
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="app.js"></script>
 </body>
 

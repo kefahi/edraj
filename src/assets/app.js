@@ -10,38 +10,71 @@
     }
 });*/
 
-query = {
-    "requestor": {
-        "id": "ali",
-        "displayname": "ali",
-        "shortname": "hi",
-        "type": 0,
-        "domain": "mydom",
-        "publickeys": { "a": "b", "c": "D" }
-    },
-    "timestamp": 1518993431,
-    "query": {
-        "entry_type": 6,
-        "limit": 5,
-        "offset": 10
-    }
-}
+
 
 const vm = new Vue({
     el: '#app',
     data: {
         results: [],
-        total: 0
+        total: 0,
+        request: {
+            /*
+                       "requestor": {
+                           "id": "ali",
+                           "displayname": "ali",
+                           "shortname": "hi",
+                           "type": 0,
+                           "domain": "mydom",
+                           "publickeys": { "a": "b", "c": "D" }
+                       },
+                       "timestamp": 1518993431,*/
+            "query": {
+                "entry_type": 6,
+                "limit": 20,
+                "offset": 10
+            }
+        }
     },
     mounted() {
-        axios.post("/api/entry/query", query)
+        axios.post("/api/entry/query", this.request)
             .then(response => {
-                console.log(response.data);
+                //console.log(response.data);
                 this.total = response.data.total
                 this.results = response.data.entries
             })
             .catch(function(error) {
                 console.log(error);
             })
+    },
+    methods: {
+        next: function() {
+            if (this.request.query.offset + this.request.query.limit < this.total) {
+                this.request.query.offset = this.request.query.offset + this.request.query.limit
+                axios.post("/api/entry/query", this.request)
+                    .then(response => {
+                        //console.log(response.data);
+                        this.total = response.data.total
+                        this.results = response.data.entries
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    })
+            }
+        },
+        previous: function() {
+            if (this.request.query.offset - this.request.query.limit >= 0) {
+                this.request.query.offset = this.request.query.offset - this.request.query.limit
+                axios.post("/api/entry/query", this.request)
+                    .then(response => {
+                        //console.log(response.data);
+                        this.total = response.data.total
+                        this.results = response.data.entries
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    })
+            }
+
+        }
     }
 });
