@@ -360,7 +360,7 @@ This is user-managed
 	content
 		├── personal (private)
 		├── family
-		├── frients
+		├── friends
 		├── interests
 		│	└── links
 		├── messages
